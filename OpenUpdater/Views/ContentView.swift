@@ -17,7 +17,7 @@ struct ContentView: View {
             HStack {
                 Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
                     .foregroundStyle(.tint)
-                Text("App Updates")
+                Text("OpenUpdate")
                     .font(.headline)
                 Spacer()
                 Button(action: openMainWindow) {

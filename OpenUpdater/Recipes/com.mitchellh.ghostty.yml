@@ -1,0 +1,7 @@
+id: com.mitchellh.ghostty
+name: Ghostty
+homepage: https://ghostty.org
+
+check:
+  type: sparkle
+  feed: https://release.files.ghostty.org/appcast.xml

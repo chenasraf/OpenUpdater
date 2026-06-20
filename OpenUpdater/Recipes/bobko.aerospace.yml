@@ -1,0 +1,18 @@
+id: bobko.aerospace
+name: AeroSpace
+homepage: https://github.com/nikitabobko/AeroSpace
+
+check:
+  type: github_releases
+  repo: nikitabobko/AeroSpace
+  prereleases: true
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/nikitabobko/AeroSpace/releases/download/{tag}/AeroSpace-{tag}.zip
+  format: zip
+
+changelog:
+  url: https://github.com/nikitabobko/AeroSpace/releases/tag/{tag}

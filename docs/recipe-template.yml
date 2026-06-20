@@ -1,0 +1,67 @@
+# OpenUpdater recipe template
+# ============================
+# A recipe tells OpenUpdater how to find the latest version of one app.
+# Place real recipes in OpenUpdater/Recipes/ as `<bundle-id>.yml` (the filename
+# stem MUST equal the app's CFBundleIdentifier, e.g. com.mitchellh.ghostty.yml).
+# Recipes are plain YAML — keep comments out of real recipe files; this template
+# is the only place field docs live.
+#
+# A recipe is only needed when an app can't be checked automatically. Apps that
+# expose a static SUFeedURL in their Info.plist are auto-detected (Sparkle) with
+# no recipe. Use a recipe to: cover a non-Sparkle app (GitHub releases), name a
+# Sparkle feed for an app that sets it dynamically, or override an app's own feed.
+#
+# Placeholders usable in `download.url` and `changelog.url`:
+#   {tag}      the raw upstream tag/version, e.g. "v0.20.3-Beta"
+#   {version}  the normalized version after `version` rules, e.g. "0.20.3-Beta"
+#
+# ----------------------------------------------------------------------------
+
+# REQUIRED. Bundle identifier. Must match the filename stem.
+id: com.example.App
+
+# Optional. Human-readable name (informational only; the app's own name is used
+# in the UI). Helpful for recipe authors.
+name: Example App
+
+# Optional. Project or vendor page (informational).
+homepage: https://example.com
+
+# REQUIRED. How to discover the latest version.
+check:
+  # REQUIRED. One of:
+  #   github_releases  — read a GitHub repo's Releases
+  #   sparkle          — read a Sparkle appcast feed
+  type: github_releases
+
+  # github_releases ONLY. "owner/name" of the repo.
+  repo: example/app
+
+  # github_releases ONLY. Include pre-release/beta tags when choosing the latest.
+  # Default: false.
+  prereleases: false
+
+  # sparkle ONLY. Explicit appcast URL. Use this for apps that bundle Sparkle but
+  # set their feed in code (no static SUFeedURL). For sparkle, OpenUpdater compares
+  # build numbers (sparkle:version / CFBundleVersion), so `version` below is ignored.
+  # feed: https://example.com/appcast.xml
+
+# Optional (github_releases). How to turn a raw tag into a comparable version.
+version:
+  # Leading text to strip from the tag, e.g. "v" turns "v1.2.3" into "1.2.3".
+  strip_prefix: v
+  # Optional regex; the first capture group becomes the version. Applied after
+  # strip_prefix. Omit unless the tag needs extracting from surrounding text.
+  # pattern: '(\d+\.\d+\.\d+)'
+
+# Optional. Where to fetch the new build. Defined for the (future) installer —
+# not downloaded yet. Arch-specific assets currently default to one arch.
+download:
+  url: https://github.com/example/app/releases/download/{tag}/App-{version}.dmg
+  # One of: dmg | zip | pkg
+  format: dmg
+
+# Optional. Release-notes link. For sparkle, the appcast's own release-notes link
+# is used automatically and this is only a fallback.
+changelog:
+  url: https://github.com/example/app/releases/tag/{tag}

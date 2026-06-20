@@ -1,0 +1,18 @@
+id: md.obsidian
+name: Obsidian
+homepage: https://obsidian.md
+
+check:
+  type: github_releases
+  repo: obsidianmd/obsidian-releases
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/obsidianmd/obsidian-releases/releases/download/{tag}/Obsidian-{version}.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/obsidianmd/obsidian-releases/releases/tag/{tag}

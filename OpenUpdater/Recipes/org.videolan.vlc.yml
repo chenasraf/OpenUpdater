@@ -1,0 +1,7 @@
+id: org.videolan.vlc
+name: VLC
+homepage: https://www.videolan.org/vlc/
+
+check:
+  type: sparkle
+  feed: https://update.videolan.org/vlc/sparkle/vlc-arm64.xml

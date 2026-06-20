@@ -1,0 +1,18 @@
+id: io.balena.etcher
+name: balenaEtcher
+homepage: https://etcher.balena.io
+
+check:
+  type: github_releases
+  repo: balena-io/etcher
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/balena-io/etcher/releases/download/{tag}/balenaEtcher-{version}-arm64.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/balena-io/etcher/releases/tag/{tag}

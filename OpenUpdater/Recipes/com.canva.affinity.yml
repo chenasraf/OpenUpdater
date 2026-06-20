@@ -1,0 +1,7 @@
+id: com.canva.affinity
+name: Affinity
+homepage: https://affinity.serif.com
+
+check:
+  type: sparkle
+  feed: https://things.seriflabs.com/affinity-update-mac-retail-studiopro

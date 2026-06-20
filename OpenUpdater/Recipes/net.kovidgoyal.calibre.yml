@@ -1,0 +1,18 @@
+id: net.kovidgoyal.calibre
+name: calibre
+homepage: https://calibre-ebook.com
+
+check:
+  type: github_releases
+  repo: kovidgoyal/calibre
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/kovidgoyal/calibre/releases/download/{tag}/calibre-{version}.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/kovidgoyal/calibre/releases/tag/{tag}

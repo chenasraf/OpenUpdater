@@ -38,6 +38,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             button.action = #selector(togglePopover)
             button.target = self
         }
+
+        // Kick off the initial check at launch so the popover, main window, and
+        // (later) the menubar badge all reflect available updates immediately.
+        Task { await updateManager.checkForUpdatesIfNeeded() }
     }
 
     @objc func togglePopover() {

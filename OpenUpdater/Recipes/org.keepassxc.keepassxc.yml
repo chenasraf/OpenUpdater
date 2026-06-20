@@ -1,0 +1,15 @@
+id: org.keepassxc.keepassxc
+name: KeePassXC
+homepage: https://keepassxc.org
+
+check:
+  type: github_releases
+  repo: keepassxreboot/keepassxc
+  prereleases: false
+
+download:
+  url: https://github.com/keepassxreboot/keepassxc/releases/download/{tag}/KeePassXC-{version}-arm64.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/keepassxreboot/keepassxc/releases/tag/{tag}

@@ -1,0 +1,7 @@
+id: io.tailscale.ipn.macsys
+name: Tailscale
+homepage: https://tailscale.com
+
+check:
+  type: sparkle
+  feed: https://pkgs.tailscale.com/stable/appcast.xml
