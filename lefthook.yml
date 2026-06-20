@@ -1,0 +1,7 @@
+pre-commit:
+  parallel: true
+  commands:
+    swift-format:
+      glob: "*.swift"
+      run: xcrun swift-format format --in-place {staged_files}
+      stage_fixed: true
