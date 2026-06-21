@@ -56,7 +56,12 @@ enum InstallError: Error, CustomStringConvertible {
 ///
 /// Not sandbox-safe — requires writing to the app's directory and running
 /// `hdiutil`/`ditto`, which is why the app ships without the App Sandbox.
-enum Installer {
+///
+/// `nonisolated` is REQUIRED: the project defaults to `@MainActor` isolation, so
+/// without this the heavy `hdiutil`/`ditto` copies (and the blocking subprocess
+/// waits) would hop back to the main thread inside `Task.detached` and freeze the
+/// UI on large apps.
+nonisolated enum Installer {
   /// Download the archive to a temporary file, reporting fractional progress
   /// (0…1) as bytes arrive. `hdiutil`/`ditto` detect format by content, so the
   /// downloaded file doesn't need a particular extension.
