@@ -151,51 +151,38 @@ final class UpdateManager: ObservableObject {
     return paths
   }
 
-  /// Walk each search path and read every bundle's `Info.plist`.
+  /// How many folder levels deep to look for apps. Level 1 is a top-level app
+  /// (`/Applications/Foo.app`); level 2 catches apps nested one folder down
+  /// (`/Applications/DDPM/DDPM.app`, `/Applications/Send to Kindle/….app`). Kept
+  /// shallow on purpose so we don't traverse huge nested trees (e.g. game archives).
+  private static let maxScanDepth = 2
+
+  /// Walk each search path — including a couple of folder levels down, so apps nested
+  /// in vendor folders are found too — and read every bundle's `Info.plist`.
   func scanInstalledApps() {
     let fileManager = FileManager.default
     var discovered: [String: AppInfo] = [:]
 
     for directory in searchPaths {
+      let baseDepth = directory.pathComponents.count
       guard
-        let entries = try? fileManager.contentsOfDirectory(
+        let enumerator = fileManager.enumerator(
           at: directory,
           includingPropertiesForKeys: nil,
-          options: [.skipsHiddenFiles]
+          // Find `.app` bundles but never descend into them (or other packages).
+          options: [.skipsHiddenFiles, .skipsPackageDescendants]
         )
       else { continue }
 
-      for url in entries where url.pathExtension == "app" {
-        guard let bundle = Bundle(url: url),
-          let info = bundle.infoDictionary
-        else { continue }
-
-        let fallbackName = url.deletingPathExtension().lastPathComponent
-        let id = info["CFBundleIdentifier"] as? String ?? fallbackName
-        let name =
-          info["CFBundleDisplayName"] as? String
-          ?? info["CFBundleName"] as? String
-          ?? fallbackName
-        let build = info["CFBundleVersion"] as? String
-        // Some apps (e.g. FreeCAD) leave CFBundleShortVersionString empty — fall
-        // back to the build/CFBundleVersion so we still have something to compare.
-        let shortVersion = (info["CFBundleShortVersionString"] as? String).flatMap {
-          $0.isEmpty ? nil : $0
-        }
-        let version = shortVersion ?? build ?? "—"
-        // Sparkle apps advertise their appcast here — auto-detected, no recipe needed.
-        let feedURL = (info["SUFeedURL"] as? String).flatMap(URL.init(string:))
-
-        // Keep the first bundle seen for a given identifier.
-        if discovered[id] == nil {
-          var appInfo = AppInfo(
-            id: id, name: name, url: url,
-            installedVersion: version, installedBuild: build, feedURL: feedURL
-          )
-          appInfo.builtInIgnoreReason = SystemIgnoreList.reason(bundleID: id, url: url)
-          appInfo.isAppStoreApp = fileManager.fileExists(
-            atPath: url.appendingPathComponent("Contents/_MASReceipt/receipt").path)
-          discovered[id] = appInfo
+      for case let url as URL in enumerator {
+        if url.pathExtension == "app" {
+          // Keep the first bundle seen for a given identifier.
+          if let app = appInfo(at: url, using: fileManager), discovered[app.id] == nil {
+            discovered[app.id] = app
+          }
+        } else if url.pathComponents.count - baseDepth >= Self.maxScanDepth {
+          // Don't descend past the scan depth into non-app folders.
+          enumerator.skipDescendants()
         }
       }
     }
@@ -204,6 +191,36 @@ final class UpdateManager: ObservableObject {
       $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
     }
     for index in apps.indices { applyIgnore(toAppAt: index) }
+  }
+
+  /// Build an `AppInfo` from an `.app` bundle, or `nil` if its `Info.plist` is unreadable.
+  private func appInfo(at url: URL, using fileManager: FileManager) -> AppInfo? {
+    guard let bundle = Bundle(url: url), let info = bundle.infoDictionary else { return nil }
+
+    let fallbackName = url.deletingPathExtension().lastPathComponent
+    let id = info["CFBundleIdentifier"] as? String ?? fallbackName
+    let name =
+      info["CFBundleDisplayName"] as? String
+      ?? info["CFBundleName"] as? String
+      ?? fallbackName
+    let build = info["CFBundleVersion"] as? String
+    // Some apps (e.g. FreeCAD) leave CFBundleShortVersionString empty — fall back to
+    // the build/CFBundleVersion so we still have something to compare.
+    let shortVersion = (info["CFBundleShortVersionString"] as? String).flatMap {
+      $0.isEmpty ? nil : $0
+    }
+    let version = shortVersion ?? build ?? "—"
+    // Sparkle apps advertise their appcast here — auto-detected, no recipe needed.
+    let feedURL = (info["SUFeedURL"] as? String).flatMap(URL.init(string:))
+
+    var appInfo = AppInfo(
+      id: id, name: name, url: url,
+      installedVersion: version, installedBuild: build, feedURL: feedURL
+    )
+    appInfo.builtInIgnoreReason = SystemIgnoreList.reason(bundleID: id, url: url)
+    appInfo.isAppStoreApp = fileManager.fileExists(
+      atPath: url.appendingPathComponent("Contents/_MASReceipt/receipt").path)
+    return appInfo
   }
 
   /// Mirror the stored ignore prefs onto the in-memory `AppInfo`.
