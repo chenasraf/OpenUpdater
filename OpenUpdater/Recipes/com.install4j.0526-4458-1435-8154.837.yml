@@ -1,0 +1,19 @@
+id: com.install4j.0526-4458-1435-8154.837
+name: Studio 3T
+homepage: https://studio3t.com
+
+arch:
+  arm64: aarch64
+  x86_64: x64
+
+check:
+  type: xml
+  url: https://update.studio3t.com/mac-{arch}/updates.xml
+  pattern: 'newVersion="([^"]+)"'
+
+download:
+  url: https://update.studio3t.com/mac-{arch}/Studio-3T.dmg
+  format: dmg
+
+changelog:
+  url: https://update.studio3t.com/changelog.txt
