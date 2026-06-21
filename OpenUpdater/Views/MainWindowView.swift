@@ -178,6 +178,17 @@ struct UpdateRow: View {
   }
 
   @ViewBuilder private var installControl: some View {
+    if updateManager.isRescanning(app.id) {
+      HStack(spacing: 6) {
+        ProgressView().controlSize(.small)
+        Text("Re-scanning…").font(.caption).foregroundStyle(.secondary)
+      }
+    } else {
+      installPhaseControl
+    }
+  }
+
+  @ViewBuilder private var installPhaseControl: some View {
     switch updateManager.installPhase(for: app.id) {
     case .idle:
       Button("Update") { updateManager.startInstall(app) }
@@ -247,7 +258,9 @@ struct InstalledView: View {
             .foregroundStyle(.secondary)
         }
         Spacer()
-        if app.updateAvailable {
+        if updateManager.isRescanning(app.id) {
+          ProgressView().controlSize(.small)
+        } else if app.updateAvailable {
           Text("\(app.installedVersion) → \(app.latestVersion ?? "?")")
             .foregroundStyle(.orange)
         } else if app.latestVersion != nil {
@@ -280,6 +293,11 @@ private struct AppContextMenu: ViewModifier {
 
   func body(content: Content) -> some View {
     content.contextMenu {
+      Button("Re-scan App") {
+        Task { await updateManager.rescan(app) }
+      }
+      .disabled(updateManager.isRescanning(app.id))
+      Divider()
       if updateManager.supportsPrereleases(app) {
         Toggle(
           "Check for pre-releases",

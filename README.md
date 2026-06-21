@@ -20,6 +20,7 @@ so OpenUpdater can keep up with apps that have no built-in updater of their own.
 ## Features
 
 - 🔍 **Automatic scanning** — reads your installed apps and checks each for a newer version.
+- 🔄 **Per-app re-scan** — re-check a single app on demand, so updates applied elsewhere are picked up right away.
 - ⬆️ **One-click updates** — download, verify, and replace an app in place. Update one, several, or all at once.
 - 🧩 **Works with many sources** — GitHub Releases, Sparkle appcasts (auto-detected), and direct HTTP/JSON/XML/YAML version feeds.
 - 🪶 **Lives in your menubar** — a quick popover for a glance, plus a full window for the details.
@@ -65,10 +66,12 @@ to confirm).
 
 Press the refresh button (top-right) any time to check again.
 
-### Ignoring apps
+### Right-click options
 
 Right-click any app for more options:
 
+- **Re-scan App** — re-check just this app. Handy if you updated it elsewhere and
+  want OpenUpdater to notice the new version right away.
 - **Ignore this app** — stop showing updates for it.
 - **Ignore this version** — skip a specific version but keep getting future ones.
 - **Check for pre-releases** — include beta builds for that app.

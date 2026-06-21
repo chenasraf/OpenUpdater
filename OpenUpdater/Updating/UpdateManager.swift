@@ -75,6 +75,10 @@ final class UpdateManager: ObservableObject {
   @Published private(set) var lastChecked: Date?
   /// A user-facing summary of the last check's failures, or `nil` if it was clean.
   @Published private(set) var lastError: String?
+  /// Bundle ids currently being re-scanned individually, for per-row feedback.
+  @Published private(set) var rescanningIDs: Set<String> = []
+
+  func isRescanning(_ id: String) -> Bool { rescanningIDs.contains(id) }
 
   /// Apps that currently have an update available (excluding ignored ones) —
   /// used to badge the menubar icon.
@@ -253,6 +257,20 @@ final class UpdateManager: ObservableObject {
       )
       return error
     }
+  }
+
+  // MARK: - Re-scan a single app
+
+  /// Re-scan one app: re-read its installed version from disk (to pick up an update
+  /// applied outside OpenUpdater) and re-check its source for the latest version.
+  /// Apps with no checkable source still get their installed version refreshed.
+  func rescan(_ app: AppInfo) async {
+    guard let index = apps.firstIndex(where: { $0.id == app.id }) else { return }
+    Self.log.notice("Re-scan \(app.id, privacy: .public)")
+    rescanningIDs.insert(app.id)
+    defer { rescanningIDs.remove(app.id) }
+    refreshInstalledVersion(id: app.id)
+    _ = await resolveLatest(forAppAt: index)
   }
 
   // MARK: - Pre-release preference
@@ -493,15 +511,20 @@ final class UpdateManager: ObservableObject {
     NSWorkspace.shared.openApplication(at: appURL, configuration: configuration)
   }
 
-  /// Re-read an app's `Info.plist` after install so it drops out of the updates list.
+  /// Re-read an app's `Info.plist` from disk so its installed version reflects what's
+  /// actually on disk — used after our own install, and on an individual re-scan to
+  /// pick up an update applied outside OpenUpdater.
   private func refreshInstalledVersion(id: String) {
     guard let index = apps.firstIndex(where: { $0.id == id }) else { return }
     let plist = apps[index].url.appendingPathComponent("Contents/Info.plist")
     guard let info = NSDictionary(contentsOf: plist) as? [String: Any] else { return }
-    if let version = info["CFBundleShortVersionString"] as? String {
-      apps[index].installedVersion = version
+    let build = info["CFBundleVersion"] as? String
+    // Mirror the scan's fallback: some apps leave the short version string empty.
+    let shortVersion = (info["CFBundleShortVersionString"] as? String).flatMap {
+      $0.isEmpty ? nil : $0
     }
-    apps[index].installedBuild = info["CFBundleVersion"] as? String
+    apps[index].installedVersion = shortVersion ?? build ?? apps[index].installedVersion
+    apps[index].installedBuild = build
   }
 }
 
