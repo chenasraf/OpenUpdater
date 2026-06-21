@@ -1,0 +1,11 @@
+id: com.hankinsoft.osx.mysql
+name: SQLPro for MySQL
+homepage: https://www.sqlprostudio.com
+
+check:
+  type: html
+  url: https://www.sqlprostudio.com/releasenotes/
+  pattern: '>(20\d\d\.\d+)<'
+
+changelog:
+  url: https://www.sqlprostudio.com/releasenotes/

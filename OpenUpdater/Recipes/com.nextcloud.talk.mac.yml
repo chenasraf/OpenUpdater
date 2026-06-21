@@ -1,0 +1,17 @@
+id: com.nextcloud.talk.mac
+name: Nextcloud Talk
+homepage: https://nextcloud.com/talk/
+
+check:
+  type: github_releases
+  repo: nextcloud-releases/talk-desktop
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/nextcloud-releases/talk-desktop/releases/download/{tag}/Nextcloud.Talk-macos-universal.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/nextcloud-releases/talk-desktop/releases/tag/{tag}
