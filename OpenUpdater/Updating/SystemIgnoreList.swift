@@ -16,7 +16,31 @@ nonisolated enum SystemIgnoreList {
   /// Extend this list as new always-ignore apps come up. (Apple's own apps are
   /// covered by `isAppleApp`, so they don't need entries here.)
   static let presetBundleIDs: [String: String] = [
-    "dev.casraf.OpenUpdater": "OpenUpdater itself"
+    "dev.casraf.OpenUpdater": "\(AppBranding.title) itself",
+    // Shortcuts / helpers / uninstallers — nothing to update.
+    "com.google.drivefs.shortcuts.docs": "Google Drive shortcut",
+    "com.google.drivefs.shortcuts.sheets": "Google Drive shortcut",
+    "com.google.drivefs.shortcuts.slides": "Google Drive shortcut",
+    "com.anthropic.claude-code-url-handler": "Helper app",
+    "com.amazon.SendToKindleUninstaller": "Uninstaller",
+    // No bundle id of its own — scanned under its app name.
+    "Proton Mail Uninstaller": "Uninstaller",
+    // Apps that ship their own updater — no public source to track, and updating
+    // them through OpenUpdater would fight their built-in mechanism.
+    "com.runningwithcrayons.Alfred": "Updates itself",
+    "com.amazon.Lassen": "Updates itself",
+    "com.google.android.studio": "Updates itself",
+    "com.anthropic.claudefordesktop": "Updates itself",
+    "com.epicgames.EpicGamesLauncher": "Updates itself",
+    "com.expressvpn.ExpressVPN": "Updates itself",
+    "com.gog.galaxy": "Updates itself",
+    "com.jagex.launcher": "Updates itself",
+    "com.logi.optionsplus": "Updates itself",
+    "com.corecode.MacUpdater": "Updates itself",
+    "com.valvesoftware.steam": "Updates itself",
+    "com.amazon.SendToKindle": "Updates itself",
+    // No public update source found.
+    "Qisda.DDPM": "No update source",
   ]
 
   static let appleAppReason = "Apple system app"
@@ -27,6 +51,8 @@ nonisolated enum SystemIgnoreList {
   static func reason(bundleID: String, url: URL) -> String? {
     if let preset = presetBundleIDs[bundleID] { return preset }
     if isAppleApp(bundleID: bundleID) { return appleAppReason }
+    // CrossOver wraps Windows apps in helper bundles — managed by CrossOver, not us.
+    if bundleID.hasPrefix("com.codeweavers.CrossOverHelper") { return "CrossOver app" }
     if isSteamGame(at: url) { return steamGameReason }
     return nil
   }

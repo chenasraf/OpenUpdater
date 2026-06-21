@@ -107,11 +107,11 @@ final class UpdateManager: ObservableObject {
       .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
   }
 
-  /// Apps we have no way to check — no bundled recipe and no Sparkle feed —
-  /// excluding ones OpenUpdater ignores by default (we don't want recipes for those).
-  /// These are the candidates for new community recipes.
+  /// Apps we have no way to check — no recipe, no Sparkle feed, and not an App Store
+  /// app — excluding ones OpenUpdater ignores by default (we don't want recipes for
+  /// those). These are the candidates for new community recipes.
   var unsupportedApps: [AppInfo] {
-    apps.filter { recipes[$0.id] == nil && $0.feedURL == nil && $0.builtInIgnoreReason == nil }
+    apps.filter { !isCheckable($0) && $0.builtInIgnoreReason == nil }
       .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
   }
 
@@ -217,9 +217,17 @@ final class UpdateManager: ObservableObject {
       id: id, name: name, url: url,
       installedVersion: version, installedBuild: build, feedURL: feedURL
     )
-    appInfo.builtInIgnoreReason = SystemIgnoreList.reason(bundleID: id, url: url)
-    appInfo.isAppStoreApp = fileManager.fileExists(
-      atPath: url.appendingPathComponent("Contents/_MASReceipt/receipt").path)
+    // A recipe (built-in or custom) takes precedence over a default ignore, so
+    // adding one re-enables an otherwise-ignored app.
+    appInfo.builtInIgnoreReason =
+      recipes[id] == nil ? SystemIgnoreList.reason(bundleID: id, url: url) : nil
+    // App Store install markers: `_MASReceipt` for Mac apps, or `iTunesMetadata.plist`
+    // in the wrapper of an iOS/iPad app running on Apple Silicon.
+    appInfo.isAppStoreApp =
+      fileManager.fileExists(
+        atPath: url.appendingPathComponent("Contents/_MASReceipt/receipt").path)
+      || fileManager.fileExists(
+        atPath: url.appendingPathComponent("Wrapper/iTunesMetadata.plist").path)
     return appInfo
   }
 
@@ -482,6 +490,10 @@ final class UpdateManager: ObservableObject {
   /// app is no longer checkable (e.g. a custom recipe was removed or disabled).
   private func recheck(bundleID: String) async {
     guard let index = apps.firstIndex(where: { $0.id == bundleID }) else { return }
+    // Adding/removing a recipe flips whether a default ignore applies.
+    apps[index].builtInIgnoreReason =
+      recipes[bundleID] == nil
+      ? SystemIgnoreList.reason(bundleID: bundleID, url: apps[index].url) : nil
     if isCheckable(apps[index]) {
       _ = await resolveLatest(forAppAt: index)
     } else {
