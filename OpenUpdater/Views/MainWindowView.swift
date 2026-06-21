@@ -307,10 +307,12 @@ private struct AppContextMenu: ViewModifier {
           ))
         Divider()
       }
-      Menu("Ignore…") {
-        Button("Ignore this app") { updateManager.ignoreApp(app) }
-        if app.updateAvailable {
-          Button("Ignore this version") { updateManager.ignoreCurrentVersion(app) }
+      if app.builtInIgnoreReason == nil {
+        Menu("Ignore…") {
+          Button("Ignore this app") { updateManager.ignoreApp(app) }
+          if app.updateAvailable {
+            Button("Ignore this version") { updateManager.ignoreCurrentVersion(app) }
+          }
         }
       }
     }

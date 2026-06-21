@@ -85,7 +85,13 @@ struct IgnoreListView: View {
               Text(ignoreDescription(app)).font(.caption).foregroundStyle(.secondary)
             }
             Spacer()
-            Button("Remove") { updateManager.clearIgnore(for: app) }
+            if app.builtInIgnoreReason != nil {
+              Image(systemName: "lock.fill")
+                .foregroundStyle(.secondary)
+                .help("Always ignored by \(AppBranding.title)")
+            } else {
+              Button("Remove") { updateManager.clearIgnore(for: app) }
+            }
           }
           .padding(.vertical, 2)
         }
@@ -94,8 +100,9 @@ struct IgnoreListView: View {
   }
 
   private func ignoreDescription(_ app: AppInfo) -> String {
-    if app.ignored { return "App ignored" }
-    if let version = app.ignoredVersion { return "Version \(version) ignored" }
+    if let reason = app.builtInIgnoreReason { return reason }
+    if app.ignored { return "Ignored by user" }
+    if let version = app.ignoredVersion { return "Version \(version) ignored by user" }
     return ""
   }
 }
@@ -114,7 +121,7 @@ struct UnsupportedAppsView: View {
         VStack(spacing: 8) {
           Image(systemName: "checkmark.seal.fill").font(.system(size: 40)).foregroundStyle(.green)
           Text("Every app has an update source").font(.title3)
-          Text("Nothing to report — OpenUpdater can check all your installed apps.")
+          Text("Nothing to report — \(AppBranding.title) can check all your installed apps.")
             .font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

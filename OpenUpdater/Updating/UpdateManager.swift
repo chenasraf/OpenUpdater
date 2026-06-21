@@ -43,10 +43,15 @@ struct AppInfo: Identifiable, Hashable {
   /// Ignore prefs mirrored from `AppPreferences` (loaded in scan, updated on change).
   var ignored = false
   var ignoredVersion: String?
+  /// Set when OpenUpdater ignores this app by default (preset list or a Steam game).
+  /// Not user-removable; carries the reason shown in the ignore list.
+  var builtInIgnoreReason: String?
 
-  /// True when the user has hidden this app's update — the whole app, or just the
-  /// currently-latest version (which reappears once a newer one ships).
+  /// True when this app's update is hidden — either OpenUpdater ignores it by
+  /// default, or the user hid the whole app or just the currently-latest version
+  /// (which reappears once a newer one ships).
   var isIgnored: Bool {
+    if builtInIgnoreReason != nil { return true }
     if ignored { return true }
     if let ignoredVersion { return ignoredVersion == latestVersion }
     return false
@@ -86,16 +91,18 @@ final class UpdateManager: ObservableObject {
     apps.filter { $0.updateAvailable && !$0.isIgnored }
   }
 
-  /// Apps the user has ignored (whole app or a specific version).
+  /// Apps that are ignored — by the user (whole app or a specific version) or by
+  /// OpenUpdater's own built-in ignore list (preset apps, Steam games).
   var ignoredApps: [AppInfo] {
-    apps.filter { $0.ignored || $0.ignoredVersion != nil }
+    apps.filter { $0.ignored || $0.ignoredVersion != nil || $0.builtInIgnoreReason != nil }
       .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
   }
 
-  /// Apps we have no way to check — no bundled recipe and no Sparkle feed. These are
-  /// the candidates for new community recipes.
+  /// Apps we have no way to check — no bundled recipe and no Sparkle feed —
+  /// excluding ones OpenUpdater ignores by default (we don't want recipes for those).
+  /// These are the candidates for new community recipes.
   var unsupportedApps: [AppInfo] {
-    apps.filter { recipes[$0.id] == nil && $0.feedURL == nil }
+    apps.filter { recipes[$0.id] == nil && $0.feedURL == nil && $0.builtInIgnoreReason == nil }
       .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
   }
 
@@ -160,10 +167,12 @@ final class UpdateManager: ObservableObject {
 
         // Keep the first bundle seen for a given identifier.
         if discovered[id] == nil {
-          discovered[id] = AppInfo(
+          var appInfo = AppInfo(
             id: id, name: name, url: url,
             installedVersion: version, installedBuild: build, feedURL: feedURL
           )
+          appInfo.builtInIgnoreReason = SystemIgnoreList.reason(bundleID: id, url: url)
+          discovered[id] = appInfo
         }
       }
     }
