@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/chenasraf/OpenUpdater/compare/v0.1.0...v0.2.0) (2026-06-21)
+
+
+### Features
+
+* open at startup + open main window on launch ([ad56850](https://github.com/chenasraf/OpenUpdater/commit/ad568507cb9a9f98a11f11d6a11211e8d1c63cf1))
+
 ## [0.1.0](https://github.com/chenasraf/OpenUpdater/compare/v0.1.0...v0.1.0) (2026-06-21)
 
 
