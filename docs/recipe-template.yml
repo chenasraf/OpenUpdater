@@ -13,8 +13,9 @@
 #
 # Placeholders (usable in download.url, changelog.url, check.url/feed/pattern/path):
 #   {tag}      the raw upstream tag/version, e.g. "v0.20.3-Beta"
-#   {version}  the normalized version after `version` rules, e.g. "0.20.3-Beta"
-#   {arch}     the running Mac's arch string (see the `arch:` map below)
+#   {version}      the normalized version after `version` rules, e.g. "0.20.3-Beta"
+#   {major_minor}  first two version components, e.g. "5.1.2" -> "5.1"
+#   {arch}         the running Mac's arch string (see the `arch:` map below)
 #
 # ----------------------------------------------------------------------------
 

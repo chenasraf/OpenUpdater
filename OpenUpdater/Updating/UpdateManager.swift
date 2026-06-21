@@ -330,16 +330,25 @@ final class UpdateManager: ObservableObject {
   var installableUpdates: [AppInfo] { updates.filter { $0.downloadURL != nil } }
 
   /// Install every available update, one at a time, waiting for each to finish.
-  /// `installUpdate` swallows its own errors (leaving a `.failed` phase on the
-  /// row), so a failure never stops the chain — it just stays visible in the list.
   func updateAll() async {
+    await installBatch(installableUpdates)
+  }
+
+  /// Install just the selected apps (by bundle id), one at a time.
+  func updateSelected(_ ids: Set<String>) async {
+    await installBatch(installableUpdates.filter { ids.contains($0.id) })
+  }
+
+  /// Run a sequential install over `targets`. `installUpdate` swallows its own
+  /// errors (leaving a `.failed` phase on the row), so a failure never stops the
+  /// chain — it just stays visible in the list.
+  private func installBatch(_ targets: [AppInfo]) async {
     guard !isUpdatingAll else { return }
     isUpdatingAll = true
     defer { isUpdatingAll = false }
 
-    let targets = installableUpdates  // snapshot; the list shrinks as installs succeed
-    Self.log.notice("Update all: \(targets.count, privacy: .public) app(s)")
-    for app in targets {
+    Self.log.notice("Batch update: \(targets.count, privacy: .public) app(s)")
+    for app in targets {  // snapshot; the list shrinks as installs succeed
       await installUpdate(app)
     }
   }

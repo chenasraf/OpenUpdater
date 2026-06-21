@@ -46,6 +46,7 @@ struct MainWindowView: View {
 
 struct UpdatesView: View {
   @EnvironmentObject private var updateManager: UpdateManager
+  @State private var selection: Set<AppInfo.ID> = []
 
   var body: some View {
     Group {
@@ -91,6 +92,16 @@ struct UpdatesView: View {
             .font(.caption)
             .foregroundStyle(.secondary)
         }
+        if !selection.isEmpty {
+          Button("Update Selected (\(selectedInstallableCount))") {
+            let ids = selection
+            Task {
+              await updateManager.updateSelected(ids)
+              selection = []
+            }
+          }
+          .disabled(updateManager.isUpdatingAll || selectedInstallableCount == 0)
+        }
         Button {
           Task { await updateManager.updateAll() }
         } label: {
@@ -110,10 +121,15 @@ struct UpdatesView: View {
 
       Divider()
 
-      List(updateManager.updates) { app in
+      List(updateManager.updates, selection: $selection) { app in
         UpdateRow(app: app)
       }
     }
+  }
+
+  /// How many of the selected apps actually have something to install.
+  private var selectedInstallableCount: Int {
+    updateManager.installableUpdates.filter { selection.contains($0.id) }.count
   }
 
   private var lastCheckedText: String? {
