@@ -1,0 +1,85 @@
+name: Add an app (update recipe)
+description: Request support for an app OpenUpdater doesn't update yet — no fork required
+title: "[Recipe]: "
+labels: ["recipe"]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Use this to get an app supported. Fill in what you know — a maintainer can
+        turn it into a recipe. If you'd rather open a pull request, add a
+        `<bundle-id>.yml` file under `OpenUpdater/Recipes/` (see
+        [docs/recipe-template.yml](https://github.com/chenasraf/OpenUpdater/blob/master/docs/recipe-template.yml)).
+  - type: input
+    id: name
+    attributes:
+      label: App name
+      placeholder: e.g. WezTerm
+    validations:
+      required: true
+  - type: input
+    id: bundle-id
+    attributes:
+      label: Bundle identifier
+      description: >
+        Find it by running, in Terminal: `osascript -e 'id of app "App Name"'`
+        — or check Preferences → Unsupported in OpenUpdater.
+      placeholder: e.g. com.github.wez.wezterm
+    validations:
+      required: true
+  - type: input
+    id: homepage
+    attributes:
+      label: Homepage / download page
+      placeholder: e.g. https://wezterm.org
+  - type: dropdown
+    id: source
+    attributes:
+      label: Where are updates published?
+      description: Best guess is fine — leave it on "Not sure" if you don't know.
+      options:
+        - Not sure
+        - GitHub Releases
+        - Sparkle appcast feed
+        - A web page (HTML)
+        - A JSON / XML / YAML API or feed
+        - Mac App Store
+      default: 0
+    validations:
+      required: true
+  - type: input
+    id: source-location
+    attributes:
+      label: Source location
+      description: >
+        The GitHub repo (owner/name), the appcast feed URL, or the page/API URL
+        where the latest version is published.
+      placeholder: e.g. wezterm/wezterm
+  - type: textarea
+    id: download
+    attributes:
+      label: macOS download link(s)
+      description: >
+        A direct link to the latest macOS build (.dmg / .zip / .pkg), if you have one.
+        Paste a couple so the version part of the URL is obvious.
+      placeholder: |
+        https://github.com/wezterm/wezterm/releases/download/20240203-110809-5046fc22/WezTerm-macos-20240203-110809-5046fc22.zip
+  - type: textarea
+    id: recipe
+    attributes:
+      label: Proposed recipe (optional)
+      description: If you've drafted the YAML yourself, paste it here.
+      render: yaml
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else?
+      description: Quirks worth knowing — pre-release-only builds, arch-specific assets, etc.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: This is a macOS app, and I checked Preferences → Unsupported (it isn't already covered).
+          required: true
+        - label: It isn't a Mac App Store app (those update through the App Store, not a recipe).

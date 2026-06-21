@@ -145,6 +145,8 @@ struct UnsupportedAppsView: View {
                 Text(app.id).font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
               }
               Spacer()
+              Button("Request…") { requestRecipe(app) }
+                .help("Open a pre-filled issue requesting a recipe for this app")
             }
             .padding(.vertical, 2)
           }
@@ -165,9 +167,9 @@ struct UnsupportedAppsView: View {
             Button {
               reportOnGitHub()
             } label: {
-              Label("Report on GitHub…", systemImage: "exclamationmark.bubble")
+              Label("Report All…", systemImage: "exclamationmark.bubble")
             }
-            .buttonStyle(.borderedProminent)
+            .help("Open one issue listing every unsupported app")
           }
           .padding(12)
           .background(.bar)
@@ -205,6 +207,21 @@ struct UnsupportedAppsView: View {
   private func reportOnGitHub() {
     guard let url = issueURL() else { return }
     NSWorkspace.shared.open(url)
+  }
+
+  /// Open the "Add an app" issue form, pre-filled with this app's name and bundle id,
+  /// so the user can request (or propose) a recipe without forking.
+  private func requestRecipe(_ app: AppInfo) {
+    var components = URLComponents(
+      url: AppBranding.repositoryURL.appendingPathComponent("issues/new"),
+      resolvingAgainstBaseURL: false)
+    components?.queryItems = [
+      URLQueryItem(name: "template", value: "add_recipe.yml"),
+      URLQueryItem(name: "title", value: "[Recipe]: \(app.name)"),
+      URLQueryItem(name: "name", value: app.name),
+      URLQueryItem(name: "bundle-id", value: app.id),
+    ]
+    if let url = components?.url { NSWorkspace.shared.open(url) }
   }
 
   /// A prefilled "new issue" URL listing the unsupported apps.

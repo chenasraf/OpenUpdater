@@ -105,9 +105,80 @@ When you update, OpenUpdater downloads the new build, verifies it's the right ap
 and validly signed, then swaps it into place — sending the old version to the
 Trash.
 
-## Contributing update recipes
+## Contributing
 
-Want OpenUpdater to support an app it doesn't recognize yet? Add a recipe. Each
-recipe is a short YAML file named after the app's bundle identifier. See
-[`docs/recipe-template.yml`](docs/recipe-template.yml) for a fully documented
-template covering every field and source type.
+OpenUpdater's coverage grows through community-maintained **update recipes** — that
+open registry of update sources is the whole point of the project. There are two ways
+to help, and the first needs no fork.
+
+### Request an app (no fork needed)
+
+Open an **[Add an app](https://github.com/chenasraf/OpenUpdater/issues/new?template=add_recipe.yml)**
+issue with the app's name, bundle identifier, and where its releases live. A maintainer
+can turn that into a recipe — and if you've drafted the YAML yourself, you can paste it
+right into the issue.
+
+> Tip: the in-app **Preferences → Unsupported** tab lists every installed app that has
+> no recipe yet. Each row has a **Request…** button that opens this issue form
+> pre-filled with the app's name and bundle id (or use **Report All…** to file one
+> issue covering the whole list).
+
+### Write a recipe (pull request)
+
+A recipe is a small YAML file telling OpenUpdater how to find an app's latest version
+(and, ideally, where to download it). One file per app.
+
+1. **Name the file after the bundle identifier:**
+   `OpenUpdater/Recipes/<bundle-id>.yml` — e.g. `com.github.wez.wezterm.yml`. Find an
+   app's bundle id with:
+   ```sh
+   osascript -e 'id of app "WezTerm"'
+   ```
+2. **Pick a source type** (`check.type`). Most apps fit one of:
+   - `github_releases` — the newest release of a GitHub repo (most common).
+   - `sparkle` — a Sparkle appcast feed. Only needed when an app sets its feed in
+     code; apps with a static `SUFeedURL` are detected automatically, no recipe.
+   - `html` / `xml` — pull a version out of a page with a regex.
+   - `json` / `yaml` — read a version from an API or feed by key path.
+3. **Add a `download` block** so updates install in one click — or omit it for a
+   "check-only" recipe that just detects new versions and links out.
+4. **Keep real recipes comment-free.** The documented template is the single source of
+   field docs: [`docs/recipe-template.yml`](docs/recipe-template.yml).
+
+A minimal GitHub example:
+
+```yaml
+id: com.github.wez.wezterm
+name: WezTerm
+homepage: https://wezterm.org
+
+check:
+  type: github_releases
+  repo: wezterm/wezterm
+  tag_pattern: '^\d'
+
+download:
+  url: https://github.com/wezterm/wezterm/releases/download/{tag}/WezTerm-macos-{tag}.zip
+  format: zip
+
+changelog:
+  url: https://github.com/wezterm/wezterm/releases/tag/{tag}
+```
+
+URL placeholders: `{tag}`, `{version}`, `{major}` / `{minor}` / `{patch}`, and
+`{arch}`. The template documents every field, the arch mapping, version normalization,
+and tag filtering (`tag_pattern` / `tag_ignore` for skipping rolling tags like
+`nightly`).
+
+**Testing:** drop the file in `OpenUpdater/Recipes/`, rebuild, and confirm the app
+shows in the Updates tab with the right version (recipes are bundled as resources, so a
+rebuild picks them up). A malformed recipe is skipped silently — if your app doesn't
+appear, double-check the YAML and that the filename matches the bundle id exactly.
+
+### Bugs and ideas
+
+Use the
+**[bug report](https://github.com/chenasraf/OpenUpdater/issues/new?template=bug_report.yml)**
+or
+**[feature request](https://github.com/chenasraf/OpenUpdater/issues/new?template=feature_request.yml)**
+templates.

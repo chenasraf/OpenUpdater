@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Recipe format reference
+    url: https://github.com/chenasraf/OpenUpdater/blob/master/docs/recipe-template.yml
+    about: Full documentation of every recipe field and source type.

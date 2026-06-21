@@ -1,0 +1,47 @@
+name: Bug report
+description: Something in OpenUpdater isn't working right
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to file a bug! Please fill in what you can.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: What did you expect to happen, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open OpenUpdater
+        2. Click Update on …
+        3. …
+  - type: input
+    id: app
+    attributes:
+      label: Affected app (if relevant)
+      description: App name and bundle identifier, e.g. WezTerm (com.github.wez.wezterm)
+  - type: input
+    id: app-version
+    attributes:
+      label: OpenUpdater version
+      placeholder: e.g. 1.0.0
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: e.g. 15.7
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: >
+        Screenshots help. For logs, open Console.app and filter by the subsystem
+        `dev.casraf.OpenUpdater`, or run
+        `log show --predicate 'subsystem == "dev.casraf.OpenUpdater"' --last 30m`.
+      render: shell
