@@ -26,14 +26,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // window is open — see syncActivationPolicy().
     NSApp.setActivationPolicy(.accessory)
 
-    // Create the popover
+    // Create the popover. It sizes to the SwiftUI content's preferred size, so the
+    // in-popover resize handle (which persists width/height) drives it.
     popover = NSPopover()
-    popover.contentSize = NSSize(width: 320, height: 420)
     popover.behavior = .transient  // closes when clicking away
-    popover.contentViewController = NSHostingController(
-      rootView: ContentView(openMainWindow: openMainWindow)
-        .environmentObject(updateManager)
-    )
+    popover.animates = false  // immediate, so live-resize doesn't jitter
+    let savedWidth = UserDefaults.standard.double(forKey: "popoverWidth")
+    let savedHeight = UserDefaults.standard.double(forKey: "popoverHeight")
+    popover.contentSize = NSSize(
+      width: savedWidth > 0 ? savedWidth : 460, height: savedHeight > 0 ? savedHeight : 560)
+    let hosting = NSHostingController(
+      rootView: ContentView(openMainWindow: openMainWindow).environmentObject(updateManager))
+    hosting.sizingOptions = [.preferredContentSize]
+    popover.contentViewController = hosting
 
     // Create the status bar item
     statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
