@@ -57,6 +57,15 @@ check:
   # Default: false.
   prereleases: false
 
+  # github_releases ONLY, OPTIONAL. Tag filters, applied before the newest release
+  # is chosen — use them to skip rolling tags like "continuous"/"nightly"/"latest"
+  # that some projects publish alongside real versioned releases.
+  #   tag_pattern: only consider releases whose tag matches this regex.
+  #   tag_ignore:  skip releases whose tag matches this regex.
+  # A tag must match tag_pattern (if set) AND not match tag_ignore (if set).
+  # tag_pattern: '^v\d'
+  # tag_ignore: '^(continuous|nightly|latest)$'
+
   # sparkle ONLY. Explicit appcast URL. Use this for apps that bundle Sparkle but
   # set their feed in code (no static SUFeedURL). For sparkle, OpenUpdater compares
   # build numbers (sparkle:version / CFBundleVersion), so `version` below is ignored.
@@ -89,7 +98,10 @@ version:
   # pattern: '(\d+\.\d+\.\d+)'
 
 # Optional. Where to fetch the new build, for the one-click installer. Use {arch}
-# for arch-specific assets (see the `arch:` map above).
+# for arch-specific assets (see the `arch:` map above). Omit this whole block for a
+# "check-only" recipe: OpenUpdater still detects and shows new versions (with the
+# changelog link) but leaves the Update button disabled — useful for apps that have
+# no predictable download or update through their own installer.
 download:
   # The download URL. OPTIONAL — omit it when the URL is pulled from the response
   # via check.download_pattern / download_path; then this block just sets `format`.

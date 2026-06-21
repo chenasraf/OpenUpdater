@@ -1,0 +1,13 @@
+id: com.protonmail.bridge
+name: Proton Mail Bridge
+homepage: https://proton.me/mail/bridge
+
+check:
+  type: github_releases
+  repo: ProtonMail/proton-bridge
+
+version:
+  strip_prefix: v
+
+changelog:
+  url: https://github.com/ProtonMail/proton-bridge/releases/tag/{tag}

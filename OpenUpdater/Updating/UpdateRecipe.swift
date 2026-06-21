@@ -35,6 +35,10 @@ struct UpdateRecipe: Decodable {
     let repo: String?  // github_releases
     let feed: String?  // sparkle (explicit appcast URL, for apps without a static SUFeedURL)
     let prereleases: Bool
+    // github_releases tag filtering — skip rolling tags ("continuous"/"nightly") or
+    // restrict to versioned ones. Applied before picking the newest release.
+    let tagPattern: String?  // only releases whose tag matches this regex are considered
+    let tagIgnore: String?  // releases whose tag matches this regex are skipped
 
     // Generic html/xml/json sources:
     let url: String?  // page/API to fetch
@@ -48,6 +52,8 @@ struct UpdateRecipe: Decodable {
       case repo
       case feed
       case prereleases
+      case tagPattern = "tag_pattern"
+      case tagIgnore = "tag_ignore"
       case url
       case pattern
       case path
@@ -61,11 +67,26 @@ struct UpdateRecipe: Decodable {
       repo = try container.decodeIfPresent(String.self, forKey: .repo)
       feed = try container.decodeIfPresent(String.self, forKey: .feed)
       prereleases = try container.decodeIfPresent(Bool.self, forKey: .prereleases) ?? false
+      tagPattern = try container.decodeIfPresent(String.self, forKey: .tagPattern)
+      tagIgnore = try container.decodeIfPresent(String.self, forKey: .tagIgnore)
       url = try container.decodeIfPresent(String.self, forKey: .url)
       pattern = try container.decodeIfPresent(String.self, forKey: .pattern)
       path = try container.decodeIfPresent(String.self, forKey: .path)
       downloadPattern = try container.decodeIfPresent(String.self, forKey: .downloadPattern)
       downloadPath = try container.decodeIfPresent(String.self, forKey: .downloadPath)
+    }
+
+    /// Whether a release tag passes this recipe's tag filters. A tag must match
+    /// `tag_pattern` (when set) and must not match `tag_ignore` (when set).
+    func tagAllowed(_ tag: String) -> Bool {
+      if let tagPattern, !Self.regexMatches(tag, tagPattern) { return false }
+      if let tagIgnore, Self.regexMatches(tag, tagIgnore) { return false }
+      return true
+    }
+
+    private static func regexMatches(_ string: String, _ pattern: String) -> Bool {
+      guard let regex = try? NSRegularExpression(pattern: pattern) else { return false }
+      return regex.firstMatch(in: string, range: NSRange(string.startIndex..., in: string)) != nil
     }
   }
 

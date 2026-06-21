@@ -1,0 +1,17 @@
+id: com.yourcompany.converseen
+name: Converseen
+homepage: https://converseen.fasterland.net
+
+check:
+  type: github_releases
+  repo: Faster3ck/Converseen
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/Faster3ck/Converseen/releases/download/{tag}/converseen-{version}-1_beta_macos-x86_64.zip
+  format: zip
+
+changelog:
+  url: https://github.com/Faster3ck/Converseen/releases/tag/{tag}

@@ -1,0 +1,15 @@
+id: com.github.wez.wezterm
+name: WezTerm
+homepage: https://wezterm.org
+
+check:
+  type: github_releases
+  repo: wezterm/wezterm
+  tag_pattern: '^\d'
+
+download:
+  url: https://github.com/wezterm/wezterm/releases/download/{tag}/WezTerm-macos-{tag}.zip
+  format: zip
+
+changelog:
+  url: https://github.com/wezterm/wezterm/releases/tag/{tag}

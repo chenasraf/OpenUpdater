@@ -102,10 +102,11 @@ enum GitHubReleaseSource {
     }
 
     let releases = try JSONDecoder().decode([Release].self, from: data)
-    // GitHub returns releases newest-first; take the first publishable one.
+    // GitHub returns releases newest-first; take the first publishable one that also
+    // passes the recipe's tag filters (so rolling tags like "continuous" are skipped).
     guard
       let chosen = releases.first(where: {
-        !$0.draft && (includePrereleases || !$0.prerelease)
+        !$0.draft && (includePrereleases || !$0.prerelease) && recipe.check.tagAllowed($0.tagName)
       })
     else {
       throw UpdateCheckError.noReleases

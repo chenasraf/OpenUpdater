@@ -1,0 +1,14 @@
+id: ch.protonmail.desktop
+name: Proton Mail
+homepage: https://proton.me/mail
+
+check:
+  type: github_releases
+  repo: ProtonMail/inbox-desktop
+
+download:
+  url: https://github.com/ProtonMail/inbox-desktop/releases/download/{tag}/Proton.Mail-{version}-universal.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/ProtonMail/inbox-desktop/releases/tag/{tag}

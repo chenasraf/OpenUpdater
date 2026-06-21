@@ -1,0 +1,18 @@
+id: org.sithlord48.blackchocobo
+name: Black Chocobo
+homepage: https://github.com/sithlord48/blackchocobo
+
+check:
+  type: github_releases
+  repo: sithlord48/blackchocobo
+  tag_pattern: '^v\d'
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/sithlord48/blackchocobo/releases/download/{tag}/Black_Chocobo-{tag}-macos.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/sithlord48/blackchocobo/releases/tag/{tag}
