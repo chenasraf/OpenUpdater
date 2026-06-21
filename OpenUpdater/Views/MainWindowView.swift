@@ -191,10 +191,16 @@ struct UpdateRow: View {
   @ViewBuilder private var installPhaseControl: some View {
     switch updateManager.installPhase(for: app.id) {
     case .idle:
-      Button("Update") { updateManager.startInstall(app) }
-        .buttonStyle(.borderedProminent)
-        .disabled(app.downloadURL == nil || updateManager.isUpdatingAll)
-        .help(app.downloadURL == nil ? "No download available for this app yet" : "")
+      if app.downloadURL == nil {
+        Button("Manual Update…") { updateManager.manualUpdate(app) }
+          .buttonStyle(.bordered)
+          .disabled(updateManager.isUpdatingAll)
+          .help("\(AppBranding.title) can't auto-install this update — choose how to update.")
+      } else {
+        Button("Update") { updateManager.startInstall(app) }
+          .buttonStyle(.borderedProminent)
+          .disabled(updateManager.isUpdatingAll)
+      }
     case .downloading(let fraction):
       HStack(spacing: 6) {
         ProgressView(value: fraction).controlSize(.small).frame(width: 50)

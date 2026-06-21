@@ -36,6 +36,9 @@ struct AppInfo: Identifiable, Hashable {
   var latestBuild: String?
   /// Link to the latest release's notes, populated alongside `latestVersion`.
   var changelogURL: URL?
+  /// The recipe's project/vendor homepage, used for the manual-update fallback
+  /// when there's a version check but no automatic download.
+  var homepageURL: URL?
   /// Where to download the update, and its archive format (`dmg`/`zip`/`pkg`).
   var downloadURL: URL?
   var downloadFormat: String?
@@ -257,6 +260,7 @@ final class UpdateManager: ObservableObject {
       apps[index].source = source
       apps[index].downloadURL = result.downloadURL
       apps[index].downloadFormat = result.format
+      if let homepage = recipe?.homepage { apps[index].homepageURL = URL(string: homepage) }
       if let changelogURL = result.changelogURL {
         apps[index].changelogURL = changelogURL
       } else if let recipe, let template = recipe.changelogTemplate {
@@ -377,6 +381,31 @@ final class UpdateManager: ObservableObject {
   /// (or the download is aborted), then resets the row to idle.
   func cancelInstall(_ app: AppInfo) {
     installTasks[app.id]?.cancel()
+  }
+
+  /// For apps with a version check but no automatic download: ask the user how to
+  /// proceed — open the project's homepage to download the new version themselves,
+  /// or launch the app so its own updater can take over.
+  func manualUpdate(_ app: AppInfo) {
+    let alert = NSAlert()
+    alert.messageText = "Update \(app.name) manually"
+    let latest = app.latestVersion.map { " (\($0))" } ?? ""
+    alert.informativeText =
+      "A newer version\(latest) is available, but \(AppBranding.title) can't install it "
+      + "automatically for this app. Open its homepage to download the update, or launch "
+      + "\(app.name) to use its built-in updater."
+    alert.addButton(withTitle: "Open Homepage")
+    alert.addButton(withTitle: "Launch App")
+    alert.addButton(withTitle: "Cancel")
+
+    switch alert.runModal() {
+    case .alertFirstButtonReturn:
+      if let url = app.homepageURL ?? app.changelogURL { NSWorkspace.shared.open(url) }
+    case .alertSecondButtonReturn:
+      NSWorkspace.shared.open(app.url)
+    default:
+      break
+    }
   }
 
   /// Apps that have an update AND something we can actually download/install.
