@@ -1,0 +1,8 @@
+id: org.mozilla.firefox
+name: Firefox
+homepage: https://www.mozilla.org/firefox/
+
+check:
+  type: json
+  url: https://product-details.mozilla.org/1.0/firefox_versions.json
+  path: LATEST_FIREFOX_VERSION
