@@ -10,4 +10,7 @@ check:
   type: html
   url: https://www.blender.org/download/
   pattern: 'Blender (\d+\.\d+\.\d+)'
-  download_pattern: '(https://[^"]+blender-[\d.]+-macos-{arch}\.dmg)'
+
+download:
+  url: https://download.blender.org/release/Blender{major}.{minor}/blender-{version}-macos-{arch}.dmg
+  format: dmg

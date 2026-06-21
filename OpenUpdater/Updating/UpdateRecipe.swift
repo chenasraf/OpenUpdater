@@ -127,11 +127,16 @@ struct UpdateRecipe: Decodable {
     template.replacingOccurrences(of: "{arch}", with: archString)
   }
 
-  /// Expand `{tag}`, `{version}`, and `{arch}` placeholders in a URL template.
+  /// Expand `{tag}`, `{version}`, `{major}`/`{minor}`/`{patch}`, and `{arch}`
+  /// placeholders. (For a major.minor folder, write `{major}.{minor}`.)
   func expand(_ template: String, tag: String, version: String) -> String {
-    resolveArch(template)
+    let parts = version.split(separator: ".").map(String.init)
+    return resolveArch(template)
       .replacingOccurrences(of: "{tag}", with: tag)
       .replacingOccurrences(of: "{version}", with: version)
+      .replacingOccurrences(of: "{major}", with: parts.first ?? "")
+      .replacingOccurrences(of: "{minor}", with: parts.count > 1 ? parts[1] : "")
+      .replacingOccurrences(of: "{patch}", with: parts.count > 2 ? parts[2] : "")
   }
 }
 

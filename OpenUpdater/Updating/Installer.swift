@@ -31,12 +31,14 @@ enum InstallError: Error, CustomStringConvertible {
   case toolFailed(String, String)
   case notWritable(URL)
   case installerFailed(String)
+  case notAnArchive
 
   var description: String {
     switch self {
     case .unsupportedFormat(let f): return "Can't install \(f) archives yet"
     case .downloadFailed(let code): return "Download failed (HTTP \(code))"
     case .noAppInArchive: return "No app found in the download"
+    case .notAnArchive: return "The download wasn't a valid archive (got a web page?)"
     case .bundleIDMismatch(let expected, let found):
       return "Downloaded app is \(found ?? "unknown"), expected \(expected)"
     case .toolFailed(let tool, _): return "\(tool) failed"
@@ -99,6 +101,10 @@ enum Installer {
   static func extractApp(from archive: URL, format: ArchiveFormat, expectedBundleID: String) throws
     -> URL
   {
+    // A misconfigured recipe can yield an HTML landing page instead of the binary;
+    // fail clearly here rather than as a cryptic "hdiutil/ditto failed".
+    if looksLikeHTML(archive) { throw InstallError.notAnArchive }
+
     let work = try makeTempDir()
     let app: URL
     switch format {
@@ -157,6 +163,17 @@ enum Installer {
     let dest = work.appendingPathComponent(sourceApp.lastPathComponent)
     try run("/usr/bin/ditto", [sourceApp.path, dest.path])
     return dest
+  }
+
+  /// True if the file's first bytes look like an HTML/XML document (a download
+  /// that resolved to a web page rather than the real archive).
+  private static func looksLikeHTML(_ file: URL) -> Bool {
+    guard let handle = try? FileHandle(forReadingFrom: file) else { return false }
+    defer { try? handle.close() }
+    let head = (try? handle.read(upToCount: 512)) ?? Data()
+    guard let text = String(data: head, encoding: .utf8) else { return false }
+    let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+    return trimmed.hasPrefix("<!doctype html") || trimmed.hasPrefix("<html")
   }
 
   /// Find the first `.app` bundle in `directory` (shallow, then one level deep).
