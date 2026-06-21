@@ -56,6 +56,8 @@ struct ReleaseResult {
   var downloadURL: URL?
   /// Archive format of `downloadURL` (`dmg`/`zip`/`pkg`), when known.
   var format: String?
+  /// For Mac App Store apps: the `macappstore://` URL to open the product page.
+  var appStoreURL: URL?
 }
 
 /// Resolves the latest version of an app from its GitHub Releases feed.

@@ -191,7 +191,12 @@ struct UpdateRow: View {
   @ViewBuilder private var installPhaseControl: some View {
     switch updateManager.installPhase(for: app.id) {
     case .idle:
-      if app.downloadURL == nil {
+      if app.source == .appStore {
+        Button("App Store") { updateManager.openInAppStore(app) }
+          .buttonStyle(.bordered)
+          .disabled(updateManager.isUpdatingAll)
+          .help("Update this app in the App Store")
+      } else if app.downloadURL == nil {
         Button("Manual Update…") { updateManager.manualUpdate(app) }
           .buttonStyle(.bordered)
           .disabled(updateManager.isUpdatingAll)

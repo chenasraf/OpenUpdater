@@ -15,6 +15,7 @@ enum UpdateSource {
   case githubRelease
   case sparkle
   case http
+  case appStore
   case unknown
 }
 
@@ -42,6 +43,11 @@ struct AppInfo: Identifiable, Hashable {
   /// Where to download the update, and its archive format (`dmg`/`zip`/`pkg`).
   var downloadURL: URL?
   var downloadFormat: String?
+  /// True for Mac App Store installs (a `_MASReceipt` is present). Such apps update
+  /// through the App Store rather than a direct download.
+  var isAppStoreApp = false
+  /// For App Store apps: the `macappstore://` URL to open the product page.
+  var appStoreURL: URL?
   var source: UpdateSource = .unknown
   /// Ignore prefs mirrored from `AppPreferences` (loaded in scan, updated on change).
   var ignored = false
@@ -175,6 +181,8 @@ final class UpdateManager: ObservableObject {
             installedVersion: version, installedBuild: build, feedURL: feedURL
           )
           appInfo.builtInIgnoreReason = SystemIgnoreList.reason(bundleID: id, url: url)
+          appInfo.isAppStoreApp = fileManager.fileExists(
+            atPath: url.appendingPathComponent("Contents/_MASReceipt/receipt").path)
           discovered[id] = appInfo
         }
       }
@@ -205,13 +213,13 @@ final class UpdateManager: ObservableObject {
     defer { isChecking = false }
 
     var checkable = 0
-    for app in apps where recipes[app.id] != nil || app.feedURL != nil { checkable += 1 }
+    for app in apps where isCheckable(app) { checkable += 1 }
     Self.log.notice("Checking \(checkable, privacy: .public) checkable app(s)")
 
     var failures = 0
     var rateLimited = false
     for index in apps.indices {
-      guard recipes[apps[index].id] != nil || apps[index].feedURL != nil else { continue }
+      guard isCheckable(apps[index]) else { continue }
       if let error = await resolveLatest(forAppAt: index) {
         failures += 1
         if case UpdateCheckError.rateLimited = error { rateLimited = true }
@@ -225,16 +233,24 @@ final class UpdateManager: ObservableObject {
     )
   }
 
+  /// Whether we have any way to check this app: a bundled recipe, a Sparkle feed,
+  /// or an App Store receipt.
+  private func isCheckable(_ app: AppInfo) -> Bool {
+    recipes[app.id] != nil || app.feedURL != nil || app.isAppStoreApp
+  }
+
   /// Resolve the latest version for the app at `index` and update its fields.
   /// Returns the error when the lookup failed; `nil` on success or "no update".
   private func resolveLatest(forAppAt index: Int) async -> Error? {
     let app = apps[index]
     let recipe = recipes[app.id]
-    guard recipe != nil || app.feedURL != nil else { return nil }
+    guard isCheckable(app) else { return nil }
 
     do {
       let result: ReleaseResult
       let source: UpdateSource
+      // Precedence: an explicit recipe overrides a Sparkle feed, which overrides
+      // App Store auto-detection.
       if let recipe {
         switch recipe.check.kind {
         case .githubReleases:
@@ -250,9 +266,12 @@ final class UpdateManager: ObservableObject {
           result = try await HTTPVersionSource.latest(for: recipe)
           source = .http
         }
-      } else {
-        result = try await SparkleSource.latest(feedURL: app.feedURL!)
+      } else if let feedURL = app.feedURL {
+        result = try await SparkleSource.latest(feedURL: feedURL)
         source = .sparkle
+      } else {
+        result = try await AppStoreSource.latest(bundleID: app.id)
+        source = .appStore
       }
 
       apps[index].latestVersion = result.version
@@ -260,6 +279,7 @@ final class UpdateManager: ObservableObject {
       apps[index].source = source
       apps[index].downloadURL = result.downloadURL
       apps[index].downloadFormat = result.format
+      apps[index].appStoreURL = result.appStoreURL
       if let homepage = recipe?.homepage { apps[index].homepageURL = URL(string: homepage) }
       if let changelogURL = result.changelogURL {
         apps[index].changelogURL = changelogURL
@@ -406,6 +426,13 @@ final class UpdateManager: ObservableObject {
     default:
       break
     }
+  }
+
+  /// Open a Mac App Store app's product page in the App Store so the user can update
+  /// it there (App Store apps can't be installed directly).
+  func openInAppStore(_ app: AppInfo) {
+    guard let url = app.appStoreURL ?? app.changelogURL else { return }
+    NSWorkspace.shared.open(url)
   }
 
   /// Apps that have an update AND something we can actually download/install.
