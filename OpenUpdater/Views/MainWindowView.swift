@@ -250,18 +250,23 @@ private struct AppContextMenu: ViewModifier {
   let app: AppInfo
   @EnvironmentObject private var updateManager: UpdateManager
 
-  @ViewBuilder func body(content: Content) -> some View {
-    if updateManager.supportsPrereleases(app) {
-      content.contextMenu {
+  func body(content: Content) -> some View {
+    content.contextMenu {
+      if updateManager.supportsPrereleases(app) {
         Toggle(
           "Check for pre-releases",
           isOn: Binding(
             get: { updateManager.includePrereleases(for: app) },
             set: { value in Task { await updateManager.setPrereleases(value, for: app) } }
           ))
+        Divider()
       }
-    } else {
-      content
+      Menu("Ignore…") {
+        Button("Ignore this app") { updateManager.ignoreApp(app) }
+        if app.updateAvailable {
+          Button("Ignore this version") { updateManager.ignoreCurrentVersion(app) }
+        }
+      }
     }
   }
 }

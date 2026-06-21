@@ -40,6 +40,17 @@ struct AppInfo: Identifiable, Hashable {
   var downloadURL: URL?
   var downloadFormat: String?
   var source: UpdateSource = .unknown
+  /// Ignore prefs mirrored from `AppPreferences` (loaded in scan, updated on change).
+  var ignored = false
+  var ignoredVersion: String?
+
+  /// True when the user has hidden this app's update — the whole app, or just the
+  /// currently-latest version (which reappears once a newer one ships).
+  var isIgnored: Bool {
+    if ignored { return true }
+    if let ignoredVersion { return ignoredVersion == latestVersion }
+    return false
+  }
 
   var updateAvailable: Bool {
     // Sparkle apps are versioned by build number (CFBundleVersion), matching
@@ -65,9 +76,16 @@ final class UpdateManager: ObservableObject {
   /// A user-facing summary of the last check's failures, or `nil` if it was clean.
   @Published private(set) var lastError: String?
 
-  /// Apps that currently have an update available — used to badge the menubar icon.
+  /// Apps that currently have an update available (excluding ignored ones) —
+  /// used to badge the menubar icon.
   var updates: [AppInfo] {
-    apps.filter(\.updateAvailable)
+    apps.filter { $0.updateAvailable && !$0.isIgnored }
+  }
+
+  /// Apps the user has ignored (whole app or a specific version).
+  var ignoredApps: [AppInfo] {
+    apps.filter { $0.ignored || $0.ignoredVersion != nil }
+      .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
   }
 
   /// Update recipes bundled with the app, keyed by bundle identifier.
@@ -142,6 +160,14 @@ final class UpdateManager: ObservableObject {
     apps = discovered.values.sorted {
       $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
     }
+    for index in apps.indices { applyIgnore(toAppAt: index) }
+  }
+
+  /// Mirror the stored ignore prefs onto the in-memory `AppInfo`.
+  private func applyIgnore(toAppAt index: Int) {
+    let prefs = AppPreferences.load(for: apps[index].id)
+    apps[index].ignored = prefs.ignored ?? false
+    apps[index].ignoredVersion = prefs.ignoredVersion
   }
 
   /// Look up the latest version for every installed app we can check — those
@@ -248,6 +274,32 @@ final class UpdateManager: ObservableObject {
     AppPreferences.update(app.id) { $0.includePrereleases = value }
     guard let index = apps.firstIndex(where: { $0.id == app.id }) else { return }
     _ = await resolveLatest(forAppAt: index)
+  }
+
+  // MARK: - Ignore rules
+
+  /// Never show this app as updatable.
+  func ignoreApp(_ app: AppInfo) {
+    changeIgnore(app.id) { $0.ignored = true }
+  }
+
+  /// Skip the currently-latest version (reappears when a newer one ships).
+  func ignoreCurrentVersion(_ app: AppInfo) {
+    guard let version = app.latestVersion else { return }
+    changeIgnore(app.id) { $0.ignoredVersion = version }
+  }
+
+  /// Stop ignoring this app entirely (clears both app- and version-level ignores).
+  func clearIgnore(for app: AppInfo) {
+    changeIgnore(app.id) {
+      $0.ignored = nil
+      $0.ignoredVersion = nil
+    }
+  }
+
+  private func changeIgnore(_ id: String, _ change: (inout AppPreferences) -> Void) {
+    AppPreferences.update(id, change)
+    if let index = apps.firstIndex(where: { $0.id == id }) { applyIgnore(toAppAt: index) }
   }
 
   private static func errorSummary(failures: Int, rateLimited: Bool) -> String? {

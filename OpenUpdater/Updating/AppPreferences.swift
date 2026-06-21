@@ -13,6 +13,10 @@ import Foundation
 struct AppPreferences: Codable {
   /// Include pre-releases for this app. `nil` → use the recipe's `prereleases` default.
   var includePrereleases: Bool?
+  /// Never show this app as updatable.
+  var ignored: Bool?
+  /// Don't offer this specific version (reappears when a newer one ships).
+  var ignoredVersion: String?
 
   // MARK: Persistence
 

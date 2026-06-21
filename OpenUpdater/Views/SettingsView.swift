@@ -10,10 +10,22 @@ import SwiftUI
 
 struct SettingsView: View {
   enum Tab: String, CaseIterable, Identifiable {
-    case general, updating
+    case general, updating, ignoreList
     var id: String { rawValue }
-    var title: String { self == .general ? "General" : "Updating" }
-    var icon: String { self == .general ? "gearshape" : "arrow.triangle.2.circlepath" }
+    var title: String {
+      switch self {
+      case .general: return "General"
+      case .updating: return "Updating"
+      case .ignoreList: return "Ignore List"
+      }
+    }
+    var icon: String {
+      switch self {
+      case .general: return "gearshape"
+      case .updating: return "arrow.triangle.2.circlepath"
+      case .ignoreList: return "nosign"
+      }
+    }
   }
 
   @State private var selection: Tab = .general
@@ -28,6 +40,7 @@ struct SettingsView: View {
       switch selection {
       case .general: GeneralSettingsView()
       case .updating: UpdatingSettingsView()
+      case .ignoreList: IgnoreListView()
       }
     }
     .navigationTitle("Preferences")
@@ -42,6 +55,43 @@ struct GeneralSettingsView: View {
         .foregroundStyle(.secondary)
     }
     .formStyle(.grouped)
+  }
+}
+
+struct IgnoreListView: View {
+  @EnvironmentObject private var updateManager: UpdateManager
+
+  var body: some View {
+    Group {
+      if updateManager.ignoredApps.isEmpty {
+        VStack(spacing: 8) {
+          Image(systemName: "nosign").font(.system(size: 40)).foregroundStyle(.secondary)
+          Text("No ignored apps").font(.title3)
+          Text("Right-click an app and choose Ignore to add it here.")
+            .font(.caption).foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+      } else {
+        List(updateManager.ignoredApps) { app in
+          HStack(spacing: 10) {
+            AppIcon(app: app, size: 28)
+            VStack(alignment: .leading, spacing: 2) {
+              Text(app.name)
+              Text(ignoreDescription(app)).font(.caption).foregroundStyle(.secondary)
+            }
+            Spacer()
+            Button("Remove") { updateManager.clearIgnore(for: app) }
+          }
+          .padding(.vertical, 2)
+        }
+      }
+    }
+  }
+
+  private func ignoreDescription(_ app: AppInfo) -> String {
+    if app.ignored { return "App ignored" }
+    if let version = app.ignoredVersion { return "Version \(version) ignored" }
+    return ""
   }
 }
 
