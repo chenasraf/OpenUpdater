@@ -158,6 +158,7 @@ struct UpdateRow: View {
     .padding(.vertical, 4)
     // Run the separator edge-to-edge, including under the app icon.
     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+    .appContextMenu(app)
   }
 
   @ViewBuilder private var installControl: some View {
@@ -236,11 +237,37 @@ struct InstalledView: View {
       }
       // Run the separator edge-to-edge, including under the app icon.
       .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+      .appContextMenu(app)
     }
     .toolbar {
       ToolbarItem(placement: .primaryAction) { CheckForUpdatesButton() }
     }
   }
+}
+
+/// Right-click menu for an app row. Currently the pre-release toggle (GitHub only).
+private struct AppContextMenu: ViewModifier {
+  let app: AppInfo
+  @EnvironmentObject private var updateManager: UpdateManager
+
+  @ViewBuilder func body(content: Content) -> some View {
+    if updateManager.supportsPrereleases(app) {
+      content.contextMenu {
+        Toggle(
+          "Check for pre-releases",
+          isOn: Binding(
+            get: { updateManager.includePrereleases(for: app) },
+            set: { value in Task { await updateManager.setPrereleases(value, for: app) } }
+          ))
+      }
+    } else {
+      content
+    }
+  }
+}
+
+extension View {
+  func appContextMenu(_ app: AppInfo) -> some View { modifier(AppContextMenu(app: app)) }
 }
 
 /// Toolbar button that triggers a check and shows a spinner while running.

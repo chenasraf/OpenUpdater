@@ -71,7 +71,9 @@ enum GitHubReleaseSource {
     }
   }
 
-  static func latest(for recipe: UpdateRecipe) async throws -> ReleaseResult {
+  static func latest(for recipe: UpdateRecipe, includePrereleases: Bool) async throws
+    -> ReleaseResult
+  {
     guard recipe.check.kind == .githubReleases else { throw UpdateCheckError.unsupported }
     guard let repo = recipe.check.repo,
       let url = URL(string: "https://api.github.com/repos/\(repo)/releases?per_page=30")
@@ -103,7 +105,7 @@ enum GitHubReleaseSource {
     // GitHub returns releases newest-first; take the first publishable one.
     guard
       let chosen = releases.first(where: {
-        !$0.draft && (recipe.check.prereleases || !$0.prerelease)
+        !$0.draft && (includePrereleases || !$0.prerelease)
       })
     else {
       throw UpdateCheckError.noReleases

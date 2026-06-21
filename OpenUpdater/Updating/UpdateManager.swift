@@ -162,58 +162,10 @@ final class UpdateManager: ObservableObject {
     var failures = 0
     var rateLimited = false
     for index in apps.indices {
-      let app = apps[index]
-      let recipe = recipes[app.id]
-      guard recipe != nil || app.feedURL != nil else { continue }
-
-      do {
-        let result: ReleaseResult
-        let source: UpdateSource
-        if let recipe {
-          switch recipe.check.kind {
-          case .githubReleases:
-            result = try await GitHubReleaseSource.latest(for: recipe)
-            source = .githubRelease
-          case .sparkle:
-            guard let feed = recipe.check.feed,
-              let feedURL = URL(string: recipe.resolveArch(feed))
-            else {
-              throw UpdateCheckError.missingFeed
-            }
-            result = try await SparkleSource.latest(feedURL: feedURL)
-            source = .sparkle
-          case .html, .xml, .json, .yaml:
-            result = try await HTTPVersionSource.latest(for: recipe)
-            source = .http
-          }
-        } else {
-          // No recipe, but the app advertises its own Sparkle feed.
-          result = try await SparkleSource.latest(feedURL: app.feedURL!)
-          source = .sparkle
-        }
-
-        apps[index].latestVersion = result.version
-        apps[index].latestBuild = result.build
-        apps[index].source = source
-        apps[index].downloadURL = result.downloadURL
-        apps[index].downloadFormat = result.format
-        if let changelogURL = result.changelogURL {
-          apps[index].changelogURL = changelogURL
-        } else if let recipe, let template = recipe.changelogTemplate {
-          apps[index].changelogURL = URL(
-            string: recipe.expand(
-              template, tag: result.tag, version: result.version
-            ))
-        }
-      } catch UpdateCheckError.noReleases {
-        // No publishable build for this app — that's "no update", not a failure.
-        continue
-      } catch {
+      guard recipes[apps[index].id] != nil || apps[index].feedURL != nil else { continue }
+      if let error = await resolveLatest(forAppAt: index) {
         failures += 1
         if case UpdateCheckError.rateLimited = error { rateLimited = true }
-        Self.log.error(
-          "Check failed for \(app.id, privacy: .public): \(String(describing: error), privacy: .public)"
-        )
       }
     }
 
@@ -222,6 +174,80 @@ final class UpdateManager: ObservableObject {
     Self.log.notice(
       "Check done: \(self.updates.count, privacy: .public) update(s), \(failures, privacy: .public) failure(s)"
     )
+  }
+
+  /// Resolve the latest version for the app at `index` and update its fields.
+  /// Returns the error when the lookup failed; `nil` on success or "no update".
+  private func resolveLatest(forAppAt index: Int) async -> Error? {
+    let app = apps[index]
+    let recipe = recipes[app.id]
+    guard recipe != nil || app.feedURL != nil else { return nil }
+
+    do {
+      let result: ReleaseResult
+      let source: UpdateSource
+      if let recipe {
+        switch recipe.check.kind {
+        case .githubReleases:
+          result = try await GitHubReleaseSource.latest(
+            for: recipe, includePrereleases: includePrereleases(for: app))
+          source = .githubRelease
+        case .sparkle:
+          guard let feed = recipe.check.feed, let feedURL = URL(string: recipe.resolveArch(feed))
+          else { throw UpdateCheckError.missingFeed }
+          result = try await SparkleSource.latest(feedURL: feedURL)
+          source = .sparkle
+        case .html, .xml, .json, .yaml:
+          result = try await HTTPVersionSource.latest(for: recipe)
+          source = .http
+        }
+      } else {
+        result = try await SparkleSource.latest(feedURL: app.feedURL!)
+        source = .sparkle
+      }
+
+      apps[index].latestVersion = result.version
+      apps[index].latestBuild = result.build
+      apps[index].source = source
+      apps[index].downloadURL = result.downloadURL
+      apps[index].downloadFormat = result.format
+      if let changelogURL = result.changelogURL {
+        apps[index].changelogURL = changelogURL
+      } else if let recipe, let template = recipe.changelogTemplate {
+        apps[index].changelogURL = URL(
+          string: recipe.expand(template, tag: result.tag, version: result.version))
+      }
+      return nil
+    } catch UpdateCheckError.noReleases {
+      // No publishable build for this app — that's "no update", not a failure.
+      return nil
+    } catch {
+      Self.log.error(
+        "Check failed for \(app.id, privacy: .public): \(String(describing: error), privacy: .public)"
+      )
+      return error
+    }
+  }
+
+  // MARK: - Pre-release preference
+
+  /// Whether pre-releases are included for this app: the user's override if set,
+  /// otherwise the recipe's `prereleases` default.
+  func includePrereleases(for app: AppInfo) -> Bool {
+    AppPreferences.load(for: app.id).includePrereleases
+      ?? (recipes[app.id]?.check.prereleases ?? false)
+  }
+
+  /// Whether the "Check for pre-releases" toggle applies (only GitHub today).
+  func supportsPrereleases(_ app: AppInfo) -> Bool {
+    recipes[app.id]?.check.kind == .githubReleases
+  }
+
+  /// Set the per-app pre-release preference and immediately re-check that app.
+  func setPrereleases(_ value: Bool, for app: AppInfo) async {
+    AppPreferences.update(app.id) { $0.includePrereleases = value }
+    guard let index = apps.firstIndex(where: { $0.id == app.id }) else { return }
+    _ = await resolveLatest(forAppAt: index)
   }
 
   private static func errorSummary(failures: Int, rateLimited: Bool) -> String? {
