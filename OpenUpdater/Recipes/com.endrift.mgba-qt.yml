@@ -1,0 +1,12 @@
+id: com.endrift.mgba-qt
+name: mGBA
+homepage: https://mgba.io
+
+check:
+  type: github_releases
+  repo: mgba-emu/mgba
+  prereleases: false
+
+download:
+  url: https://github.com/mgba-emu/mgba/releases/download/{tag}/mGBA-{version}-macos.dmg
+  format: dmg

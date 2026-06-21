@@ -23,17 +23,33 @@ struct UpdateRecipe: Decodable {
     enum Kind: String, Decodable {
       case githubReleases = "github_releases"
       case sparkle
+      case html  // fetch a page, extract version via regex
+      case xml  // fetch XML, extract version via regex
+      case json  // fetch JSON, extract version via a key path
+      case yaml  // fetch YAML (e.g. electron latest-mac.yml), extract via a key path
     }
     let kind: Kind
     let repo: String?  // github_releases
     let feed: String?  // sparkle (explicit appcast URL, for apps without a static SUFeedURL)
     let prereleases: Bool
 
+    // Generic html/xml/json sources:
+    let url: String?  // page/API to fetch
+    let pattern: String?  // html/xml: regex, capture group 1 = version
+    let path: String?  // json: dotted key path (supports array indices)
+    let downloadPattern: String?  // html/xml: regex, capture group 1 = download URL
+    let downloadPath: String?  // json: key path to a download URL
+
     enum CodingKeys: String, CodingKey {
       case kind = "type"
       case repo
       case feed
       case prereleases
+      case url
+      case pattern
+      case path
+      case downloadPattern = "download_pattern"
+      case downloadPath = "download_path"
     }
 
     init(from decoder: Decoder) throws {
@@ -42,6 +58,11 @@ struct UpdateRecipe: Decodable {
       repo = try container.decodeIfPresent(String.self, forKey: .repo)
       feed = try container.decodeIfPresent(String.self, forKey: .feed)
       prereleases = try container.decodeIfPresent(Bool.self, forKey: .prereleases) ?? false
+      url = try container.decodeIfPresent(String.self, forKey: .url)
+      pattern = try container.decodeIfPresent(String.self, forKey: .pattern)
+      path = try container.decodeIfPresent(String.self, forKey: .path)
+      downloadPattern = try container.decodeIfPresent(String.self, forKey: .downloadPattern)
+      downloadPath = try container.decodeIfPresent(String.self, forKey: .downloadPath)
     }
   }
 

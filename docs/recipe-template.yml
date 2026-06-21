@@ -32,6 +32,10 @@ check:
   # REQUIRED. One of:
   #   github_releases  — read a GitHub repo's Releases
   #   sparkle          — read a Sparkle appcast feed
+  #   html             — fetch a page, extract the version with a regex
+  #   xml              — fetch XML, extract the version with a regex
+  #   json             — fetch JSON, extract the version with a key path
+  #   yaml             — fetch YAML (e.g. electron's latest-mac.yml) via a key path
   type: github_releases
 
   # github_releases ONLY. "owner/name" of the repo.
@@ -45,6 +49,24 @@ check:
   # set their feed in code (no static SUFeedURL). For sparkle, OpenUpdater compares
   # build numbers (sparkle:version / CFBundleVersion), so `version` below is ignored.
   # feed: https://example.com/appcast.xml
+
+  # html / xml / json ONLY. The page or API to fetch.
+  # url: https://example.com/latest
+
+  # html / xml ONLY. Regex whose first capture group is the version. (`version`
+  # rules below still apply afterward.)
+  # pattern: 'Version (\d+\.\d+\.\d+)'
+
+  # json / yaml ONLY. Dotted key path to the version (array indices allowed, e.g.
+  # "assets.0.name"). For electron latest-mac.yml this is just "version".
+  # path: version
+
+  # html / xml / json / yaml ONLY, OPTIONAL. Pull the download URL straight from
+  # the same response instead of (or in addition to) the `download.url` template
+  # below. Enables plain HTTP(S) downloads where the link isn't predictable. An
+  # extracted value may be a relative path — it's resolved against `url`.
+  #   html / xml:   download_pattern: 'href="([^"]+\.dmg)"'
+  #   json / yaml:  download_path: path
 
 # Optional (github_releases). How to turn a raw tag into a comparable version.
 version:

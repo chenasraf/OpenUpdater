@@ -1,0 +1,15 @@
+id: org.godotengine.godot
+name: Godot
+homepage: https://godotengine.org
+
+check:
+  type: github_releases
+  repo: godotengine/godot
+  prereleases: false
+
+version:
+  pattern: '(\d+\.\d+(?:\.\d+)?)'
+
+download:
+  url: https://github.com/godotengine/godot/releases/download/{tag}/Godot_v{tag}_macos.universal.zip
+  format: zip

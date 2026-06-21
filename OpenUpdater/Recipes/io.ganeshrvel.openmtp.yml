@@ -1,0 +1,15 @@
+id: io.ganeshrvel.openmtp
+name: OpenMTP
+homepage: https://github.com/ganeshrvel/openmtp
+
+check:
+  type: github_releases
+  repo: ganeshrvel/openmtp
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/ganeshrvel/openmtp/releases/download/{tag}/openmtp-{version}-mac-arm64.dmg
+  format: dmg

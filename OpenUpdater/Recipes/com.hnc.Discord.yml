@@ -1,0 +1,9 @@
+id: com.hnc.Discord
+name: Discord
+homepage: https://discord.com
+
+check:
+  type: json
+  url: https://discord.com/api/updates/stable?platform=osx
+  path: name
+  download_path: url

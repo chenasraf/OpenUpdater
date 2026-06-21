@@ -1,0 +1,15 @@
+id: com.utmapp.UTM
+name: UTM
+homepage: https://mac.getutm.app
+
+check:
+  type: github_releases
+  repo: utmapp/UTM
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/utmapp/UTM/releases/download/{tag}/UTM.dmg
+  format: dmg

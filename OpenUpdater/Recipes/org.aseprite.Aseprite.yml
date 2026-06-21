@@ -1,0 +1,11 @@
+id: org.aseprite.Aseprite
+name: Aseprite
+homepage: https://www.aseprite.org
+
+check:
+  type: github_releases
+  repo: aseprite/aseprite
+  prereleases: false
+
+version:
+  strip_prefix: v

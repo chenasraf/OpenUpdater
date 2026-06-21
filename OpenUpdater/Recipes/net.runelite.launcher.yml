@@ -1,0 +1,12 @@
+id: net.runelite.launcher
+name: RuneLite
+homepage: https://runelite.net
+
+check:
+  type: github_releases
+  repo: runelite/launcher
+  prereleases: false
+
+download:
+  url: https://github.com/runelite/launcher/releases/download/{tag}/RuneLite-aarch64.dmg
+  format: dmg

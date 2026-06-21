@@ -12,9 +12,9 @@ import OSLog
 
 /// Where an app's update information is sourced from.
 enum UpdateSource {
-  case homebrew
   case githubRelease
   case sparkle
+  case http
   case unknown
 }
 
@@ -175,6 +175,9 @@ final class UpdateManager: ObservableObject {
             }
             result = try await SparkleSource.latest(feedURL: feedURL)
             source = .sparkle
+          case .html, .xml, .json, .yaml:
+            result = try await HTTPVersionSource.latest(for: recipe)
+            source = .http
           }
         } else {
           // No recipe, but the app advertises its own Sparkle feed.

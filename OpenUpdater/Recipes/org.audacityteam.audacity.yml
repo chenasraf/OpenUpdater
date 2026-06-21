@@ -1,0 +1,15 @@
+id: org.audacityteam.audacity
+name: Audacity
+homepage: https://www.audacityteam.org
+
+check:
+  type: github_releases
+  repo: audacity/audacity
+  prereleases: false
+
+version:
+  strip_prefix: "Audacity-"
+
+download:
+  url: https://github.com/audacity/audacity/releases/download/{tag}/audacity-macOS-{version}-universal.dmg
+  format: dmg

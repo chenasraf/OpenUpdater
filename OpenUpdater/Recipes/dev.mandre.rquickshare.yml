@@ -1,0 +1,15 @@
+id: dev.mandre.rquickshare
+name: RQuickShare
+homepage: https://github.com/Martichou/rquickshare
+
+check:
+  type: github_releases
+  repo: Martichou/rquickshare
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/Martichou/rquickshare/releases/download/{tag}/r-quick-share-main_{tag}_aarch64.dmg
+  format: dmg

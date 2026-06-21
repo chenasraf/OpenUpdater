@@ -1,0 +1,12 @@
+id: nl.ultimaker.cura_UltiMaker_Cura
+name: UltiMaker Cura
+homepage: https://ultimaker.com/software/ultimaker-cura
+
+check:
+  type: github_releases
+  repo: Ultimaker/Cura
+  prereleases: false
+
+download:
+  url: https://github.com/Ultimaker/Cura/releases/download/{tag}/UltiMaker-Cura-{version}-macos-ARM64.dmg
+  format: dmg

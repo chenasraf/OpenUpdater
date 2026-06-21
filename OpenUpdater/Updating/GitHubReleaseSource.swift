@@ -11,6 +11,8 @@ enum UpdateCheckError: Error, CustomStringConvertible {
   case unsupported
   case missingRepo
   case missingFeed
+  case missingURL
+  case extractionFailed(String)
   case rateLimited
   case badResponse(Int)
   case noReleases
@@ -20,6 +22,8 @@ enum UpdateCheckError: Error, CustomStringConvertible {
     case .unsupported: return "unsupported source type"
     case .missingRepo: return "recipe is missing a repo"
     case .missingFeed: return "recipe is missing a feed URL"
+    case .missingURL: return "recipe is missing a url"
+    case .extractionFailed(let what): return "couldn't extract \(what)"
     case .rateLimited: return "GitHub rate limit reached"
     case .badResponse(let code): return "HTTP \(code)"
     case .noReleases: return "no matching release"
@@ -30,7 +34,8 @@ enum UpdateCheckError: Error, CustomStringConvertible {
   var isTransient: Bool {
     switch self {
     case .rateLimited, .badResponse: return true
-    case .unsupported, .missingRepo, .missingFeed, .noReleases: return false
+    case .unsupported, .missingRepo, .missingFeed, .missingURL, .extractionFailed, .noReleases:
+      return false
     }
   }
 }
