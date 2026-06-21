@@ -1,0 +1,8 @@
+id: com.microsoft.VSCode
+name: Visual Studio Code
+homepage: https://code.visualstudio.com
+
+check:
+  type: json
+  url: https://update.code.visualstudio.com/api/releases/stable
+  path: "0"
