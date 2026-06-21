@@ -69,11 +69,17 @@ nonisolated enum Installer {
     -> URL
   {
     let delegate = DownloadDelegate(onProgress: onProgress)
-    return try await withCheckedThrowingContinuation { continuation in
-      delegate.continuation = continuation
-      let session = URLSession(configuration: .default, delegate: delegate, delegateQueue: nil)
-      delegate.session = session
-      session.downloadTask(with: url).resume()
+    let session = URLSession(configuration: .default, delegate: delegate, delegateQueue: nil)
+    delegate.session = session
+    let task = session.downloadTask(with: url)
+    // Cancelling the install Task aborts the download (resumes with URLError.cancelled).
+    return try await withTaskCancellationHandler {
+      try await withCheckedThrowingContinuation { continuation in
+        delegate.continuation = continuation
+        task.resume()
+      }
+    } onCancel: {
+      task.cancel()
     }
   }
 
@@ -98,7 +104,7 @@ nonisolated enum Installer {
   static func clearQuarantineIfTrusted(_ newApp: URL, installedAppForTrust installed: URL) {
     guard signatureIsValid(newApp) else { return }
     guard let team = teamIdentifier(newApp), team == teamIdentifier(installed) else { return }
-    try? run("/usr/bin/xattr", ["-dr", "com.apple.quarantine", newApp.path])
+    _ = try? run("/usr/bin/xattr", ["-dr", "com.apple.quarantine", newApp.path])
   }
 
   /// Extract `archive` and return the contained `.app` whose bundle ID matches
@@ -156,18 +162,48 @@ nonisolated enum Installer {
 
   private static func extractFromDMG(_ dmg: URL, into work: URL) throws -> URL {
     let mount = try makeTempDir().appendingPathComponent("mnt")
-    try run(
-      "/usr/bin/hdiutil",
-      [
-        "attach", dmg.path, "-nobrowse", "-readonly", "-noautoopen", "-mountpoint", mount.path,
-      ])
-    defer { try? run("/usr/bin/hdiutil", ["detach", mount.path, "-force"]) }
+    try attachDMG(dmg, at: mount)
+    defer { _ = try? run("/usr/bin/hdiutil", ["detach", mount.path, "-force"]) }
 
     let sourceApp = try locateApp(in: mount)
     // Copy the app off the read-only image with ditto (preserves signing).
     let dest = work.appendingPathComponent(sourceApp.lastPathComponent)
     try run("/usr/bin/ditto", [sourceApp.path, dest.path])
     return dest
+  }
+
+  /// Attach a disk image, auto-accepting any software license agreement (some
+  /// dmgs, e.g. Cura, have an SLA that makes `hdiutil` wait forever for a "Y" on
+  /// stdin). We feed it "y" and discard the (potentially large) agreement text.
+  private static func attachDMG(_ dmg: URL, at mount: URL) throws {
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/usr/bin/hdiutil")
+    process.arguments = [
+      "attach", dmg.path, "-nobrowse", "-readonly", "-noautoopen", "-mountpoint", mount.path,
+    ]
+    let input = Pipe()
+    let errorPipe = Pipe()
+    process.standardInput = input
+    process.standardOutput = FileHandle.nullDevice  // discard the SLA text (can be large)
+    process.standardError = errorPipe
+
+    let finished = DispatchSemaphore(value: 0)
+    process.terminationHandler = { _ in finished.signal() }
+    try process.run()
+    // Accept the agreement; the extra lines are harmless if there's no SLA.
+    input.fileHandleForWriting.write(Data(String(repeating: "y\n", count: 1000).utf8))
+    try? input.fileHandleForWriting.close()
+
+    if finished.wait(timeout: .now() + 300) == .timedOut {
+      process.terminate()
+      throw InstallError.toolFailed("hdiutil", "timed out attaching disk image")
+    }
+    if process.terminationStatus != 0 {
+      let message =
+        String(
+          data: errorPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+      throw InstallError.toolFailed("hdiutil", message)
+    }
   }
 
   /// True if the file's first bytes look like an HTML/XML document (a download

@@ -326,6 +326,25 @@ final class UpdateManager: ObservableObject {
 
   func installPhase(for id: String) -> InstallPhase { installPhases[id] ?? .idle }
 
+  /// Running install tasks, keyed by bundle id, so they can be cancelled.
+  private var installTasks: [String: Task<Void, Never>] = [:]
+
+  /// Start (and track) an install for `app`.
+  func startInstall(_ app: AppInfo) {
+    guard installTasks[app.id] == nil else { return }
+    let id = app.id
+    installTasks[id] = Task {
+      await installUpdate(app)
+      installTasks[id] = nil
+    }
+  }
+
+  /// Cancel a running install. The install bails at its next cancellation check
+  /// (or the download is aborted), then resets the row to idle.
+  func cancelInstall(_ app: AppInfo) {
+    installTasks[app.id]?.cancel()
+  }
+
   /// Apps that have an update AND something we can actually download/install.
   var installableUpdates: [AppInfo] { updates.filter { $0.downloadURL != nil } }
 
@@ -349,7 +368,9 @@ final class UpdateManager: ObservableObject {
 
     Self.log.notice("Batch update: \(targets.count, privacy: .public) app(s)")
     for app in targets {  // snapshot; the list shrinks as installs succeed
-      await installUpdate(app)
+      // Go through startInstall so each row stays individually cancellable.
+      startInstall(app)
+      await installTasks[app.id]?.value
     }
   }
 
@@ -374,28 +395,41 @@ final class UpdateManager: ObservableObject {
       let archive = try await Installer.download(downloadURL) { fraction in
         Task { @MainActor in self.installPhases[id] = .downloading(fraction) }
       }
+      Self.log.notice("install \(id, privacy: .public): downloaded")
+      try Task.checkCancellation()
 
       // Quit any running copy first; relaunch it after a successful install.
       installPhases[id] = .quitting
       let wasRunning = await quitRunningApp(bundleID: id)
+      Self.log.notice(
+        "install \(id, privacy: .public): quit running app (was running: \(wasRunning, privacy: .public))"
+      )
+      try Task.checkCancellation()
 
       switch format {
       case .pkg:
         installPhases[id] = .installing
+        Self.log.notice("install \(id, privacy: .public): running pkg installer")
         try await installPackage(archive)
 
       case .dmg, .zip:
         installPhases[id] = .extracting
+        Self.log.notice(
+          "install \(id, privacy: .public): extracting \(format.rawValue, privacy: .public)")
         let newApp = try await Task.detached(priority: .userInitiated) {
           try Installer.extractApp(from: archive, format: format, expectedBundleID: id)
         }.value
+        try Task.checkCancellation()
 
         installPhases[id] = .verifying
-        try await Task.detached(priority: .userInitiated) {
+        Self.log.notice("install \(id, privacy: .public): verifying signature")
+        await Task.detached(priority: .userInitiated) {
           Installer.clearQuarantineIfTrusted(newApp, installedAppForTrust: destination)
         }.value
+        try Task.checkCancellation()
 
         installPhases[id] = .installing
+        Self.log.notice("install \(id, privacy: .public): replacing app in place")
         try await replaceApp(newApp, at: destination)
       }
 
@@ -404,10 +438,15 @@ final class UpdateManager: ObservableObject {
       if wasRunning { relaunch(destination) }
       Self.log.notice("Installed \(id, privacy: .public)")
     } catch {
-      installPhases[id] = .failed(String(describing: error))
-      Self.log.error(
-        "Install failed for \(id, privacy: .public): \(String(describing: error), privacy: .public)"
-      )
+      if Task.isCancelled || (error as? URLError)?.code == .cancelled {
+        installPhases[id] = .idle
+        Self.log.notice("install \(id, privacy: .public): cancelled")
+      } else {
+        installPhases[id] = .failed(String(describing: error))
+        Self.log.error(
+          "Install failed for \(id, privacy: .public): \(String(describing: error), privacy: .public)"
+        )
+      }
     }
   }
 

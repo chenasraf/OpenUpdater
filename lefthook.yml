@@ -5,3 +5,14 @@ pre-commit:
       glob: "*.swift"
       run: xcrun swift-format format --in-place {staged_files}
       stage_fixed: true
+    # lint:
+    #   glob: "*.swift"
+    #   run: |
+    #     output=$(xcodebuild -project OpenUpdater.xcodeproj -scheme OpenUpdater \
+    #       -destination 'platform=macOS' -configuration Debug build 2>&1) || true
+    #     issues=$(echo "$output" | grep -E ": (warning|error):" | grep "$PWD/OpenUpdater" || true)
+    #     if [ -n "$issues" ]; then
+    #       echo "$issues"
+    #       echo "✗ Fix the warnings above (or commit with LEFTHOOK=0 to skip)."
+    #       exit 1
+    #     fi

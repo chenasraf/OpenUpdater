@@ -169,7 +169,7 @@ struct UpdateRow: View {
           .strikethrough()
       }
       installControl
-        .frame(width: 120, alignment: .trailing)
+        .frame(width: 140, alignment: .trailing)
     }
     .padding(.vertical, 4)
     // Run the separator edge-to-edge, including under the app icon.
@@ -180,17 +180,16 @@ struct UpdateRow: View {
   @ViewBuilder private var installControl: some View {
     switch updateManager.installPhase(for: app.id) {
     case .idle:
-      Button("Update") {
-        Task { await updateManager.installUpdate(app) }
-      }
-      .buttonStyle(.borderedProminent)
-      .disabled(app.downloadURL == nil || updateManager.isUpdatingAll)
-      .help(app.downloadURL == nil ? "No download available for this app yet" : "")
+      Button("Update") { updateManager.startInstall(app) }
+        .buttonStyle(.borderedProminent)
+        .disabled(app.downloadURL == nil || updateManager.isUpdatingAll)
+        .help(app.downloadURL == nil ? "No download available for this app yet" : "")
     case .downloading(let fraction):
       HStack(spacing: 6) {
-        ProgressView(value: fraction).controlSize(.small).frame(width: 56)
+        ProgressView(value: fraction).controlSize(.small).frame(width: 50)
         Text("\(Int(fraction * 100))%").font(.caption).foregroundStyle(.secondary)
           .monospacedDigit()
+        cancelButton
       }
     case .extracting:
       progress("Extracting…")
@@ -207,16 +206,29 @@ struct UpdateRow: View {
       HStack(spacing: 4) {
         Image(systemName: "exclamationmark.triangle.fill")
           .foregroundStyle(.orange)
-        Button("Retry") { Task { await updateManager.installUpdate(app) } }
+        Button("Retry") { updateManager.startInstall(app) }
       }
       .help(message)
     }
+  }
+
+  /// X button to cancel a running install.
+  private var cancelButton: some View {
+    Button {
+      updateManager.cancelInstall(app)
+    } label: {
+      Image(systemName: "xmark.circle.fill")
+    }
+    .buttonStyle(.plain)
+    .foregroundStyle(.secondary)
+    .help("Cancel")
   }
 
   private func progress(_ label: String) -> some View {
     HStack(spacing: 6) {
       ProgressView().controlSize(.small)
       Text(label).font(.caption).foregroundStyle(.secondary)
+      cancelButton
     }
   }
 }
