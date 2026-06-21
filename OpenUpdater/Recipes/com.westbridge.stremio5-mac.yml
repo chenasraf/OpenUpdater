@@ -1,0 +1,16 @@
+id: com.westbridge.stremio5-mac
+name: Stremio
+homepage: https://www.stremio.com
+
+arch:
+  arm64: arm64
+  x86_64: x64
+
+check:
+  type: html
+  url: https://www.stremio.com/downloads
+  pattern: 'stremio-shell-macos/v([0-9.]+)/Stremio_arm64\.dmg'
+
+download:
+  url: https://dl.strem.io/stremio-shell-macos/v{version}/Stremio_{arch}.dmg
+  format: dmg
