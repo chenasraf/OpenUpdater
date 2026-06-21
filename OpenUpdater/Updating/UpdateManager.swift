@@ -94,11 +94,16 @@ final class UpdateManager: ObservableObject {
 
   func isRescanning(_ id: String) -> Bool { rescanningIDs.contains(id) }
 
-  /// Apps that currently have an update available (excluding ignored ones) —
-  /// used to badge the menubar icon.
+  /// Apps that currently have an update available (excluding ignored ones, and ones
+  /// updated this session) — used to badge the menubar icon.
   var updates: [AppInfo] {
-    apps.filter { $0.updateAvailable && !$0.isIgnored }
+    apps.filter { $0.updateAvailable && !$0.isIgnored && !updatedThisSession.contains($0.id) }
   }
+
+  /// Apps successfully updated this session, dropped from the list immediately rather
+  /// than lingering on an "Updated" row. An app is cleared from this set once it's
+  /// freshly re-checked (see `resolveLatest`), so it never flickers back mid-scan.
+  @Published private var updatedThisSession: Set<String> = []
 
   /// Apps that are ignored — by the user (whole app or a specific version) or by
   /// OpenUpdater's own built-in ignore list (preset apps, Steam games).
@@ -319,6 +324,9 @@ final class UpdateManager: ObservableObject {
       apps[index].downloadURL = result.downloadURL
       apps[index].downloadFormat = result.format
       apps[index].appStoreURL = result.appStoreURL
+      // Freshly re-checked, so drop any "updated this session" suppression — the
+      // normal version comparison now decides whether it's shown.
+      updatedThisSession.remove(apps[index].id)
       if let homepage = recipe?.homepage { apps[index].homepageURL = URL(string: homepage) }
       if let changelogURL = result.changelogURL {
         apps[index].changelogURL = changelogURL
@@ -770,8 +778,9 @@ final class UpdateManager: ObservableObject {
         try await replaceApp(newApp, at: destination)
       }
 
-      installPhases[id] = .done
       refreshInstalledVersion(id: id)
+      updatedThisSession.insert(id)
+      installPhases[id] = .idle
       if wasRunning { relaunch(destination) }
       Self.log.notice("Installed \(id, privacy: .public)")
     } catch {
@@ -855,6 +864,5 @@ enum InstallPhase: Equatable {
   case verifying
   case quitting
   case installing
-  case done
   case failed(String)
 }

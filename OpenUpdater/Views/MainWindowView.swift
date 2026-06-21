@@ -226,9 +226,6 @@ struct UpdateRow: View {
       progress("Quitting app…")
     case .installing:
       progress("Installing…")
-    case .done:
-      Label("Updated", systemImage: "checkmark.circle.fill")
-        .foregroundStyle(.green)
     case .failed(let message):
       HStack(spacing: 4) {
         Button {
