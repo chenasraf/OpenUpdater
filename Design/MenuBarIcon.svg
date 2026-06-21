@@ -1,0 +1,14 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Template (monochrome) menubar glyph: the SAME two circular arrows as the app
+       icon, in solid black on transparent so macOS tints it for light/dark menubars.
+       Structure mirrors the app icon exactly — arcs are stroked, arrowheads are
+       fill-only (no stroke), so the geometry matches. Scaled to fill the frame. -->
+  <g transform="translate(512 512) scale(1.7) translate(-512 -512)">
+    <path d="M 590.9 350.2 A 180 180 0 0 1 590.9 673.8"
+          fill="none" stroke="#000000" stroke-width="64" stroke-linecap="round"/>
+    <path d="M 433.1 673.8 A 180 180 0 0 1 433.1 350.2"
+          fill="none" stroke="#000000" stroke-width="64" stroke-linecap="round"/>
+    <polygon points="496.0,319.5 430.1,435.1 364.3,300.3" fill="#000000"/>
+    <polygon points="528.0,704.5 594.0,588.9 659.8,723.7" fill="#000000"/>
+  </g>
+</svg>

@@ -1,0 +1,36 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Vertical brand gradient: bright blue at the top, deep indigo at the base. -->
+    <linearGradient id="bg" x1="512" y1="100" x2="512" y2="924" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5BA4FF"/>
+      <stop offset="0.55" stop-color="#3B7BF0"/>
+      <stop offset="1" stop-color="#2A55D8"/>
+    </linearGradient>
+    <!-- Soft sheen near the top edge for a little depth. -->
+    <radialGradient id="sheen" cx="512" cy="280" r="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Lifts the white glyph off the gradient. -->
+    <filter id="glyphShadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#102a63" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- macOS rounded-rect (squircle) body: 824x824 centered in the 1024 canvas,
+       corner radius 185 per Apple's Big Sur icon grid, with transparent margin. -->
+  <rect x="100" y="100" width="824" height="824" rx="185" ry="185" fill="url(#bg)"/>
+  <rect x="100" y="100" width="824" height="824" rx="185" ry="185" fill="url(#sheen)"/>
+  <rect x="100" y="100" width="824" height="824" rx="185" ry="185"
+        fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="2"/>
+
+  <!-- Update glyph: two circular arrows (refresh), scaled up around the center. -->
+  <g transform="translate(512 512) scale(1.18) translate(-512 -512)" filter="url(#glyphShadow)">
+    <path d="M 590.9 350.2 A 180 180 0 0 1 590.9 673.8"
+          fill="none" stroke="#ffffff" stroke-width="64" stroke-linecap="round"/>
+    <path d="M 433.1 673.8 A 180 180 0 0 1 433.1 350.2"
+          fill="none" stroke="#ffffff" stroke-width="64" stroke-linecap="round"/>
+    <polygon points="496.0,319.5 430.1,435.1 364.3,300.3" fill="#ffffff"/>
+    <polygon points="528.0,704.5 594.0,588.9 659.8,723.7" fill="#ffffff"/>
+  </g>
+</svg>

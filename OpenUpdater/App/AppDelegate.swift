@@ -38,9 +38,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // Create the status bar item
     statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     if let button = statusItem.button {
-      button.image = NSImage(
-        systemSymbolName: "arrow.triangle.2.circlepath.circle.fill",
-        accessibilityDescription: AppBranding.title)
+      // The app's own glyph as a template image, so it tints for light/dark menubars.
+      let icon = NSImage(named: "MenuBarIcon")
+      icon?.isTemplate = true
+      icon?.size = NSSize(width: 18, height: 18)
+      button.image = icon
+      button.image?.accessibilityDescription = AppBranding.title
       button.action = #selector(togglePopover)
       button.target = self
     }
