@@ -92,6 +92,13 @@ final class UpdateManager: ObservableObject {
       .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
   }
 
+  /// Apps we have no way to check — no bundled recipe and no Sparkle feed. These are
+  /// the candidates for new community recipes.
+  var unsupportedApps: [AppInfo] {
+    apps.filter { recipes[$0.id] == nil && $0.feedURL == nil }
+      .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+  }
+
   /// Update recipes bundled with the app, keyed by bundle identifier.
   private let recipes: [String: UpdateRecipe]
 

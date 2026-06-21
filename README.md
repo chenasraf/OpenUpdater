@@ -26,6 +26,7 @@ so OpenUpdater can keep up with apps that have no built-in updater of their own.
 - 🪶 **Lives in your menubar** — a quick popover for a glance, plus a full window for the details.
 - 🔔 **Release notes** — jump straight to an app's changelog before you update.
 - 🙈 **Ignore lists** — silence an app entirely, or skip just one version you don't want.
+- 🧭 **Spot the gaps** — see which apps have no update source yet, and report them in a click to help grow coverage.
 - 🧪 **Pre-releases** — opt into beta/pre-release builds on a per-app basis.
 - 🔐 **Optional GitHub token** — raises GitHub's rate limit for faster, more reliable checks (stored encrypted in your Keychain).
 
@@ -85,6 +86,9 @@ Open **Preferences** (⌘,) to:
 - Add a **GitHub access token** to raise the update-check rate limit (optional;
   stored encrypted in your Keychain).
 - Review and clear your **ignore list**.
+- See your **unsupported apps** — the ones with no update source yet. From here you
+  can copy or export their bundle IDs, or open a pre-filled GitHub issue to request
+  support, which helps grow the community registry.
 
 ## How it works
 

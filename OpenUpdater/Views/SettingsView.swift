@@ -5,18 +5,21 @@
 //  Created by Chen Asraf on 21/06/2026.
 //
 
+import AppKit
 import ServiceManagement
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct SettingsView: View {
   enum Tab: String, CaseIterable, Identifiable {
-    case general, updating, ignoreList
+    case general, updating, ignoreList, unsupported
     var id: String { rawValue }
     var title: String {
       switch self {
       case .general: return "General"
       case .updating: return "Updating"
       case .ignoreList: return "Ignore List"
+      case .unsupported: return "Unsupported"
       }
     }
     var icon: String {
@@ -24,6 +27,7 @@ struct SettingsView: View {
       case .general: return "gearshape"
       case .updating: return "arrow.triangle.2.circlepath"
       case .ignoreList: return "nosign"
+      case .unsupported: return "questionmark.circle"
       }
     }
   }
@@ -41,6 +45,7 @@ struct SettingsView: View {
       case .general: GeneralSettingsView()
       case .updating: UpdatingSettingsView()
       case .ignoreList: IgnoreListView()
+      case .unsupported: UnsupportedAppsView()
       }
     }
     .navigationTitle("Preferences")
@@ -92,6 +97,126 @@ struct IgnoreListView: View {
     if app.ignored { return "App ignored" }
     if let version = app.ignoredVersion { return "Version \(version) ignored" }
     return ""
+  }
+}
+
+/// Lists apps with no update source — candidates for new community recipes — and
+/// offers ways to share the list so coverage can be improved.
+struct UnsupportedAppsView: View {
+  @EnvironmentObject private var updateManager: UpdateManager
+  @State private var copied = false
+
+  private var apps: [AppInfo] { updateManager.unsupportedApps }
+
+  var body: some View {
+    Group {
+      if apps.isEmpty {
+        VStack(spacing: 8) {
+          Image(systemName: "checkmark.seal.fill").font(.system(size: 40)).foregroundStyle(.green)
+          Text("Every app has an update source").font(.title3)
+          Text("Nothing to report — OpenUpdater can check all your installed apps.")
+            .font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
+      } else {
+        VStack(spacing: 0) {
+          Text(
+            "^[\(apps.count) app](inflect: true) with no known update source. Report them or contribute a recipe to expand coverage."
+          )
+          .font(.caption).foregroundStyle(.secondary)
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .padding(.horizontal).padding(.vertical, 10)
+
+          Divider()
+
+          List(apps) { app in
+            HStack(spacing: 10) {
+              AppIcon(app: app, size: 28)
+              VStack(alignment: .leading, spacing: 2) {
+                Text(app.name)
+                Text(app.id).font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+              }
+              Spacer()
+            }
+            .padding(.vertical, 2)
+          }
+        }
+        .safeAreaInset(edge: .bottom) {
+          HStack {
+            Button {
+              copyBundleIDs()
+            } label: {
+              Label(copied ? "Copied" : "Copy Bundle IDs", systemImage: "doc.on.clipboard")
+            }
+            Button {
+              exportToFile()
+            } label: {
+              Label("Export…", systemImage: "square.and.arrow.down")
+            }
+            Spacer()
+            Button {
+              reportOnGitHub()
+            } label: {
+              Label("Report on GitHub…", systemImage: "exclamationmark.bubble")
+            }
+            .buttonStyle(.borderedProminent)
+          }
+          .padding(12)
+          .background(.bar)
+        }
+      }
+    }
+  }
+
+  /// Bundle ids, one per line — the payload for copy/export.
+  private func bundleIDList() -> String {
+    apps.map(\.id).joined(separator: "\n")
+  }
+
+  private func copyBundleIDs() {
+    let pasteboard = NSPasteboard.general
+    pasteboard.clearContents()
+    pasteboard.setString(bundleIDList(), forType: .string)
+    copied = true
+    Task {
+      try? await Task.sleep(nanoseconds: 1_500_000_000)
+      copied = false
+    }
+  }
+
+  private func exportToFile() {
+    let panel = NSSavePanel()
+    panel.title = "Export Unsupported Apps"
+    panel.nameFieldStringValue = "openupdater-unsupported.txt"
+    panel.allowedContentTypes = [.plainText]
+    panel.canCreateDirectories = true
+    guard panel.runModal() == .OK, let url = panel.url else { return }
+    try? bundleIDList().write(to: url, atomically: true, encoding: .utf8)
+  }
+
+  private func reportOnGitHub() {
+    guard let url = issueURL() else { return }
+    NSWorkspace.shared.open(url)
+  }
+
+  /// A prefilled "new issue" URL listing the unsupported apps.
+  private func issueURL() -> URL? {
+    let title = "Add update sources for \(apps.count) app\(apps.count == 1 ? "" : "s")"
+    let lines = apps.map { "- \($0.name) (`\($0.id)`)" }.joined(separator: "\n")
+    let body = """
+      The following installed apps have no update source in \(AppBranding.title) yet:
+
+      \(lines)
+      """
+    var components = URLComponents(
+      url: AppBranding.repositoryURL.appendingPathComponent("issues/new"),
+      resolvingAgainstBaseURL: false)
+    components?.queryItems = [
+      URLQueryItem(name: "title", value: title),
+      URLQueryItem(name: "body", value: body),
+    ]
+    return components?.url
   }
 }
 

@@ -13,6 +13,8 @@ import SwiftUI
 /// anywhere else.
 nonisolated enum AppBranding {
   static let title = "OpenUpdater"
+  /// The project's GitHub repository — used for "report an app" links, etc.
+  static let repositoryURL = URL(string: "https://github.com/chenasraf/OpenUpdater")!
 }
 
 @main
