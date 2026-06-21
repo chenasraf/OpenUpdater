@@ -76,8 +76,21 @@ struct SettingsView: View {
 struct GeneralSettingsView: View {
   @EnvironmentObject private var updater: Updater
 
+  /// Open the main window automatically on launch (default on). Read by `AppDelegate`.
+  @AppStorage("openMainWindowOnLaunch") private var openMainWindowOnLaunch = true
+  /// Mirrors the macOS login-item state for the app (default off).
+  @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
+
   var body: some View {
     Form {
+      Section {
+        Toggle("Launch \(AppBranding.title) at login", isOn: $launchAtLogin)
+          .onChange(of: launchAtLogin) { _, enabled in setLaunchAtLogin(enabled) }
+        Toggle("Open the main window on launch", isOn: $openMainWindowOnLaunch)
+      } header: {
+        Text("General")
+      }
+
       Section {
         Toggle(
           "Automatically check for updates",
@@ -95,6 +108,21 @@ struct GeneralSettingsView: View {
       }
     }
     .formStyle(.grouped)
+    // Re-sync in case the login item was toggled in System Settings while we were away.
+    .onAppear { launchAtLogin = SMAppService.mainApp.status == .enabled }
+  }
+
+  /// Register/unregister the app as a macOS login item, reverting the toggle on failure.
+  private func setLaunchAtLogin(_ enabled: Bool) {
+    do {
+      if enabled {
+        try SMAppService.mainApp.register()
+      } else if SMAppService.mainApp.status == .enabled {
+        try SMAppService.mainApp.unregister()
+      }
+    } catch {
+      launchAtLogin = SMAppService.mainApp.status == .enabled
+    }
   }
 }
 

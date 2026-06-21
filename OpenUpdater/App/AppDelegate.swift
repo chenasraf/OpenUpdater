@@ -71,6 +71,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // Kick off the initial check at launch so the popover, main window, and
     // (later) the menubar badge all reflect available updates immediately.
     Task { await updateManager.checkForUpdatesIfNeeded() }
+
+    // "Open main window on launch" (default on). SwiftUI always presents the single
+    // `Window` at launch (and macOS may restore it), and `.defaultLaunchBehavior` is
+    // overridden by sticky per-scene state — so when the preference is off we close the
+    // window as it appears. Polling briefly catches both the auto-open and a restore.
+    let openOnLaunch =
+      UserDefaults.standard.object(forKey: "openMainWindowOnLaunch") as? Bool ?? true
+    if !openOnLaunch {
+      suppressLaunchWindow = true
+      closeLaunchWindowIfNeeded(retries: 30)
+    }
+  }
+
+  /// While set, the main window is kept closed at launch (the "open on launch" pref is
+  /// off). Cleared the moment the user opens the window from the menubar/⌘.
+  private var suppressLaunchWindow = false
+
+  /// Close the launch/restored main window while `suppressLaunchWindow` holds, polling
+  /// for ~3s so it catches the window whenever SwiftUI or state restoration presents it.
+  private func closeLaunchWindowIfNeeded(retries: Int) {
+    guard suppressLaunchWindow, retries > 0 else { return }
+    if let window = NSApp.windows.first(where: { isAppWindow($0) && $0.title == AppBranding.title }
+    ),
+      window.isVisible
+    {
+      window.close()
+      syncActivationPolicy()
+    }
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+      self?.closeLaunchWindowIfNeeded(retries: retries - 1)
+    }
   }
 
   // MARK: - Dock icon follows window visibility
@@ -141,11 +172,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     popover.performClose(nil)
     NSApp.setActivationPolicy(.regular)
     NSApp.activate(ignoringOtherApps: true)
+    // Re-enable opening the launch window if it was suppressed earlier.
+    suppressLaunchWindow = false
     let window = mainWindow ?? NSApp.windows.first(where: isAppWindow)
     window?.makeKeyAndOrderFront(nil)
   }
-}
-
-extension Notification.Name {
-  static let openMainWindow = Notification.Name("openMainWindow")
 }
