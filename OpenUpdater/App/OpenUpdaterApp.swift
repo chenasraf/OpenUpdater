@@ -7,12 +7,20 @@
 
 import SwiftUI
 
+/// The app's display name — one source of truth for the product name (window
+/// title, menubar, quit dialog, network User-Agent). `nonisolated` so it's also
+/// reachable from off-main code like `Installer`. No "OpenUpdater" literals
+/// anywhere else.
+nonisolated enum AppBranding {
+  static let title = "OpenUpdater"
+}
+
 @main
 struct OpenUpdaterApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
   var body: some Scene {
-    Window("App Updates", id: "main") {
+    Window(AppBranding.title, id: "main") {
       MainWindowView()
         .environmentObject(appDelegate.updateManager)
     }

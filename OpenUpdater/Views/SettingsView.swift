@@ -156,7 +156,7 @@ struct UpdatingSettingsView: View {
           Link(
             "Create a token on GitHub…",
             destination: URL(
-              string: "https://github.com/settings/tokens/new?description=OpenUpdater")!
+              string: "https://github.com/settings/tokens/new?description=\(AppBranding.title)")!
           )
         }
         .font(.caption)
@@ -216,7 +216,7 @@ struct UpdatingSettingsView: View {
       let status = try PrivilegedHelper.shared.register()
       helperStatus = status
       if status == .requiresApproval {
-        helperMessage = "Approve OpenUpdater under Login Items to finish."
+        helperMessage = "Approve \(AppBranding.title) under Login Items to finish."
         SMAppService.openSystemSettingsLoginItems()
       } else if status == .enabled {
         helperMessage = "Helper installed."

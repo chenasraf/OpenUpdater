@@ -27,7 +27,7 @@ enum HTTPVersionSource {
     }
 
     var request = URLRequest(url: url)
-    request.setValue("OpenUpdater", forHTTPHeaderField: "User-Agent")
+    request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
     let (data, response) = try await URLSession.shared.data(for: request)
     guard let http = response as? HTTPURLResponse else { throw UpdateCheckError.badResponse(-1) }
     guard http.statusCode == 200 else { throw UpdateCheckError.badResponse(http.statusCode) }

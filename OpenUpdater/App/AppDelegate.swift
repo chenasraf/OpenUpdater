@@ -40,7 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     if let button = statusItem.button {
       button.image = NSImage(
         systemSymbolName: "arrow.triangle.2.circlepath.circle.fill",
-        accessibilityDescription: "App Updates")
+        accessibilityDescription: AppBranding.title)
       button.action = #selector(togglePopover)
       button.target = self
     }
@@ -70,7 +70,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
   @objc private func windowDidBecomeMain(_ note: Notification) {
     guard let window = note.object as? NSWindow, isAppWindow(window) else { return }
-    if window.title == "App Updates" {
+    if window.title == AppBranding.title {
       // Keep it alive across Cmd-W so the menubar can reopen the same window.
       window.isReleasedWhenClosed = false
       mainWindow = window
@@ -103,8 +103,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
     NSApp.activate(ignoringOtherApps: true)
     let alert = NSAlert()
-    alert.messageText = "Quit OpenUpdater?"
-    alert.informativeText = "OpenUpdater will stop checking for app updates in the background."
+    alert.messageText = "Quit \(AppBranding.title)?"
+    alert.informativeText =
+      "\(AppBranding.title) will stop checking for app updates in the background."
     alert.alertStyle = .warning
     alert.addButton(withTitle: "Quit")
     alert.addButton(withTitle: "Cancel")

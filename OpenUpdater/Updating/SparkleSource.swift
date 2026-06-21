@@ -105,7 +105,7 @@ private final class AppcastParser: NSObject, XMLParserDelegate {
 enum SparkleSource {
   static func latest(feedURL: URL) async throws -> ReleaseResult {
     var request = URLRequest(url: feedURL)
-    request.setValue("OpenUpdater", forHTTPHeaderField: "User-Agent")
+    request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
 
     let (data, response) = try await URLSession.shared.data(for: request)
     guard let http = response as? HTTPURLResponse else { throw UpdateCheckError.badResponse(-1) }

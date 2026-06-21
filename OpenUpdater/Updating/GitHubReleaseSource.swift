@@ -83,7 +83,7 @@ enum GitHubReleaseSource {
 
     var request = URLRequest(url: url)
     request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
-    request.setValue("OpenUpdater", forHTTPHeaderField: "User-Agent")
+    request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
     // An optional personal access token lifts the limit from 60 to 5,000 req/hr.
     if let token = GitHubToken.load() {
       request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

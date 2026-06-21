@@ -252,7 +252,7 @@ nonisolated enum Installer {
 
   private static func makeTempDir() throws -> URL {
     let dir = FileManager.default.temporaryDirectory
-      .appendingPathComponent("OpenUpdater-\(UUID().uuidString)", isDirectory: true)
+      .appendingPathComponent("\(AppBranding.title)-\(UUID().uuidString)", isDirectory: true)
     try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
     return dir
   }
