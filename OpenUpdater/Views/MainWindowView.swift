@@ -119,6 +119,14 @@ struct UpdatesView: View {
         }
         .buttonStyle(.borderedProminent)
         .disabled(updateManager.isUpdatingAll || updateManager.installableUpdates.isEmpty)
+        if updateManager.isUpdatingAll {
+          Button(role: .destructive) {
+            updateManager.stopBatch()
+          } label: {
+            Label("Stop", systemImage: "stop.fill")
+          }
+          .help("Stop the current update and don't continue with the rest")
+        }
       }
       .padding()
 

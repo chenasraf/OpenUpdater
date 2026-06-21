@@ -616,6 +616,16 @@ final class UpdateManager: ObservableObject {
     installTasks[app.id]?.cancel()
   }
 
+  /// Set while a batch is being stopped, so `installBatch` won't start the next app.
+  private var batchStopped = false
+
+  /// Stop a running "Update All"/"Update Selected": cancel the in-flight install and
+  /// don't proceed to the remaining apps in the queue.
+  func stopBatch() {
+    batchStopped = true
+    installTasks.values.forEach { $0.cancel() }
+  }
+
   /// For apps with a version check but no automatic download: ask the user how to
   /// proceed — open the project's homepage to download the new version themselves,
   /// or launch the app so its own updater can take over.
@@ -707,10 +717,12 @@ final class UpdateManager: ObservableObject {
   private func installBatch(_ targets: [AppInfo]) async {
     guard !isUpdatingAll else { return }
     isUpdatingAll = true
+    batchStopped = false
     defer { isUpdatingAll = false }
 
     Self.log.notice("Batch update: \(targets.count, privacy: .public) app(s)")
     for app in targets {  // snapshot; the list shrinks as installs succeed
+      if batchStopped { break }  // Stop pressed — don't start the next app.
       // Go through startInstall so each row stays individually cancellable.
       startInstall(app)
       await installTasks[app.id]?.value
