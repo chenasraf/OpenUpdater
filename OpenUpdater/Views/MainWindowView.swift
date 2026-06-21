@@ -231,11 +231,15 @@ struct UpdateRow: View {
         .foregroundStyle(.green)
     case .failed(let message):
       HStack(spacing: 4) {
-        Image(systemName: "exclamationmark.triangle.fill")
-          .foregroundStyle(.orange)
+        Button {
+          updateManager.showInstallFailure(app, message: message)
+        } label: {
+          Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+        }
+        .buttonStyle(.plain)
+        .help("Show error details")
         Button("Retry") { updateManager.startInstall(app) }
       }
-      .help(message)
     }
   }
 

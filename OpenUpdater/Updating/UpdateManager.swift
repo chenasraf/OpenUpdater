@@ -640,6 +640,46 @@ final class UpdateManager: ObservableObject {
     NSWorkspace.shared.open(url)
   }
 
+  /// Show the reason a failed install failed, with options to copy it or file a
+  /// pre-filled bug report.
+  func showInstallFailure(_ app: AppInfo, message: String) {
+    NSApp.activate(ignoringOtherApps: true)
+    let alert = NSAlert()
+    alert.messageText = "\(app.name) couldn't be updated"
+    alert.informativeText = message
+    alert.alertStyle = .warning
+    alert.addButton(withTitle: "Report…")
+    alert.addButton(withTitle: "Copy Details")
+    alert.addButton(withTitle: "Close")
+    switch alert.runModal() {
+    case .alertFirstButtonReturn:
+      reportInstallFailure(app, message: message)
+    case .alertSecondButtonReturn:
+      NSPasteboard.general.clearContents()
+      NSPasteboard.general.setString(message, forType: .string)
+    default:
+      break
+    }
+  }
+
+  /// Open a pre-filled bug report for a failed install.
+  private func reportInstallFailure(_ app: AppInfo, message: String) {
+    let latest = app.latestVersion ?? "?"
+    var components = URLComponents(
+      url: AppBranding.repositoryURL.appendingPathComponent("issues/new"),
+      resolvingAgainstBaseURL: false)
+    components?.queryItems = [
+      URLQueryItem(name: "template", value: "bug_report.yml"),
+      URLQueryItem(name: "title", value: "[Bug]: \(app.name) failed to update"),
+      URLQueryItem(
+        name: "summary",
+        value:
+          "Updating \(app.name) (\(app.installedVersion) → \(latest)) failed with:\n\n\(message)"),
+      URLQueryItem(name: "app", value: "\(app.name) (\(app.id))"),
+    ]
+    if let url = components?.url { NSWorkspace.shared.open(url) }
+  }
+
   /// Apps that have an update AND something we can actually download/install.
   var installableUpdates: [AppInfo] { updates.filter { $0.downloadURL != nil } }
 
@@ -711,8 +751,10 @@ final class UpdateManager: ObservableObject {
         installPhases[id] = .extracting
         Self.log.notice(
           "install \(id, privacy: .public): extracting \(format.rawValue, privacy: .public)")
+        let expectedName = destination.deletingPathExtension().lastPathComponent
         let newApp = try await Task.detached(priority: .userInitiated) {
-          try Installer.extractApp(from: archive, format: format, expectedBundleID: id)
+          try Installer.extractApp(
+            from: archive, format: format, expectedBundleID: id, expectedName: expectedName)
         }.value
         try Task.checkCancellation()
 

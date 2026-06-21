@@ -107,11 +107,14 @@ nonisolated enum Installer {
     _ = try? run("/usr/bin/xattr", ["-dr", "com.apple.quarantine", newApp.path])
   }
 
-  /// Extract `archive` and return the contained `.app` whose bundle ID matches
-  /// `expectedBundleID`. The returned app lives in a fresh temp directory.
-  static func extractApp(from archive: URL, format: ArchiveFormat, expectedBundleID: String) throws
-    -> URL
-  {
+  /// Extract `archive` and return the contained `.app`, verifying it's the app we
+  /// expect. Matches on bundle id; if the download has none (some Qt builds, e.g.
+  /// Converseen, ship an empty `CFBundleIdentifier`), falls back to matching the
+  /// app's name (case-insensitive) against the installed one. The returned app
+  /// lives in a fresh temp directory.
+  static func extractApp(
+    from archive: URL, format: ArchiveFormat, expectedBundleID: String, expectedName: String
+  ) throws -> URL {
     // A misconfigured recipe can yield an HTML landing page instead of the binary;
     // fail clearly here rather than as a cryptic "hdiutil/ditto failed".
     if looksLikeHTML(archive) { throw InstallError.notAnArchive }
@@ -128,9 +131,16 @@ nonisolated enum Installer {
       throw InstallError.unsupportedFormat("pkg")
     }
 
-    let foundID = bundleID(of: app)
-    guard foundID == expectedBundleID else {
-      throw InstallError.bundleIDMismatch(expected: expectedBundleID, found: foundID)
+    if let foundID = bundleID(of: app), !foundID.isEmpty {
+      guard foundID == expectedBundleID else {
+        throw InstallError.bundleIDMismatch(expected: expectedBundleID, found: foundID)
+      }
+    } else {
+      let foundName = app.deletingPathExtension().lastPathComponent
+      guard foundName.compare(expectedName, options: .caseInsensitive) == .orderedSame else {
+        throw InstallError.bundleIDMismatch(
+          expected: expectedBundleID, found: "\(foundName) (no bundle id)")
+      }
     }
     return app
   }
