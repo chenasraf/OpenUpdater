@@ -1,0 +1,8 @@
+id: com.google.Chrome
+name: Google Chrome
+homepage: https://www.google.com/chrome/
+
+check:
+  type: json
+  url: https://versionhistory.googleapis.com/v1/chrome/platforms/mac/channels/stable/versions
+  path: versions.0.version
