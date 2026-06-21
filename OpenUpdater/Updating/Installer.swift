@@ -63,8 +63,8 @@ enum InstallError: Error, CustomStringConvertible {
 /// UI on large apps.
 nonisolated enum Installer {
   /// Download the archive to a temporary file, reporting fractional progress
-  /// (0…1) as bytes arrive. `hdiutil`/`ditto` detect format by content, so the
-  /// downloaded file doesn't need a particular extension.
+  /// (0…1) as bytes arrive. The temp file keeps the source URL's extension —
+  /// dmg/zip are content-sniffed, but `installer` needs a `.pkg` path.
   static func download(_ url: URL, onProgress: @escaping @Sendable (Double) -> Void) async throws
     -> URL
   {
@@ -345,8 +345,13 @@ private final class DownloadDelegate: NSObject, URLSessionDownloadDelegate, @unc
     }
     // `location` is removed once this returns, so move it out synchronously.
     do {
-      let destination = FileManager.default.temporaryDirectory
+      var destination = FileManager.default.temporaryDirectory
         .appendingPathComponent(UUID().uuidString)
+      // Preserve the source extension. dmg/zip are content-sniffed, but `installer`
+      // rejects a `.pkg` whose path has no recognizable package extension.
+      if let ext = downloadTask.originalRequest?.url?.pathExtension, !ext.isEmpty {
+        destination.appendPathExtension(ext)
+      }
       try FileManager.default.moveItem(at: location, to: destination)
       continuation?.resume(returning: destination)
     } catch {
