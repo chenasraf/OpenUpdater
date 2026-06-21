@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		74F15C282FE73AB5008E634A /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = 74F15C272FE73AB5008E634A /* Yams */; };
 		74F15CED2FE7F198008E634A /* OpenUpdaterHelper in CopyFiles */ = {isa = PBXBuildFile; fileRef = 74F15CDC2FE7EF58008E634A /* OpenUpdaterHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		74F15D8A2FE8878F008E634A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 74F15D892FE8878F008E634A /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -47,6 +48,16 @@
 		74F15CDC2FE7EF58008E634A /* OpenUpdaterHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenUpdaterHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		74F15D8C2FE8888A008E634A /* Exceptions for "OpenUpdater" folder in "OpenUpdater" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 74F15BEC2FE72FAD008E634A /* OpenUpdater */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 		74F15CF02FE7F1BB008E634A /* Exceptions for "OpenUpdaterHelper" folder in "Copy Files" phase from "OpenUpdater" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
@@ -60,6 +71,9 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		74F15BEF2FE72FAD008E634A /* OpenUpdater */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				74F15D8C2FE8888A008E634A /* Exceptions for "OpenUpdater" folder in "OpenUpdater" target */,
+			);
 			path = OpenUpdater;
 			sourceTree = "<group>";
 		};
@@ -79,6 +93,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				74F15C282FE73AB5008E634A /* Yams in Frameworks */,
+				74F15D8A2FE8878F008E634A /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,6 +148,7 @@
 			name = OpenUpdater;
 			packageProductDependencies = (
 				74F15C272FE73AB5008E634A /* Yams */,
+				74F15D892FE8878F008E634A /* Sparkle */,
 			);
 			productName = OpenUpdater;
 			productReference = 74F15BED2FE72FAD008E634A /* OpenUpdater.app */;
@@ -189,6 +205,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				74F15C262FE73AB5008E634A /* XCRemoteSwiftPackageReference "Yams" */,
+				74F15D882FE8878F008E634A /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 74F15BEE2FE72FAD008E634A /* Products */;
@@ -364,6 +381,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OpenUpdater/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -397,6 +415,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OpenUpdater/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -488,6 +507,14 @@
 				minimumVersion = 6.2.2;
 			};
 		};
+		74F15D882FE8878F008E634A /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -495,6 +522,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 74F15C262FE73AB5008E634A /* XCRemoteSwiftPackageReference "Yams" */;
 			productName = Yams;
+		};
+		74F15D892FE8878F008E634A /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 74F15D882FE8878F008E634A /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

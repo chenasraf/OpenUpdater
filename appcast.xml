@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>OpenUpdater</title>
+    <link>https://raw.githubusercontent.com/chenasraf/OpenUpdater/master/appcast.xml</link>
+    <description>Updates for OpenUpdater.</description>
+    <language>en</language>
+  </channel>
+</rss>

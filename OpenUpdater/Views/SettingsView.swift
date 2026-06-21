@@ -74,10 +74,25 @@ struct SettingsView: View {
 }
 
 struct GeneralSettingsView: View {
+  @EnvironmentObject private var updater: Updater
+
   var body: some View {
     Form {
-      Text("General settings coming soon.")
-        .foregroundStyle(.secondary)
+      Section {
+        Toggle(
+          "Automatically check for updates",
+          isOn: Binding(
+            get: { updater.automaticallyChecksForUpdates },
+            set: { updater.setAutomaticChecks($0) }
+          ))
+        Button("Check for Updates…") { updater.checkForUpdates() }
+          .disabled(!updater.canCheckForUpdates)
+      } header: {
+        Text("\(AppBranding.title) Updates")
+      } footer: {
+        Text("\(AppBranding.title) keeps itself up to date from its release feed.")
+          .font(.caption).foregroundStyle(.secondary)
+      }
     }
     .formStyle(.grouped)
   }

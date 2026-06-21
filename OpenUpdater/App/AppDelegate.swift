@@ -21,6 +21,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   /// SwiftUI scene can read from the same instance.
   let updateManager = UpdateManager()
 
+  /// Sparkle-backed self-updater. Owned here (not as an App `@StateObject`) so it's
+  /// created eagerly at launch — a menubar app opens no window, so a lazy
+  /// `@StateObject` would never start Sparkle.
+  let updater = Updater()
+
   func applicationDidFinishLaunching(_ notification: Notification) {
     // Start menubar-only (no Dock icon). The Dock icon appears only while a real
     // window is open — see syncActivationPolicy().

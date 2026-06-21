@@ -11,6 +11,8 @@ name: Release
 on:
   push:
     branches: [master]
+    # The appcast is committed back by this workflow — don't let that re-trigger it.
+    paths-ignore: [appcast.xml]
   workflow_dispatch:
     inputs:
       tag:
@@ -136,3 +138,47 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release upload "$TAG" "$DMG" --clobber
+
+      - name: Sign update & update Sparkle appcast
+        env:
+          SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          # Sparkle's signing tools.
+          SPARKLE_VERSION=2.6.4
+          curl -fsSL "https://github.com/sparkle-project/Sparkle/releases/download/${SPARKLE_VERSION}/Sparkle-${SPARKLE_VERSION}.tar.xz" \
+            | tar -xJ -C "$RUNNER_TEMP"
+          echo "$SPARKLE_ED_PRIVATE_KEY" | base64 --decode > "$RUNNER_TEMP/sparkle_key"
+
+          # sign_update prints: sparkle:edSignature="…" length="…"
+          SIG="$("$RUNNER_TEMP/bin/sign_update" --ed-key-file "$RUNNER_TEMP/sparkle_key" "$DMG")"
+          DMG_URL="https://github.com/${{ github.repository }}/releases/download/${TAG}/$(basename "$DMG")"
+          NOTES="https://github.com/${{ github.repository }}/releases/tag/${TAG}"
+          PUBDATE="$(LC_ALL=C date -u +'%a, %d %b %Y %H:%M:%S +0000')"
+
+          cat > "$RUNNER_TEMP/item.xml" <<ITEM
+            <item>
+              <title>${VERSION}</title>
+              <pubDate>${PUBDATE}</pubDate>
+              <sparkle:version>${{ github.run_number }}</sparkle:version>
+              <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
+              <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+              <sparkle:releaseNotesLink>${NOTES}</sparkle:releaseNotesLink>
+              <enclosure url="${DMG_URL}" ${SIG} type="application/octet-stream"/>
+            </item>
+          ITEM
+
+          # Commit the new item onto master's appcast.
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin master
+          git checkout -B master origin/master
+          python3 - "$RUNNER_TEMP/item.xml" <<'PY'
+          import sys
+          item = open(sys.argv[1]).read()
+          xml = open("appcast.xml").read()
+          open("appcast.xml", "w").write(xml.replace("  </channel>", item + "  </channel>", 1))
+          PY
+          git add appcast.xml
+          git commit -m "chore: update appcast for ${TAG}"
+          git push origin master

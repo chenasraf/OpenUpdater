@@ -1,7 +1,6 @@
 SCHEME      := OpenUpdater
 PROJECT     := OpenUpdater.xcodeproj
 CONFIG      := Debug
-DERIVED     := build
 SWIFT_FORMAT := xcrun swift-format
 ICON_SVG    := Design/AppIcon.svg
 ICONSET     := OpenUpdater/Assets.xcassets/AppIcon.appiconset
@@ -10,13 +9,13 @@ MENUBARSET  := OpenUpdater/Assets.xcassets/MenuBarIcon.imageset
 
 .PHONY: build run format clean install-hooks icon
 
-## build: compile the app
+## build: compile the app (into Xcode's shared DerivedData, so make & Xcode agree)
 build:
-	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) -derivedDataPath $(DERIVED) build
+	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) build
 
-## run: build and launch the app
+## run: build and launch the same app Xcode produces
 run: build
-	open "$(DERIVED)/Build/Products/$(CONFIG)/$(SCHEME).app"
+	open "$$(xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) -showBuildSettings 2>/dev/null | awk -F' = ' '/ BUILT_PRODUCTS_DIR /{print $$2; exit}')/$(SCHEME).app"
 
 ## format: format all Swift sources in place
 format:
@@ -43,6 +42,7 @@ icon:
 	rsvg-convert -w 36 -h 36 $(MENUBAR_SVG) -o $(MENUBARSET)/MenuBarIcon-36.png
 	@echo "Wrote app icon PNGs to $(ICONSET) and menubar PNGs to $(MENUBARSET)"
 
-## clean: remove build artifacts
+## clean: remove build artifacts (incl. the legacy ./build dir)
 clean:
-	rm -rf $(DERIVED)
+	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) clean
+	rm -rf build

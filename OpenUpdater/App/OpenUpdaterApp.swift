@@ -25,6 +25,7 @@ struct OpenUpdaterApp: App {
     Window(AppBranding.title, id: "main") {
       MainWindowView()
         .environmentObject(appDelegate.updateManager)
+        .environmentObject(appDelegate.updater)
     }
     .windowStyle(.titleBar)
     .windowToolbarStyle(.unified)
@@ -35,11 +36,16 @@ struct OpenUpdaterApp: App {
       CommandGroup(replacing: .appSettings) {
         OpenPreferencesButton()
       }
+      // "Check for Updates…" under the app menu, next to About.
+      CommandGroup(after: .appInfo) {
+        CheckForUpdatesCommand(updater: appDelegate.updater)
+      }
     }
 
     Window("Preferences", id: PreferencesWindow.id) {
       SettingsView()
         .environmentObject(appDelegate.updateManager)
+        .environmentObject(appDelegate.updater)
     }
     .windowResizability(.contentMinSize)
     .defaultSize(width: 820, height: 560)
@@ -56,5 +62,14 @@ private struct OpenPreferencesButton: View {
   var body: some View {
     Button("Preferences…") { openWindow(id: PreferencesWindow.id) }
       .keyboardShortcut(",", modifiers: .command)
+  }
+}
+
+/// The "Check for Updates…" app-menu command, disabled while a check can't run.
+private struct CheckForUpdatesCommand: View {
+  @ObservedObject var updater: Updater
+  var body: some View {
+    Button("Check for Updates…") { updater.checkForUpdates() }
+      .disabled(!updater.canCheckForUpdates)
   }
 }
