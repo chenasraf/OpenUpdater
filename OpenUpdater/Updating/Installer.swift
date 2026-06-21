@@ -183,14 +183,22 @@ nonisolated enum Installer {
   }
 
   /// Attach a disk image, auto-accepting any software license agreement (some
-  /// dmgs, e.g. Cura, have an SLA that makes `hdiutil` wait forever for a "Y" on
-  /// stdin). We feed it "y" and discard the (potentially large) agreement text.
+  /// dmgs, e.g. Cura and FreeCAD, have an SLA that makes `hdiutil` wait forever for
+  /// a "Y" on stdin). We feed it "y" and discard the (potentially large) agreement
+  /// text.
   private static func attachDMG(_ dmg: URL, at mount: URL) throws {
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/usr/bin/hdiutil")
     process.arguments = [
-      "attach", dmg.path, "-nobrowse", "-readonly", "-noautoopen", "-mountpoint", mount.path,
+      "attach", dmg.path, "-nobrowse", "-readonly", "-noverify", "-noautoopen",
+      "-mountpoint", mount.path,
     ]
+    // hdiutil shows a long SLA through a pager ($PAGER, default `more`), and the "y"
+    // keystrokes never escape it, so the attach hangs until the timeout. Forcing
+    // `PAGER=cat` makes hdiutil dump the agreement and read our "y" at the prompt.
+    var environment = ProcessInfo.processInfo.environment
+    environment["PAGER"] = "cat"
+    process.environment = environment
     let input = Pipe()
     let errorPipe = Pipe()
     process.standardInput = input
