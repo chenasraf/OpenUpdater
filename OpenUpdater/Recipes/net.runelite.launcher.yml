@@ -7,6 +7,10 @@ check:
   repo: runelite/launcher
   prereleases: false
 
+arch:
+  arm64: aarch64
+  x86_64: x64
+
 download:
-  url: https://github.com/runelite/launcher/releases/download/{tag}/RuneLite-aarch64.dmg
+  url: https://github.com/runelite/launcher/releases/download/{tag}/RuneLite-{arch}.dmg
   format: dmg

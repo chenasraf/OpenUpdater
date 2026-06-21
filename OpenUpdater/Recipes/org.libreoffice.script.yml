@@ -1,0 +1,16 @@
+id: org.libreoffice.script
+name: LibreOffice
+homepage: https://www.libreoffice.org
+
+check:
+  type: html
+  url: https://www.libreoffice.org/download/download-libreoffice/
+  pattern: 'LibreOffice (\d+\.\d+\.\d+)'
+
+arch:
+  arm64: aarch64
+  x86_64: x86_64
+
+download:
+  url: https://download.documentfoundation.org/libreoffice/stable/{version}/mac/{arch}/LibreOffice_{version}_MacOS_{arch}.dmg
+  format: dmg

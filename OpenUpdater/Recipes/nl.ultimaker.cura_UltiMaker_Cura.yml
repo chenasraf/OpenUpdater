@@ -7,6 +7,10 @@ check:
   repo: Ultimaker/Cura
   prereleases: false
 
+arch:
+  arm64: ARM64
+  x86_64: X64
+
 download:
-  url: https://github.com/Ultimaker/Cura/releases/download/{tag}/UltiMaker-Cura-{version}-macos-ARM64.dmg
+  url: https://github.com/Ultimaker/Cura/releases/download/{tag}/UltiMaker-Cura-{version}-macos-{arch}.dmg
   format: dmg

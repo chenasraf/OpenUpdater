@@ -8,8 +8,5 @@ check:
   prereleases: false
 
 download:
-  url: https://github.com/keepassxreboot/keepassxc/releases/download/{tag}/KeePassXC-{version}-arm64.dmg
+  url: https://github.com/keepassxreboot/keepassxc/releases/download/{tag}/KeePassXC-{version}-{arch}.dmg
   format: dmg
-
-changelog:
-  url: https://github.com/keepassxreboot/keepassxc/releases/tag/{tag}

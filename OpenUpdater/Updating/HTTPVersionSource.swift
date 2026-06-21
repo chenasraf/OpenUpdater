@@ -21,7 +21,8 @@ import Yams
 /// relative path; it's resolved against the check URL.
 enum HTTPVersionSource {
   static func latest(for recipe: UpdateRecipe) async throws -> ReleaseResult {
-    guard let urlString = recipe.check.url, let url = URL(string: urlString) else {
+    guard let urlString = recipe.check.url, let url = URL(string: recipe.resolveArch(urlString))
+    else {
       throw UpdateCheckError.missingURL
     }
 
@@ -45,11 +46,15 @@ enum HTTPVersionSource {
       } else {
         root = try JSONSerialization.jsonObject(with: data)
       }
-      guard let path = recipe.check.path, let value = Self.keyPathValue(at: path, in: root) else {
+      guard let path = recipe.check.path,
+        let value = Self.keyPathValue(at: recipe.resolveArch(path), in: root)
+      else {
         throw UpdateCheckError.extractionFailed("version")
       }
       rawVersion = value
-      extractedDownload = recipe.check.downloadPath.flatMap { Self.keyPathValue(at: $0, in: root) }
+      extractedDownload = recipe.check.downloadPath.flatMap {
+        Self.keyPathValue(at: recipe.resolveArch($0), in: root)
+      }
 
     case .html, .xml:
       let body = String(data: data, encoding: .utf8) ?? ""
@@ -58,7 +63,9 @@ enum HTTPVersionSource {
         throw UpdateCheckError.extractionFailed("version")
       }
       rawVersion = value
-      extractedDownload = recipe.check.downloadPattern.flatMap { Self.firstCapture($0, in: body) }
+      extractedDownload = recipe.check.downloadPattern.flatMap {
+        Self.firstCapture(recipe.resolveArch($0), in: body)
+      }
 
     default:
       throw UpdateCheckError.unsupported
@@ -69,9 +76,8 @@ enum HTTPVersionSource {
     // Download URL: recipe template wins; otherwise use what we extracted
     // (resolved against the check URL, since electron feeds give a relative path).
     var downloadURL: URL?
-    if let download = recipe.download {
-      downloadURL = URL(
-        string: recipe.expand(download.urlTemplate, tag: rawVersion, version: version))
+    if let template = recipe.download?.urlTemplate {
+      downloadURL = URL(string: recipe.expand(template, tag: rawVersion, version: version))
     } else if let extractedDownload {
       downloadURL = Self.resolveURL(extractedDownload, relativeTo: url)
     }

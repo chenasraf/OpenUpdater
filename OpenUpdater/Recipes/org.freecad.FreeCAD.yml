@@ -1,0 +1,12 @@
+id: org.freecad.FreeCAD
+name: FreeCAD
+homepage: https://www.freecad.org
+
+check:
+  type: github_releases
+  repo: FreeCAD/FreeCAD
+  prereleases: false
+
+download:
+  url: https://github.com/FreeCAD/FreeCAD/releases/download/{tag}/FreeCAD_{version}-macOS-{arch}-py311.dmg
+  format: dmg

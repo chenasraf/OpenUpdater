@@ -19,19 +19,22 @@ struct MainWindowView: View {
           .tag("updates")
         Label("Installed", systemImage: "square.grid.2x2")
           .tag("installed")
-        Label("Settings", systemImage: "gear")
-          .tag("settings")
       }
       .navigationSplitViewColumnWidth(180)
+      .safeAreaInset(edge: .bottom) {
+        SettingsLink {
+          Label("Preferences", systemImage: "gearshape")
+        }
+        .buttonStyle(.plain)
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+      }
     } detail: {
       switch selectedTab {
       case "updates":
         UpdatesView()
       case "installed":
         InstalledView()
-      case "settings":
-        Text("Settings coming soon")
-          .foregroundStyle(.secondary)
       default:
         EmptyView()
       }

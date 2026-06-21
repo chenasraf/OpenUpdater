@@ -1,0 +1,15 @@
+id: com.dwarvesv.minimalbar
+name: Hidden Bar
+homepage: https://github.com/dwarvesf/hidden
+
+check:
+  type: github_releases
+  repo: dwarvesf/hidden
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/dwarvesf/hidden/releases/download/{tag}/Hidden-Bar-{tag}-macos.zip
+  format: zip

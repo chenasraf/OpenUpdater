@@ -119,8 +119,13 @@ final class UpdateManager: ObservableObject {
           info["CFBundleDisplayName"] as? String
           ?? info["CFBundleName"] as? String
           ?? fallbackName
-        let version = info["CFBundleShortVersionString"] as? String ?? "—"
         let build = info["CFBundleVersion"] as? String
+        // Some apps (e.g. FreeCAD) leave CFBundleShortVersionString empty — fall
+        // back to the build/CFBundleVersion so we still have something to compare.
+        let shortVersion = (info["CFBundleShortVersionString"] as? String).flatMap {
+          $0.isEmpty ? nil : $0
+        }
+        let version = shortVersion ?? build ?? "—"
         // Sparkle apps advertise their appcast here — auto-detected, no recipe needed.
         let feedURL = (info["SUFeedURL"] as? String).flatMap(URL.init(string:))
 
@@ -170,7 +175,9 @@ final class UpdateManager: ObservableObject {
             result = try await GitHubReleaseSource.latest(for: recipe)
             source = .githubRelease
           case .sparkle:
-            guard let feed = recipe.check.feed, let feedURL = URL(string: feed) else {
+            guard let feed = recipe.check.feed,
+              let feedURL = URL(string: recipe.resolveArch(feed))
+            else {
               throw UpdateCheckError.missingFeed
             }
             result = try await SparkleSource.latest(feedURL: feedURL)
@@ -261,24 +268,34 @@ final class UpdateManager: ObservableObject {
         Task { @MainActor in self.installPhases[id] = .downloading(fraction) }
       }
 
-      installPhases[id] = .extracting
-      let newApp = try await Task.detached(priority: .userInitiated) {
-        try Installer.extractApp(from: archive, format: format, expectedBundleID: id)
-      }.value
-
-      installPhases[id] = .verifying
-      try await Task.detached(priority: .userInitiated) {
-        Installer.clearQuarantineIfTrusted(newApp, installedAppForTrust: destination)
-      }.value
-
-      // Quit any running copy so we replace it cleanly, then relaunch it after.
+      // Quit any running copy first; relaunch it after a successful install.
       installPhases[id] = .quitting
       let wasRunning = await quitRunningApp(bundleID: id)
 
-      installPhases[id] = .installing
-      try await Task.detached(priority: .userInitiated) {
-        try Installer.replaceApp(at: destination, with: newApp)
-      }.value
+      switch format {
+      case .pkg:
+        // A package is run through the system installer (needs admin rights).
+        installPhases[id] = .installing
+        try await Task.detached(priority: .userInitiated) {
+          try Installer.installPkg(archive)
+        }.value
+
+      case .dmg, .zip:
+        installPhases[id] = .extracting
+        let newApp = try await Task.detached(priority: .userInitiated) {
+          try Installer.extractApp(from: archive, format: format, expectedBundleID: id)
+        }.value
+
+        installPhases[id] = .verifying
+        try await Task.detached(priority: .userInitiated) {
+          Installer.clearQuarantineIfTrusted(newApp, installedAppForTrust: destination)
+        }.value
+
+        installPhases[id] = .installing
+        try await Task.detached(priority: .userInitiated) {
+          try Installer.replaceApp(at: destination, with: newApp)
+        }.value
+      }
 
       installPhases[id] = .done
       refreshInstalledVersion(id: id)

@@ -1,0 +1,12 @@
+id: net.sourceforge.grandperspectiv
+name: GrandPerspective
+homepage: https://grandperspectiv.sourceforge.net
+
+check:
+  type: xml
+  url: https://sourceforge.net/projects/grandperspectiv/rss
+  pattern: '/grandperspective/(\d+\.\d+\.\d+)/'
+  download_pattern: '(https://sourceforge\.net/projects/grandperspectiv/files/[^<]+\.dmg/download)'
+
+download:
+  format: dmg

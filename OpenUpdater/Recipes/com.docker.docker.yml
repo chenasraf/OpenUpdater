@@ -1,0 +1,11 @@
+id: com.docker.docker
+name: Docker
+homepage: https://www.docker.com/products/docker-desktop/
+
+arch:
+  arm64: arm64
+  x86_64: amd64
+
+check:
+  type: sparkle
+  feed: https://desktop.docker.com/mac/main/{arch}/appcast.xml

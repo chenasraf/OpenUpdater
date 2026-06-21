@@ -10,6 +10,10 @@ check:
 version:
   strip_prefix: v
 
+arch:
+  arm64: aarch64
+  x86_64: x64
+
 download:
-  url: https://github.com/Martichou/rquickshare/releases/download/{tag}/r-quick-share-main_{tag}_aarch64.dmg
+  url: https://github.com/Martichou/rquickshare/releases/download/{tag}/r-quick-share-main_{tag}_{arch}.dmg
   format: dmg

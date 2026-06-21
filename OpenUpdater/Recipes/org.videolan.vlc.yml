@@ -2,6 +2,10 @@ id: org.videolan.vlc
 name: VLC
 homepage: https://www.videolan.org/vlc/
 
+arch:
+  arm64: arm64
+  x86_64: intel64
+
 check:
   type: sparkle
-  feed: https://update.videolan.org/vlc/sparkle/vlc-arm64.xml
+  feed: https://update.videolan.org/vlc/sparkle/vlc-{arch}.xml

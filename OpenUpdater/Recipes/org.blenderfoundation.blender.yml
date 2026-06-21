@@ -1,0 +1,13 @@
+id: org.blenderfoundation.blender
+name: Blender
+homepage: https://www.blender.org
+
+arch:
+  arm64: arm64
+  x86_64: x64
+
+check:
+  type: html
+  url: https://www.blender.org/download/
+  pattern: 'Blender (\d+\.\d+\.\d+)'
+  download_pattern: '(https://[^"]+blender-[\d.]+-macos-{arch}\.dmg)'

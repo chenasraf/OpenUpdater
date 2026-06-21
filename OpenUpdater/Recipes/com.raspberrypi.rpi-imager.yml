@@ -1,0 +1,15 @@
+id: com.raspberrypi.rpi-imager
+name: Raspberry Pi Imager
+homepage: https://www.raspberrypi.com/software/
+
+check:
+  type: github_releases
+  repo: raspberrypi/rpi-imager
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/raspberrypi/rpi-imager/releases/download/{tag}/rpi-imager-{tag}.dmg
+  format: dmg

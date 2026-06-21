@@ -30,6 +30,7 @@ enum InstallError: Error, CustomStringConvertible {
   case bundleIDMismatch(expected: String, found: String?)
   case toolFailed(String, String)
   case notWritable(URL)
+  case installerFailed(String)
 
   var description: String {
     switch self {
@@ -40,6 +41,10 @@ enum InstallError: Error, CustomStringConvertible {
       return "Downloaded app is \(found ?? "unknown"), expected \(expected)"
     case .toolFailed(let tool, _): return "\(tool) failed"
     case .notWritable(let url): return "No permission to replace \(url.lastPathComponent)"
+    case .installerFailed(let message):
+      let lower = message.lowercased()
+      if lower.contains("-128") || lower.contains("cancel") { return "Installation was cancelled" }
+      return "The installer failed"
     }
   }
 }
@@ -62,6 +67,20 @@ enum Installer {
       let session = URLSession(configuration: .default, delegate: delegate, delegateQueue: nil)
       delegate.session = session
       session.downloadTask(with: url).resume()
+    }
+  }
+
+  /// Run a downloaded `.pkg` through the system installer. This needs admin
+  /// rights, so it's run via an authorization prompt — the password dialog is the
+  /// user's consent (a package can run arbitrary install scripts). The temp file
+  /// has a UUID name, so the path is safe to embed in the AppleScript/shell.
+  static func installPkg(_ pkg: URL) throws {
+    let shellCommand = "/usr/sbin/installer -pkg '\(pkg.path)' -target /"
+    let appleScript = "do shell script \"\(shellCommand)\" with administrator privileges"
+    do {
+      try run("/usr/bin/osascript", ["-e", appleScript])
+    } catch InstallError.toolFailed(_, let output) {
+      throw InstallError.installerFailed(output)
     }
   }
 

@@ -15,6 +15,9 @@ struct UpdateRecipe: Decodable {
   let homepage: String?
   let check: Check
   let download: Download?
+  /// Maps the host arch (`arm64` / `x86_64`) to this app's arch string for the
+  /// `{arch}` placeholder. Omit when the app uses `arm64`/`x86_64` verbatim.
+  let arch: [String: String]?
 
   private let version: VersionRule?
   private let changelog: Changelog?
@@ -77,7 +80,7 @@ struct UpdateRecipe: Decodable {
   }
 
   struct Download: Decodable {
-    let urlTemplate: String
+    let urlTemplate: String?  // optional: omit when the URL comes from download_pattern/path
     let format: String?
 
     enum CodingKeys: String, CodingKey {
@@ -113,9 +116,20 @@ struct UpdateRecipe: Decodable {
     return value
   }
 
-  /// Expand `{tag}` and `{version}` placeholders in a URL template.
+  /// This app's arch string for the running Mac (e.g. `arm64`, `x64`, `aarch64`).
+  var archString: String {
+    arch?[SystemArch.current] ?? SystemArch.current
+  }
+
+  /// Replace the `{arch}` placeholder — usable on feed URLs, regex patterns, and
+  /// JSON key paths that don't carry `{tag}`/`{version}`.
+  func resolveArch(_ template: String) -> String {
+    template.replacingOccurrences(of: "{arch}", with: archString)
+  }
+
+  /// Expand `{tag}`, `{version}`, and `{arch}` placeholders in a URL template.
   func expand(_ template: String, tag: String, version: String) -> String {
-    template
+    resolveArch(template)
       .replacingOccurrences(of: "{tag}", with: tag)
       .replacingOccurrences(of: "{version}", with: version)
   }
@@ -168,8 +182,13 @@ enum VersionCompare {
   }
 
   private static func numericComponents(_ version: String) -> [Int] {
+    // Tolerate a leading "v" (e.g. an installed version of "v2.0.3").
+    var remaining = Substring(version)
+    if let first = remaining.first, first == "v" || first == "V" {
+      remaining = remaining.dropFirst()
+    }
     var components: [Int] = []
-    for part in version.split(separator: ".") {
+    for part in remaining.split(separator: ".") {
       let digits = part.prefix { $0.isNumber }
       guard !digits.isEmpty else { break }
       components.append(Int(digits) ?? 0)

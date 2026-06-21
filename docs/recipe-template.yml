@@ -11,9 +11,10 @@
 # no recipe. Use a recipe to: cover a non-Sparkle app (GitHub releases), name a
 # Sparkle feed for an app that sets it dynamically, or override an app's own feed.
 #
-# Placeholders usable in `download.url` and `changelog.url`:
+# Placeholders (usable in download.url, changelog.url, check.url/feed/pattern/path):
 #   {tag}      the raw upstream tag/version, e.g. "v0.20.3-Beta"
 #   {version}  the normalized version after `version` rules, e.g. "0.20.3-Beta"
+#   {arch}     the running Mac's arch string (see the `arch:` map below)
 #
 # ----------------------------------------------------------------------------
 
@@ -26,6 +27,15 @@ name: Example App
 
 # Optional. Project or vendor page (informational).
 homepage: https://example.com
+
+# Optional. Maps the running Mac's architecture to the string this app uses in the
+# `{arch}` placeholder. The keys are always `arm64` and `x86_64` (the host arch).
+# Omit this entirely if the app uses `arm64` / `x86_64` verbatim — `{arch}` then
+# defaults to those. Provide it only for apps with their own naming (x64, aarch64,
+# amd64, intel64, ARM64, …). Example for an app that ships `…-x64.dmg` on Intel:
+# arch:
+#   arm64: arm64
+#   x86_64: x64
 
 # REQUIRED. How to discover the latest version.
 check:
@@ -76,10 +86,12 @@ version:
   # strip_prefix. Omit unless the tag needs extracting from surrounding text.
   # pattern: '(\d+\.\d+\.\d+)'
 
-# Optional. Where to fetch the new build. Defined for the (future) installer —
-# not downloaded yet. Arch-specific assets currently default to one arch.
+# Optional. Where to fetch the new build, for the one-click installer. Use {arch}
+# for arch-specific assets (see the `arch:` map above).
 download:
-  url: https://github.com/example/app/releases/download/{tag}/App-{version}.dmg
+  # The download URL. OPTIONAL — omit it when the URL is pulled from the response
+  # via check.download_pattern / download_path; then this block just sets `format`.
+  url: https://github.com/example/app/releases/download/{tag}/App-{version}-{arch}.dmg
   # One of: dmg | zip | pkg
   format: dmg
 

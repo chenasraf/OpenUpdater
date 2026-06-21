@@ -10,9 +10,10 @@ check:
 version:
   strip_prefix: v
 
-download:
-  url: https://github.com/balena-io/etcher/releases/download/{tag}/balenaEtcher-{version}-arm64.dmg
-  format: dmg
+arch:
+  arm64: arm64
+  x86_64: x64
 
-changelog:
-  url: https://github.com/balena-io/etcher/releases/tag/{tag}
+download:
+  url: https://github.com/balena-io/etcher/releases/download/{tag}/balenaEtcher-{version}-{arch}.dmg
+  format: dmg

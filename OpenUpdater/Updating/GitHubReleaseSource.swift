@@ -82,6 +82,10 @@ enum GitHubReleaseSource {
     var request = URLRequest(url: url)
     request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
     request.setValue("OpenUpdater", forHTTPHeaderField: "User-Agent")
+    // An optional personal access token lifts the limit from 60 to 5,000 req/hr.
+    if let token = GitHubToken.load() {
+      request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+    }
 
     let (data, response) = try await URLSession.shared.data(for: request)
     guard let http = response as? HTTPURLResponse else { throw UpdateCheckError.badResponse(-1) }
@@ -107,9 +111,8 @@ enum GitHubReleaseSource {
 
     let version = recipe.normalizeVersion(fromTag: chosen.tagName)
     var downloadURL: URL?
-    if let download = recipe.download {
-      downloadURL = URL(
-        string: recipe.expand(download.urlTemplate, tag: chosen.tagName, version: version))
+    if let template = recipe.download?.urlTemplate {
+      downloadURL = URL(string: recipe.expand(template, tag: chosen.tagName, version: version))
     }
     return ReleaseResult(
       tag: chosen.tagName,
