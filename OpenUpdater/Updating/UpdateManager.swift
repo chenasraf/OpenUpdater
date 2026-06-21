@@ -243,8 +243,28 @@ final class UpdateManager: ObservableObject {
 
   /// Progress of an in-flight install, keyed by bundle identifier.
   @Published private(set) var installPhases: [String: InstallPhase] = [:]
+  /// True while `updateAll()` is walking the update list.
+  @Published private(set) var isUpdatingAll = false
 
   func installPhase(for id: String) -> InstallPhase { installPhases[id] ?? .idle }
+
+  /// Apps that have an update AND something we can actually download/install.
+  var installableUpdates: [AppInfo] { updates.filter { $0.downloadURL != nil } }
+
+  /// Install every available update, one at a time, waiting for each to finish.
+  /// `installUpdate` swallows its own errors (leaving a `.failed` phase on the
+  /// row), so a failure never stops the chain — it just stays visible in the list.
+  func updateAll() async {
+    guard !isUpdatingAll else { return }
+    isUpdatingAll = true
+    defer { isUpdatingAll = false }
+
+    let targets = installableUpdates  // snapshot; the list shrinks as installs succeed
+    Self.log.notice("Update all: \(targets.count, privacy: .public) app(s)")
+    for app in targets {
+      await installUpdate(app)
+    }
+  }
 
   /// Download and install the update for `app`, reporting progress via `installPhases`.
   func installUpdate(_ app: AppInfo) async {
@@ -274,11 +294,8 @@ final class UpdateManager: ObservableObject {
 
       switch format {
       case .pkg:
-        // A package is run through the system installer (needs admin rights).
         installPhases[id] = .installing
-        try await Task.detached(priority: .userInitiated) {
-          try Installer.installPkg(archive)
-        }.value
+        try await installPackage(archive)
 
       case .dmg, .zip:
         installPhases[id] = .extracting
@@ -292,9 +309,7 @@ final class UpdateManager: ObservableObject {
         }.value
 
         installPhases[id] = .installing
-        try await Task.detached(priority: .userInitiated) {
-          try Installer.replaceApp(at: destination, with: newApp)
-        }.value
+        try await replaceApp(newApp, at: destination)
       }
 
       installPhases[id] = .done
@@ -306,6 +321,28 @@ final class UpdateManager: ObservableObject {
       Self.log.error(
         "Install failed for \(id, privacy: .public): \(String(describing: error), privacy: .public)"
       )
+    }
+  }
+
+  /// Install a `.pkg` via the root helper (no prompt) when it's enabled, else fall
+  /// back to the system installer behind an admin authorization prompt.
+  private func installPackage(_ archive: URL) async throws {
+    if PrivilegedHelper.shared.isEnabled, await PrivilegedHelper.shared.ping() {
+      try await PrivilegedHelper.shared.installPackage(at: archive.path)
+    } else {
+      try await Task.detached(priority: .userInitiated) { try Installer.installPkg(archive) }.value
+    }
+  }
+
+  /// Replace an app in place. If the location isn't user-writable (admin-owned),
+  /// retry through the root helper when it's enabled.
+  private func replaceApp(_ newApp: URL, at destination: URL) async throws {
+    do {
+      try await Task.detached(priority: .userInitiated) {
+        try Installer.replaceApp(at: destination, with: newApp)
+      }.value
+    } catch InstallError.notWritable where PrivilegedHelper.shared.isEnabled {
+      try await PrivilegedHelper.shared.replaceApp(at: destination.path, with: newApp.path)
     }
   }
 

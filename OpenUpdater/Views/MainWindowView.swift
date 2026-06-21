@@ -91,6 +91,20 @@ struct UpdatesView: View {
             .font(.caption)
             .foregroundStyle(.secondary)
         }
+        Button {
+          Task { await updateManager.updateAll() }
+        } label: {
+          if updateManager.isUpdatingAll {
+            HStack(spacing: 6) {
+              ProgressView().controlSize(.small)
+              Text("Updating…")
+            }
+          } else {
+            Text("Update All")
+          }
+        }
+        .buttonStyle(.borderedProminent)
+        .disabled(updateManager.isUpdatingAll || updateManager.installableUpdates.isEmpty)
       }
       .padding()
 
@@ -153,7 +167,7 @@ struct UpdateRow: View {
         Task { await updateManager.installUpdate(app) }
       }
       .buttonStyle(.borderedProminent)
-      .disabled(app.downloadURL == nil)
+      .disabled(app.downloadURL == nil || updateManager.isUpdatingAll)
       .help(app.downloadURL == nil ? "No download available for this app yet" : "")
     case .downloading(let fraction):
       HStack(spacing: 6) {

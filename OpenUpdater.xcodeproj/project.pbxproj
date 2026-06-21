@@ -8,16 +8,67 @@
 
 /* Begin PBXBuildFile section */
 		74F15C282FE73AB5008E634A /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = 74F15C272FE73AB5008E634A /* Yams */; };
+		74F15CED2FE7F198008E634A /* OpenUpdaterHelper in CopyFiles */ = {isa = PBXBuildFile; fileRef = 74F15CDC2FE7EF58008E634A /* OpenUpdaterHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		74F15CDA2FE7EF58008E634A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		74F15CEC2FE7F17E008E634A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				74F15CED2FE7F198008E634A /* OpenUpdaterHelper in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		74F15CEE2FE7F1A6008E634A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchDaemons;
+			dstSubfolderSpec = 1;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		74F15BED2FE72FAD008E634A /* OpenUpdater.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenUpdater.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		74F15CDC2FE7EF58008E634A /* OpenUpdaterHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenUpdaterHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		74F15CF02FE7F1BB008E634A /* Exceptions for "OpenUpdaterHelper" folder in "Copy Files" phase from "OpenUpdater" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 74F15CEE2FE7F1A6008E634A /* CopyFiles */;
+			membershipExceptions = (
+				dev.casraf.OpenUpdater.Helper.plist,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		74F15BEF2FE72FAD008E634A /* OpenUpdater */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = OpenUpdater;
+			sourceTree = "<group>";
+		};
+		74F15CDD2FE7EF58008E634A /* OpenUpdaterHelper */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				74F15CF02FE7F1BB008E634A /* Exceptions for "OpenUpdaterHelper" folder in "Copy Files" phase from "OpenUpdater" target */,
+			);
+			path = OpenUpdaterHelper;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -31,6 +82,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		74F15CD92FE7EF58008E634A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -38,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				74F15BEF2FE72FAD008E634A /* OpenUpdater */,
+				74F15CDD2FE7EF58008E634A /* OpenUpdaterHelper */,
 				74F15BEE2FE72FAD008E634A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				74F15BED2FE72FAD008E634A /* OpenUpdater.app */,
+				74F15CDC2FE7EF58008E634A /* OpenUpdaterHelper */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -60,6 +120,8 @@
 				74F15BE92FE72FAD008E634A /* Sources */,
 				74F15BEA2FE72FAD008E634A /* Frameworks */,
 				74F15BEB2FE72FAD008E634A /* Resources */,
+				74F15CEC2FE7F17E008E634A /* CopyFiles */,
+				74F15CEE2FE7F1A6008E634A /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -76,6 +138,28 @@
 			productReference = 74F15BED2FE72FAD008E634A /* OpenUpdater.app */;
 			productType = "com.apple.product-type.application";
 		};
+		74F15CDB2FE7EF58008E634A /* OpenUpdaterHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 74F15CE02FE7EF58008E634A /* Build configuration list for PBXNativeTarget "OpenUpdaterHelper" */;
+			buildPhases = (
+				74F15CD82FE7EF58008E634A /* Sources */,
+				74F15CD92FE7EF58008E634A /* Frameworks */,
+				74F15CDA2FE7EF58008E634A /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				74F15CDD2FE7EF58008E634A /* OpenUpdaterHelper */,
+			);
+			name = OpenUpdaterHelper;
+			packageProductDependencies = (
+			);
+			productName = OpenUpdaterHelper;
+			productReference = 74F15CDC2FE7EF58008E634A /* OpenUpdaterHelper */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -87,6 +171,9 @@
 				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					74F15BEC2FE72FAD008E634A = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					74F15CDB2FE7EF58008E634A = {
 						CreatedOnToolsVersion = 26.3;
 					};
 				};
@@ -109,6 +196,7 @@
 			projectRoot = "";
 			targets = (
 				74F15BEC2FE72FAD008E634A /* OpenUpdater */,
+				74F15CDB2FE7EF58008E634A /* OpenUpdaterHelper */,
 			);
 		};
 /* End PBXProject section */
@@ -125,6 +213,13 @@
 
 /* Begin PBXSourcesBuildPhase section */
 		74F15BE92FE72FAD008E634A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		74F15CD82FE7EF58008E634A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -320,6 +415,38 @@
 			};
 			name = Release;
 		};
+		74F15CE12FE7EF58008E634A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Y893L6NQP2;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.casraf.OpenUpdater.Helper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "OpenUpdaterHelper/OpenUpdaterHelper-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		74F15CE22FE7EF58008E634A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Y893L6NQP2;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.casraf.OpenUpdater.Helper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "OpenUpdaterHelper/OpenUpdaterHelper-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -337,6 +464,15 @@
 			buildConfigurations = (
 				74F15BF92FE72FAF008E634A /* Debug */,
 				74F15BFA2FE72FAF008E634A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		74F15CE02FE7EF58008E634A /* Build configuration list for PBXNativeTarget "OpenUpdaterHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				74F15CE12FE7EF58008E634A /* Debug */,
+				74F15CE22FE7EF58008E634A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -5,6 +5,7 @@
 //  Created by Chen Asraf on 21/06/2026.
 //
 
+import ServiceManagement
 import SwiftUI
 
 struct SettingsView: View {
@@ -49,6 +50,8 @@ struct UpdatingSettingsView: View {
   @State private var token: String
   @State private var hasStoredToken: Bool
   @State private var status: String?
+  @State private var helperStatus: SMAppService.Status = .notRegistered
+  @State private var helperMessage: String?
 
   init() {
     // Load at construction so the field is populated on first render — onAppear
@@ -109,7 +112,68 @@ struct UpdatingSettingsView: View {
         .font(.caption)
         .foregroundStyle(.secondary)
       }
+
+      Section {
+        HStack {
+          Text(helperStatusText)
+          Spacer()
+          if helperStatus == .enabled {
+            Button("Remove", role: .destructive) {
+              Task {
+                try? await PrivilegedHelper.shared.unregister()
+                refreshHelperStatus()
+              }
+            }
+          } else {
+            Button("Install Helper…") { installHelper() }
+          }
+        }
+        if let helperMessage {
+          Text(helperMessage).font(.caption).foregroundStyle(.secondary)
+        }
+      } header: {
+        Text("Background Helper")
+      } footer: {
+        Text(
+          "Installs updates without asking for your password each time. You approve it "
+            + "once in System Settings → Login Items, then pkg installs and protected apps "
+            + "update silently."
+        )
+        .font(.caption)
+        .foregroundStyle(.secondary)
+      }
     }
     .formStyle(.grouped)
+    .onAppear(perform: refreshHelperStatus)
+  }
+
+  private var helperStatusText: String {
+    switch helperStatus {
+    case .enabled: return "Installed and enabled"
+    case .requiresApproval: return "Waiting for approval in System Settings"
+    case .notRegistered: return "Not installed"
+    case .notFound: return "Not available in this build"
+    @unknown default: return "Unknown"
+    }
+  }
+
+  private func refreshHelperStatus() {
+    helperStatus = PrivilegedHelper.shared.status
+  }
+
+  private func installHelper() {
+    do {
+      let status = try PrivilegedHelper.shared.register()
+      helperStatus = status
+      if status == .requiresApproval {
+        helperMessage = "Approve OpenUpdater under Login Items to finish."
+        SMAppService.openSystemSettingsLoginItems()
+      } else if status == .enabled {
+        helperMessage = "Helper installed."
+      }
+    } catch {
+      helperStatus = PrivilegedHelper.shared.status
+      helperMessage = "Couldn't install the helper: \(error.localizedDescription)"
+    }
   }
 }
