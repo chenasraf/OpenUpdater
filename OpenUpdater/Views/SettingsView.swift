@@ -86,43 +86,63 @@ struct GeneralSettingsView: View {
 struct IgnoreListView: View {
   @EnvironmentObject private var updateManager: UpdateManager
 
+  /// User-added ignores (removable), shown on top.
+  private var userIgnores: [AppInfo] {
+    updateManager.ignoredApps.filter { $0.builtInIgnoreReason == nil }
+  }
+  /// Built-in ignores (locked), shown below.
+  private var systemIgnores: [AppInfo] {
+    updateManager.ignoredApps.filter { $0.builtInIgnoreReason != nil }
+  }
+
   var body: some View {
-    Group {
-      if updateManager.ignoredApps.isEmpty {
-        VStack(spacing: 8) {
-          Image(systemName: "nosign").font(.system(size: 40)).foregroundStyle(.secondary)
-          Text("No ignored apps").font(.title3)
-          Text("Right-click an app and choose Ignore to add it here.")
-            .font(.caption).foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-      } else {
-        List(updateManager.ignoredApps) { app in
-          HStack(spacing: 10) {
-            AppIcon(app: app, size: 28)
-            VStack(alignment: .leading, spacing: 2) {
-              Text(app.name)
-              Text(ignoreDescription(app)).font(.caption).foregroundStyle(.secondary)
-            }
-            Spacer()
-            if app.builtInIgnoreReason != nil {
-              Image(systemName: "lock.fill")
-                .foregroundStyle(.secondary)
-                .help("Always ignored by \(AppBranding.title)")
-            } else {
-              Button("Remove") { updateManager.clearIgnore(for: app) }
-            }
+    if updateManager.ignoredApps.isEmpty {
+      VStack(spacing: 8) {
+        Image(systemName: "nosign").font(.system(size: 40)).foregroundStyle(.secondary)
+        Text("No ignored apps").font(.title3)
+        Text("Right-click an app and choose Ignore to add it here.")
+          .font(.caption).foregroundStyle(.secondary)
+      }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+    } else {
+      List {
+        if !userIgnores.isEmpty {
+          Section("Ignored by you") {
+            ForEach(userIgnores) { row($0) }
           }
-          .padding(.vertical, 2)
+        }
+        if !systemIgnores.isEmpty {
+          Section("Ignored by \(AppBranding.title)") {
+            ForEach(systemIgnores) { row($0) }
+          }
         }
       }
     }
   }
 
+  private func row(_ app: AppInfo) -> some View {
+    HStack(spacing: 10) {
+      AppIcon(app: app, size: 28)
+      VStack(alignment: .leading, spacing: 2) {
+        Text(app.name)
+        Text(ignoreDescription(app)).font(.caption).foregroundStyle(.secondary)
+      }
+      Spacer()
+      if app.builtInIgnoreReason != nil {
+        Image(systemName: "lock.fill")
+          .foregroundStyle(.secondary)
+          .help("Always ignored by \(AppBranding.title)")
+      } else {
+        Button("Remove") { updateManager.clearIgnore(for: app) }
+      }
+    }
+    .padding(.vertical, 2)
+  }
+
   private func ignoreDescription(_ app: AppInfo) -> String {
     if let reason = app.builtInIgnoreReason { return reason }
-    if app.ignored { return "Ignored by user" }
-    if let version = app.ignoredVersion { return "Version \(version) ignored by user" }
+    if app.ignored { return "Entire app" }
+    if let version = app.ignoredVersion { return "Version \(version)" }
     return ""
   }
 }
