@@ -12,7 +12,7 @@ import UniformTypeIdentifiers
 
 struct SettingsView: View {
   enum Tab: String, CaseIterable, Identifiable {
-    case general, updating, ignoreList, unsupported
+    case general, updating, ignoreList, unsupported, customRecipes
     var id: String { rawValue }
     var title: String {
       switch self {
@@ -20,6 +20,7 @@ struct SettingsView: View {
       case .updating: return "Updating"
       case .ignoreList: return "Ignore List"
       case .unsupported: return "Unsupported"
+      case .customRecipes: return "Custom Recipes"
       }
     }
     var icon: String {
@@ -28,28 +29,47 @@ struct SettingsView: View {
       case .updating: return "arrow.triangle.2.circlepath"
       case .ignoreList: return "nosign"
       case .unsupported: return "questionmark.circle"
+      case .customRecipes: return "doc.badge.plus"
       }
     }
   }
 
+  @EnvironmentObject private var updateManager: UpdateManager
   @State private var selection: Tab = .general
+  @State private var customSelection: String?
 
   var body: some View {
-    NavigationSplitView {
+    HStack(spacing: 0) {
       List(Tab.allCases, selection: $selection) { tab in
         Label(tab.title, systemImage: tab.icon).tag(tab)
       }
-      .navigationSplitViewColumnWidth(170)
-    } detail: {
-      switch selection {
-      case .general: GeneralSettingsView()
-      case .updating: UpdatingSettingsView()
-      case .ignoreList: IgnoreListView()
-      case .unsupported: UnsupportedAppsView()
-      }
+      .listStyle(.sidebar)
+      .frame(width: 180)
+
+      Divider()
+
+      detail
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-    .navigationTitle("Preferences")
-    .frame(minWidth: 580, minHeight: 360)
+    .frame(
+      minWidth: 680, idealWidth: 820, maxWidth: .infinity,
+      minHeight: 440, idealHeight: 560, maxHeight: .infinity)
+  }
+
+  @ViewBuilder private var detail: some View {
+    switch selection {
+    case .general: GeneralSettingsView()
+    case .updating: UpdatingSettingsView()
+    case .ignoreList: IgnoreListView()
+    case .unsupported: UnsupportedAppsView(onCreateRecipe: createRecipe)
+    case .customRecipes: CustomRecipesView(selectedID: $customSelection)
+    }
+  }
+
+  /// Create a draft custom recipe for an app and jump to the Custom Recipes tab.
+  private func createRecipe(for app: AppInfo) {
+    customSelection = updateManager.createCustomRecipeDraft(for: app)
+    selection = .customRecipes
   }
 }
 
@@ -111,6 +131,7 @@ struct IgnoreListView: View {
 /// offers ways to share the list so coverage can be improved.
 struct UnsupportedAppsView: View {
   @EnvironmentObject private var updateManager: UpdateManager
+  let onCreateRecipe: (AppInfo) -> Void
   @State private var copied = false
 
   private var apps: [AppInfo] { updateManager.unsupportedApps }
@@ -145,8 +166,17 @@ struct UnsupportedAppsView: View {
                 Text(app.id).font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
               }
               Spacer()
-              Button("Request…") { requestRecipe(app) }
-                .help("Open a pre-filled issue requesting a recipe for this app")
+              Menu {
+                Button("Create Custom Recipe") { onCreateRecipe(app) }
+                Button("Request on GitHub…") {
+                  updateManager.openRecipeIssue(name: app.name, bundleID: app.id)
+                }
+              } label: {
+                Image(systemName: "ellipsis.circle")
+              }
+              .menuStyle(.borderlessButton)
+              .fixedSize()
+              .help("Create a custom recipe, or request one on GitHub")
             }
             .padding(.vertical, 2)
           }
@@ -207,21 +237,6 @@ struct UnsupportedAppsView: View {
   private func reportOnGitHub() {
     guard let url = issueURL() else { return }
     NSWorkspace.shared.open(url)
-  }
-
-  /// Open the "Add an app" issue form, pre-filled with this app's name and bundle id,
-  /// so the user can request (or propose) a recipe without forking.
-  private func requestRecipe(_ app: AppInfo) {
-    var components = URLComponents(
-      url: AppBranding.repositoryURL.appendingPathComponent("issues/new"),
-      resolvingAgainstBaseURL: false)
-    components?.queryItems = [
-      URLQueryItem(name: "template", value: "add_recipe.yml"),
-      URLQueryItem(name: "title", value: "[Recipe]: \(app.name)"),
-      URLQueryItem(name: "name", value: app.name),
-      URLQueryItem(name: "bundle-id", value: app.id),
-    ]
-    if let url = components?.url { NSWorkspace.shared.open(url) }
   }
 
   /// A prefilled "new issue" URL listing the unsupported apps.
@@ -374,5 +389,158 @@ struct UpdatingSettingsView: View {
       helperStatus = PrivilegedHelper.shared.status
       helperMessage = "Couldn't install the helper: \(error.localizedDescription)"
     }
+  }
+}
+
+/// Lists the user's custom recipes (stored in Application Support) and edits them.
+/// An enabled, valid recipe overrides the built-in one for the same bundle id.
+struct CustomRecipesView: View {
+  @EnvironmentObject private var updateManager: UpdateManager
+  @Binding var selectedID: String?
+  /// The live editor buffer for the selected recipe (may differ from disk = unsaved).
+  @State private var draftText = ""
+
+  private var recipes: [CustomRecipe] { updateManager.customRecipes }
+  private var selected: CustomRecipe? { recipes.first { $0.id == selectedID } }
+  private var isDirty: Bool { selected.map { draftText != $0.text } ?? false }
+  private var parseError: String? { selected == nil ? nil : CustomRecipeStore.validate(draftText) }
+
+  var body: some View {
+    VStack(spacing: 0) {
+      HStack {
+        Text("Custom Recipes").font(.headline)
+        Spacer()
+        Button {
+          selectedID = updateManager.createCustomRecipe()
+        } label: {
+          Label("New Recipe", systemImage: "plus")
+        }
+      }
+      .padding(.horizontal).padding(.vertical, 8)
+
+      Divider()
+
+      if recipes.isEmpty {
+        emptyState
+      } else {
+        HSplitView {
+          List(recipes, selection: $selectedID) { recipe in
+            row(recipe)
+          }
+          .frame(minWidth: 200, idealWidth: 240, maxWidth: 340)
+
+          Group {
+            if let selected {
+              editor(selected)
+            } else {
+              Text("Select a recipe to edit.")
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+          }
+          .frame(minWidth: 300, maxWidth: .infinity, maxHeight: .infinity)
+        }
+      }
+    }
+    .onAppear(perform: syncDraft)
+    .onChange(of: selectedID) { _, _ in syncDraft() }
+  }
+
+  /// Load the selected recipe's on-disk text into the editor buffer.
+  private func syncDraft() {
+    draftText = selected?.text ?? ""
+  }
+
+  /// Enable/disable: persist only the `enabled:` line to disk (not other unsaved
+  /// edits), and mirror that one-line change into the live buffer so editor edits
+  /// in progress are preserved.
+  private func setEnabled(_ enabled: Bool, _ recipe: CustomRecipe) {
+    updateManager.setCustomRecipeEnabled(enabled, recipe)
+    if recipe.id == selectedID {
+      draftText = CustomRecipeStore.text(draftText, settingEnabled: enabled)
+    }
+  }
+
+  private var emptyState: some View {
+    VStack(spacing: 8) {
+      Image(systemName: "doc.badge.plus").font(.system(size: 40)).foregroundStyle(.secondary)
+      Text("No custom recipes").font(.title3)
+      Text(
+        "Add your own recipe to cover an app \(AppBranding.title) doesn't yet — or to "
+          + "override a built-in one."
+      )
+      .font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
+      Button("New Recipe") { selectedID = updateManager.createCustomRecipe() }
+        .padding(.top, 4)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity).padding()
+  }
+
+  private func row(_ recipe: CustomRecipe) -> some View {
+    HStack(spacing: 8) {
+      Toggle(
+        "",
+        isOn: Binding(
+          get: { recipe.enabled },
+          set: { setEnabled($0, recipe) }
+        )
+      )
+      .labelsHidden().toggleStyle(.switch).controlSize(.mini)
+      .disabled(recipe.parseError != nil)
+      .help(recipe.parseError != nil ? "Fix errors before enabling" : "Enable or disable")
+
+      VStack(alignment: .leading, spacing: 1) {
+        Text(recipe.name ?? recipe.id).lineLimit(1)
+        Text(recipe.id).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+      }
+      Spacer(minLength: 4)
+      if recipe.parseError != nil {
+        Image(systemName: "exclamationmark.triangle.fill")
+          .foregroundStyle(.orange).help(recipe.parseError ?? "")
+      } else if recipe.overridesBuiltIn {
+        Image(systemName: "square.2.layers.3d.top.filled")
+          .foregroundStyle(.secondary).help("Overrides a built-in recipe")
+      }
+    }
+  }
+
+  private func editor(_ recipe: CustomRecipe) -> some View {
+    VStack(alignment: .leading, spacing: 8) {
+      TextEditor(text: $draftText)
+        .font(.system(.body, design: .monospaced))
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(RoundedRectangle(cornerRadius: 6).stroke(.quaternary))
+
+      if let parseError {
+        Label(parseError, systemImage: "exclamationmark.triangle.fill")
+          .foregroundStyle(.orange).font(.caption).lineLimit(2)
+      } else {
+        Label("Valid recipe", systemImage: "checkmark.circle.fill")
+          .foregroundStyle(.green).font(.caption)
+      }
+
+      HStack {
+        Button("Save") {
+          selectedID = updateManager.saveCustomRecipe(
+            text: draftText, originalStem: recipe.fileStem)
+        }
+        .keyboardShortcut("s", modifiers: .command)
+        .disabled(!isDirty)
+
+        Button("Delete", role: .destructive) {
+          updateManager.deleteCustomRecipe(recipe)
+          selectedID = nil
+        }
+        Spacer()
+        Button("Submit Recipe…") {
+          let decoded = CustomRecipeStore.decoded(draftText)
+          updateManager.openRecipeIssue(
+            name: decoded?.name ?? recipe.id, bundleID: decoded?.id ?? recipe.id, recipe: draftText)
+        }
+        .disabled(parseError != nil)
+        .help("Open a pre-filled GitHub issue with this recipe")
+      }
+    }
+    .padding()
   }
 }

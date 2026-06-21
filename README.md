@@ -108,8 +108,8 @@ Trash.
 ## Contributing
 
 OpenUpdater's coverage grows through community-maintained **update recipes** — that
-open registry of update sources is the whole point of the project. There are two ways
-to help, and the first needs no fork.
+open registry of update sources is the whole point of the project. There are a few
+ways to help, and most need no fork.
 
 ### Request an app (no fork needed)
 
@@ -119,9 +119,26 @@ can turn that into a recipe — and if you've drafted the YAML yourself, you can
 right into the issue.
 
 > Tip: the in-app **Preferences → Unsupported** tab lists every installed app that has
-> no recipe yet. Each row has a **Request…** button that opens this issue form
-> pre-filled with the app's name and bundle id (or use **Report All…** to file one
-> issue covering the whole list).
+> no recipe yet. Each row's **⋯** menu can **Request on GitHub** (a pre-filled issue) or
+> **Create Custom Recipe** (see below); **Report All…** files one issue for the whole
+> list.
+
+### Build a recipe in the app (no fork, no rebuild)
+
+OpenUpdater can author and run recipes for you — no Xcode needed. Open
+**Preferences → Custom Recipes** (or pick **Create Custom Recipe** from an app's **⋯**
+menu in the **Unsupported** tab) to get an editable YAML pane with:
+
+- **Live validation** as you type, plus an **enable/disable** switch per recipe.
+- **Override built-in recipes** — a custom recipe with the same bundle id wins, so you
+  can fix or tweak coverage for an app without waiting for a release.
+- **Submit Recipe…**, which opens a pre-filled GitHub issue with your YAML attached so
+  it can be folded into the shared registry.
+
+Custom recipes live in `~/Library/Application Support/OpenUpdater/Recipes/` and take
+effect immediately — this is the easiest way to write and test a recipe before
+contributing it. New drafts start disabled until you fill in the details and flip them
+on.
 
 ### Write a recipe (pull request)
 
@@ -169,11 +186,6 @@ URL placeholders: `{tag}`, `{version}`, `{major}` / `{minor}` / `{patch}`, and
 `{arch}`. The template documents every field, the arch mapping, version normalization,
 and tag filtering (`tag_pattern` / `tag_ignore` for skipping rolling tags like
 `nightly`).
-
-**Testing:** drop the file in `OpenUpdater/Recipes/`, rebuild, and confirm the app
-shows in the Updates tab with the right version (recipes are bundled as resources, so a
-rebuild picks them up). A malformed recipe is skipped silently — if your app doesn't
-appear, double-check the YAML and that the filename matches the bundle id exactly.
 
 ### Bugs and ideas
 

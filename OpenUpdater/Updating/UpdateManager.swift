@@ -115,16 +115,23 @@ final class UpdateManager: ObservableObject {
       .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
   }
 
-  /// Update recipes bundled with the app, keyed by bundle identifier.
-  private let recipes: [String: UpdateRecipe]
+  /// Recipes bundled with the app, keyed by bundle identifier.
+  private let builtInRecipes: [String: UpdateRecipe]
+  /// Active recipes: the built-in set with enabled custom recipes layered on top.
+  private var recipes: [String: UpdateRecipe]
+  /// User-authored recipes from Application Support, for the Preferences list (includes
+  /// disabled and invalid ones).
+  @Published private(set) var customRecipes: [CustomRecipe] = []
 
   static let log = Logger(subsystem: "dev.casraf.OpenUpdater", category: "updates")
 
   init() {
-    recipes = RecipeStore.loadAll()
+    builtInRecipes = RecipeStore.loadAll()
+    recipes = builtInRecipes
+    loadCustomRecipes()
     scanInstalledApps()
     Self.log.notice(
-      "Loaded \(self.recipes.count, privacy: .public) recipe(s), scanned \(self.apps.count, privacy: .public) app(s)"
+      "Loaded \(self.builtInRecipes.count, privacy: .public) built-in + \(self.customRecipes.count, privacy: .public) custom recipe(s), scanned \(self.apps.count, privacy: .public) app(s)"
     )
   }
 
@@ -373,6 +380,112 @@ final class UpdateManager: ObservableObject {
   func checkForUpdatesIfNeeded() async {
     guard lastChecked == nil, !isChecking else { return }
     await checkForUpdates()
+  }
+
+  // MARK: - Custom recipes
+
+  /// Reload custom recipes from disk and rebuild the active recipe set.
+  private func loadCustomRecipes() {
+    customRecipes = CustomRecipeStore.loadAll(builtInIDs: Set(builtInRecipes.keys))
+    rebuildActiveRecipes()
+  }
+
+  /// Merge enabled, valid custom recipes over the built-in set (custom wins by id).
+  private func rebuildActiveRecipes() {
+    var merged = builtInRecipes
+    for custom in customRecipes where custom.enabled && custom.parseError == nil {
+      if let recipe = CustomRecipeStore.decoded(custom.text) { merged[recipe.id] = recipe }
+    }
+    recipes = merged
+  }
+
+  /// Re-resolve a single app after its recipe changed. Clears stale results if the
+  /// app is no longer checkable (e.g. a custom recipe was removed or disabled).
+  private func recheck(bundleID: String) async {
+    guard let index = apps.firstIndex(where: { $0.id == bundleID }) else { return }
+    if isCheckable(apps[index]) {
+      _ = await resolveLatest(forAppAt: index)
+    } else {
+      apps[index].latestVersion = nil
+      apps[index].latestBuild = nil
+      apps[index].downloadURL = nil
+      apps[index].appStoreURL = nil
+      apps[index].changelogURL = nil
+      apps[index].source = .unknown
+    }
+  }
+
+  /// Create a starter custom recipe for an unsupported app (disabled until finished).
+  /// Returns its file stem (the bundle id); a no-op if one already exists.
+  @discardableResult
+  func createCustomRecipeDraft(for app: AppInfo) -> String {
+    if !customRecipes.contains(where: { $0.fileStem == app.id }) {
+      try? CustomRecipeStore.write(
+        CustomRecipeStore.draft(id: app.id, name: app.name), toStem: app.id)
+      loadCustomRecipes()
+    }
+    return app.id
+  }
+
+  /// Create a blank custom recipe with a placeholder id. Returns its file stem.
+  @discardableResult
+  func createCustomRecipe() -> String {
+    var stem = "com.example.app"
+    var counter = 1
+    while customRecipes.contains(where: { $0.fileStem == stem }) {
+      counter += 1
+      stem = "com.example.app\(counter)"
+    }
+    try? CustomRecipeStore.write(CustomRecipeStore.draft(id: stem, name: "New App"), toStem: stem)
+    loadCustomRecipes()
+    return stem
+  }
+
+  /// Save edited recipe text. If its `id` changed, the file is renamed to match.
+  /// Returns the (possibly new) file stem.
+  @discardableResult
+  func saveCustomRecipe(text: String, originalStem: String) -> String {
+    let newStem = CustomRecipeStore.decoded(text)?.id ?? originalStem
+    if newStem != originalStem { CustomRecipeStore.deleteStem(originalStem) }
+    try? CustomRecipeStore.write(text, toStem: newStem)
+    loadCustomRecipes()
+    Task {
+      await recheck(bundleID: originalStem)
+      if newStem != originalStem { await recheck(bundleID: newStem) }
+    }
+    return newStem
+  }
+
+  /// Enable or disable a custom recipe (writes `enabled:` into its file).
+  func setCustomRecipeEnabled(_ enabled: Bool, _ recipe: CustomRecipe) {
+    let newText = CustomRecipeStore.text(recipe.text, settingEnabled: enabled)
+    try? CustomRecipeStore.write(newText, toStem: recipe.fileStem)
+    loadCustomRecipes()
+    Task { await recheck(bundleID: recipe.id) }
+  }
+
+  /// Delete a custom recipe.
+  func deleteCustomRecipe(_ recipe: CustomRecipe) {
+    CustomRecipeStore.deleteStem(recipe.fileStem)
+    loadCustomRecipes()
+    Task { await recheck(bundleID: recipe.id) }
+  }
+
+  /// Open the "Add an app" issue form, pre-filled with the app's name and bundle id,
+  /// and optionally the recipe YAML, so users can submit a finished recipe.
+  func openRecipeIssue(name: String, bundleID: String, recipe: String? = nil) {
+    var components = URLComponents(
+      url: AppBranding.repositoryURL.appendingPathComponent("issues/new"),
+      resolvingAgainstBaseURL: false)
+    var items = [
+      URLQueryItem(name: "template", value: "add_recipe.yml"),
+      URLQueryItem(name: "title", value: "[Recipe]: \(name)"),
+      URLQueryItem(name: "name", value: name),
+      URLQueryItem(name: "bundle-id", value: bundleID),
+    ]
+    if let recipe, !recipe.isEmpty { items.append(URLQueryItem(name: "recipe", value: recipe)) }
+    components?.queryItems = items
+    if let url = components?.url { NSWorkspace.shared.open(url) }
   }
 
   // MARK: - Installing

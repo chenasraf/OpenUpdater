@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainWindowView: View {
   @EnvironmentObject private var updateManager: UpdateManager
+  @Environment(\.openWindow) private var openWindow
   @State private var selectedTab = "updates"
 
   var body: some View {
@@ -22,7 +23,9 @@ struct MainWindowView: View {
       }
       .navigationSplitViewColumnWidth(180)
       .safeAreaInset(edge: .bottom) {
-        SettingsLink {
+        Button {
+          openWindow(id: PreferencesWindow.id)
+        } label: {
           Label("Preferences", systemImage: "gearshape")
         }
         .buttonStyle(.plain)

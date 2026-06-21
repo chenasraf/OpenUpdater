@@ -30,19 +30,31 @@ struct OpenUpdaterApp: App {
     .windowToolbarStyle(.unified)
     .defaultSize(width: 800, height: 550)
     .commands {
-      // Rename the standard "Settings…" item to "Preferences…" (still ⌘,).
-      // SettingsLink is the only supported way to open the Settings scene.
+      // Rename the standard "Settings…" item to "Preferences…" (still ⌘,). Preferences
+      // is a regular Window (not a Settings scene) so it can be resized.
       CommandGroup(replacing: .appSettings) {
-        SettingsLink {
-          Text("Preferences…")
-        }
-        .keyboardShortcut(",", modifiers: .command)
+        OpenPreferencesButton()
       }
     }
 
-    Settings {
+    Window("Preferences", id: PreferencesWindow.id) {
       SettingsView()
         .environmentObject(appDelegate.updateManager)
     }
+    .windowResizability(.contentMinSize)
+    .defaultSize(width: 820, height: 560)
+  }
+}
+
+enum PreferencesWindow {
+  static let id = "preferences"
+}
+
+/// The "Preferences…" menu command (⌘,). A small view so it can use `openWindow`.
+private struct OpenPreferencesButton: View {
+  @Environment(\.openWindow) private var openWindow
+  var body: some View {
+    Button("Preferences…") { openWindow(id: PreferencesWindow.id) }
+      .keyboardShortcut(",", modifiers: .command)
   }
 }

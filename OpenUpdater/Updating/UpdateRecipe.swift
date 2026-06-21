@@ -15,6 +15,11 @@ struct UpdateRecipe: Decodable {
   let homepage: String?
   let check: Check
   let download: Download?
+  /// Custom recipes only: when `false`, the recipe is ignored (built-in/auto sources
+  /// take over). Absent means enabled. Built-in recipes never set this.
+  let enabled: Bool?
+  /// Whether this recipe is active. `enabled` absent → treated as enabled.
+  var isEnabled: Bool { enabled ?? true }
   /// Maps the host arch (`arm64` / `x86_64`) to this app's arch string for the
   /// `{arch}` placeholder. Omit when the app uses `arm64`/`x86_64` verbatim.
   let arch: [String: String]?
