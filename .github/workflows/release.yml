@@ -5,11 +5,17 @@ name: Release
 #     (as github-actions[bot], using the default GITHUB_TOKEN — no PAT needed).
 #  2. Merging that PR pushes to master, release-please cuts the GitHub release + tag,
 #     and the build job (gated on release_created) signs, notarizes, packages a DMG,
-#     and uploads it to the release — using the version/tag release-please derived.
+#     and uploads it to the release.
+#  workflow_dispatch lets you (re)build + attach a DMG to an existing release tag.
 
 on:
   push:
     branches: [master]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to build & attach a DMG to (e.g. v1.0.0)"
+        required: true
 
 permissions:
   contents: write
@@ -21,11 +27,11 @@ concurrency:
 
 jobs:
   release-please:
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
-      version: ${{ steps.release.outputs.version }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
@@ -37,16 +43,27 @@ jobs:
 
   build:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    if: ${{ always() && (needs.release-please.outputs.release_created == 'true' || github.event_name == 'workflow_dispatch') }}
     runs-on: macos-15
     permissions:
       contents: write
     env:
-      VERSION: ${{ needs.release-please.outputs.version }}
-      TAG: ${{ needs.release-please.outputs.tag_name }}
       TEAM_ID: Y893L6NQP2
     steps:
+      - name: Resolve tag & version
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${{ needs.release-please.outputs.tag_name }}"
+          fi
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          echo "VERSION=${TAG#v}" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
 
       - name: Import Developer ID certificate
         env:
@@ -82,32 +99,19 @@ jobs:
             ENABLE_HARDENED_RUNTIME=YES \
             OTHER_CODE_SIGN_FLAGS="--timestamp"
 
-      - name: Export app
+      - name: Verify signature & package DMG
         run: |
           set -euo pipefail
-          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key><string>developer-id</string>
-            <key>teamID</key><string>${TEAM_ID}</string>
-            <key>signingStyle</key><string>manual</string>
-          </dict>
-          </plist>
-          PLIST
-          xcodebuild -exportArchive \
-            -archivePath "$RUNNER_TEMP/OpenUpdater.xcarchive" \
-            -exportPath "$RUNNER_TEMP/export" \
-            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist"
-
-      - name: Package DMG
-        run: |
-          set -euo pipefail
+          APP="$RUNNER_TEMP/OpenUpdater.xcarchive/Products/Applications/OpenUpdater.app"
+          # The archive is already Developer ID-signed (hardened runtime + secure
+          # timestamp), so use it directly — newer Xcode's -exportArchive rejects the
+          # "developer-id" method.
+          codesign --verify --strict --verbose=2 "$APP"
+          codesign -dvv "$APP" 2>&1 | grep -E "Authority=|TeamIdentifier=" || true
           STAGE="$RUNNER_TEMP/dmg"
           DMG="$RUNNER_TEMP/OpenUpdater-${VERSION}.dmg"
           mkdir -p "$STAGE"
-          cp -R "$RUNNER_TEMP/export/OpenUpdater.app" "$STAGE/"
+          cp -R "$APP" "$STAGE/"
           ln -s /Applications "$STAGE/Applications"
           hdiutil create -volname "OpenUpdater" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
           echo "DMG=$DMG" >> "$GITHUB_ENV"
