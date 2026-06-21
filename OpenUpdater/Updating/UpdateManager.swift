@@ -11,7 +11,7 @@ import Foundation
 import OSLog
 
 /// Where an app's update information is sourced from.
-enum UpdateSource {
+enum UpdateSource: String, Codable {
   case githubRelease
   case sparkle
   case http
@@ -123,6 +123,10 @@ final class UpdateManager: ObservableObject {
   /// disabled and invalid ones).
   @Published private(set) var customRecipes: [CustomRecipe] = []
 
+  /// Whether a full check has run this app session. The launch check keys off this
+  /// (not `lastChecked`), so a cache-prefilled `lastChecked` doesn't suppress it.
+  private var hasCheckedThisSession = false
+
   static let log = Logger(subsystem: "dev.casraf.OpenUpdater", category: "updates")
 
   init() {
@@ -130,6 +134,7 @@ final class UpdateManager: ObservableObject {
     recipes = builtInRecipes
     loadCustomRecipes()
     scanInstalledApps()
+    applyCachedResults()
     Self.log.notice(
       "Loaded \(self.builtInRecipes.count, privacy: .public) built-in + \(self.customRecipes.count, privacy: .public) custom recipe(s), scanned \(self.apps.count, privacy: .public) app(s)"
     )
@@ -234,7 +239,9 @@ final class UpdateManager: ObservableObject {
     }
 
     lastChecked = Date()
+    hasCheckedThisSession = true
     lastError = Self.errorSummary(failures: failures, rateLimited: rateLimited)
+    saveCache()
     Self.log.notice(
       "Check done: \(self.updates.count, privacy: .public) update(s), \(failures, privacy: .public) failure(s)"
     )
@@ -318,6 +325,7 @@ final class UpdateManager: ObservableObject {
     defer { rescanningIDs.remove(app.id) }
     refreshInstalledVersion(id: app.id)
     _ = await resolveLatest(forAppAt: index)
+    saveCache()
   }
 
   // MARK: - Pre-release preference
@@ -339,6 +347,7 @@ final class UpdateManager: ObservableObject {
     AppPreferences.update(app.id) { $0.includePrereleases = value }
     guard let index = apps.firstIndex(where: { $0.id == app.id }) else { return }
     _ = await resolveLatest(forAppAt: index)
+    saveCache()
   }
 
   // MARK: - Ignore rules
@@ -377,9 +386,47 @@ final class UpdateManager: ObservableObject {
   }
 
   /// Run an initial check once per session (e.g. when the main window first appears).
+  /// The cache may have prefilled `lastChecked`, so this keys off the session flag.
   func checkForUpdatesIfNeeded() async {
-    guard lastChecked == nil, !isChecking else { return }
+    guard !hasCheckedThisSession, !isChecking else { return }
     await checkForUpdates()
+  }
+
+  // MARK: - Result cache
+
+  /// Prefill apps with the last persisted check results so the previous state shows
+  /// immediately at launch. The on-launch re-check refines it.
+  private func applyCachedResults() {
+    guard let cache = CheckCacheStore.load() else { return }
+    lastChecked = cache.lastChecked
+    for index in apps.indices {
+      guard let entry = cache.apps[apps[index].id] else { continue }
+      apps[index].latestVersion = entry.latestVersion
+      apps[index].latestBuild = entry.latestBuild
+      apps[index].changelogURL = entry.changelogURL
+      apps[index].homepageURL = entry.homepageURL
+      apps[index].downloadURL = entry.downloadURL
+      apps[index].downloadFormat = entry.downloadFormat
+      apps[index].appStoreURL = entry.appStoreURL
+      apps[index].source = entry.source
+    }
+  }
+
+  /// Persist the current resolved results so they're available on next launch.
+  private func saveCache() {
+    var entries: [String: CheckCache.Entry] = [:]
+    for app in apps where app.latestVersion != nil || app.source != .unknown {
+      entries[app.id] = CheckCache.Entry(
+        latestVersion: app.latestVersion,
+        latestBuild: app.latestBuild,
+        changelogURL: app.changelogURL,
+        homepageURL: app.homepageURL,
+        downloadURL: app.downloadURL,
+        downloadFormat: app.downloadFormat,
+        appStoreURL: app.appStoreURL,
+        source: app.source)
+    }
+    CheckCacheStore.save(CheckCache(lastChecked: lastChecked, apps: entries))
   }
 
   // MARK: - Custom recipes
@@ -413,6 +460,7 @@ final class UpdateManager: ObservableObject {
       apps[index].changelogURL = nil
       apps[index].source = .unknown
     }
+    saveCache()
   }
 
   /// Create a starter custom recipe for an unsupported app (disabled until finished).
