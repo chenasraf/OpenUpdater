@@ -127,6 +127,9 @@ struct UpdatesView: View {
       List(updateManager.updates, selection: $selection) { app in
         UpdateRow(app: app)
       }
+      .contextMenu(forSelectionType: AppInfo.ID.self) { ids in
+        AppContextMenuItems(ids: ids)
+      }
     }
   }
 
@@ -177,7 +180,6 @@ struct UpdateRow: View {
     .padding(.vertical, 4)
     // Run the separator edge-to-edge, including under the app icon.
     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-    .appContextMenu(app)
   }
 
   @ViewBuilder private var installControl: some View {
@@ -301,35 +303,72 @@ struct InstalledView: View {
 }
 
 /// Right-click menu for an app row. Currently the pre-release toggle (GitHub only).
-private struct AppContextMenu: ViewModifier {
-  let app: AppInfo
+/// Context-menu items that adapt to how many apps they apply to: a single app gets
+/// the full per-app menu (incl. the pre-release toggle); multiple selected apps get
+/// plural actions that apply to all of them.
+struct AppContextMenuItems: View {
   @EnvironmentObject private var updateManager: UpdateManager
+  let ids: Set<AppInfo.ID>
 
-  func body(content: Content) -> some View {
-    content.contextMenu {
-      Button("Re-scan App") {
-        Task { await updateManager.rescan(app) }
-      }
-      .disabled(updateManager.isRescanning(app.id))
+  private var apps: [AppInfo] { updateManager.apps.filter { ids.contains($0.id) } }
+
+  var body: some View {
+    if apps.count == 1, let app = apps.first {
+      single(app)
+    } else if apps.count > 1 {
+      multiple(apps)
+    }
+  }
+
+  @ViewBuilder private func single(_ app: AppInfo) -> some View {
+    Button("Re-scan App") {
+      Task { await updateManager.rescan(app) }
+    }
+    .disabled(updateManager.isRescanning(app.id))
+
+    if updateManager.supportsPrereleases(app) {
       Divider()
-      if updateManager.supportsPrereleases(app) {
-        Toggle(
-          "Check for pre-releases",
-          isOn: Binding(
-            get: { updateManager.includePrereleases(for: app) },
-            set: { value in Task { await updateManager.setPrereleases(value, for: app) } }
-          ))
-        Divider()
-      }
-      if app.builtInIgnoreReason == nil {
-        Menu("Ignore…") {
-          Button("Ignore this app") { updateManager.ignoreApp(app) }
-          if app.updateAvailable {
-            Button("Ignore this version") { updateManager.ignoreCurrentVersion(app) }
-          }
+      Toggle(
+        "Check for pre-releases",
+        isOn: Binding(
+          get: { updateManager.includePrereleases(for: app) },
+          set: { value in Task { await updateManager.setPrereleases(value, for: app) } }
+        ))
+    }
+
+    if app.builtInIgnoreReason == nil {
+      Divider()
+      Menu("Ignore…") {
+        Button("Ignore this app") { updateManager.ignoreApp(app) }
+        if app.updateAvailable {
+          Button("Ignore this version") { updateManager.ignoreCurrentVersion(app) }
         }
       }
     }
+  }
+
+  @ViewBuilder private func multiple(_ apps: [AppInfo]) -> some View {
+    Button("Re-scan \(apps.count) Apps") {
+      Task { await updateManager.rescanApps(apps) }
+    }
+
+    let ignorable = apps.filter { $0.builtInIgnoreReason == nil }
+    if !ignorable.isEmpty {
+      Divider()
+      Button("Ignore These Apps") { updateManager.ignoreApps(ignorable) }
+      let withUpdates = ignorable.filter(\.updateAvailable)
+      if !withUpdates.isEmpty {
+        Button("Ignore These Versions") { updateManager.ignoreCurrentVersions(withUpdates) }
+      }
+    }
+  }
+}
+
+private struct AppContextMenu: ViewModifier {
+  let app: AppInfo
+
+  func body(content: Content) -> some View {
+    content.contextMenu { AppContextMenuItems(ids: [app.id]) }
   }
 }
 

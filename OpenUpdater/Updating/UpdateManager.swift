@@ -328,6 +328,11 @@ final class UpdateManager: ObservableObject {
     saveCache()
   }
 
+  /// Re-scan several apps (e.g. a multi-selection), one after another.
+  func rescanApps(_ apps: [AppInfo]) async {
+    for app in apps { await rescan(app) }
+  }
+
   // MARK: - Pre-release preference
 
   /// Whether pre-releases are included for this app: the user's override if set,
@@ -369,6 +374,16 @@ final class UpdateManager: ObservableObject {
       $0.ignored = nil
       $0.ignoredVersion = nil
     }
+  }
+
+  /// Ignore several apps at once (e.g. a multi-selection).
+  func ignoreApps(_ apps: [AppInfo]) {
+    apps.forEach { ignoreApp($0) }
+  }
+
+  /// Ignore the current version of several apps at once.
+  func ignoreCurrentVersions(_ apps: [AppInfo]) {
+    apps.forEach { ignoreCurrentVersion($0) }
   }
 
   private func changeIgnore(_ id: String, _ change: (inout AppPreferences) -> Void) {
