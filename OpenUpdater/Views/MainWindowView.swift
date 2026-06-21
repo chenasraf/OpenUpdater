@@ -345,8 +345,22 @@ struct AppIcon: View {
   var size: CGFloat = 32
 
   var body: some View {
-    Image(nsImage: NSWorkspace.shared.icon(forFile: app.url.path))
+    Image(nsImage: IconCache.icon(for: app.url))
       .resizable()
       .frame(width: size, height: size)
+  }
+}
+
+/// Caches app icons so frequent list re-renders (e.g. during an install's progress
+/// updates) don't hit `NSWorkspace` synchronously on the main thread each time.
+@MainActor
+enum IconCache {
+  private static var cache: [String: NSImage] = [:]
+
+  static func icon(for url: URL) -> NSImage {
+    if let cached = cache[url.path] { return cached }
+    let icon = NSWorkspace.shared.icon(forFile: url.path)
+    cache[url.path] = icon
+    return icon
   }
 }

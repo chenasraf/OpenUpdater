@@ -216,17 +216,33 @@ enum Installer {
     return dir
   }
 
+  /// Run a tool and return its combined output. Always called off the main thread
+  /// (the cooperative pool), so blocking here is fine. A `timeout` bounds hung tools
+  /// — e.g. `hdiutil` waiting forever on a disk image's license agreement — so an
+  /// install can't linger indefinitely. (Output is small for the tools we run, so
+  /// reading after exit can't deadlock on a full pipe buffer.)
   @discardableResult
-  private static func run(_ tool: String, _ arguments: [String]) throws -> String {
+  private static func run(_ tool: String, _ arguments: [String], timeout: TimeInterval = 600) throws
+    -> String
+  {
     let process = Process()
     process.executableURL = URL(fileURLWithPath: tool)
     process.arguments = arguments
     let pipe = Pipe()
     process.standardOutput = pipe
     process.standardError = pipe
+
+    let finished = DispatchSemaphore(value: 0)
+    process.terminationHandler = { _ in finished.signal() }
     try process.run()
+
+    if finished.wait(timeout: .now() + timeout) == .timedOut {
+      process.terminate()
+      throw InstallError.toolFailed(
+        (tool as NSString).lastPathComponent, "timed out after \(Int(timeout))s")
+    }
+
     let output = pipe.fileHandleForReading.readDataToEndOfFile()
-    process.waitUntilExit()
     let text = String(data: output, encoding: .utf8) ?? ""
     if process.terminationStatus != 0 {
       throw InstallError.toolFailed((tool as NSString).lastPathComponent, text)
