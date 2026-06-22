@@ -431,6 +431,7 @@ struct UpdatingSettingsView: View {
               destination: URL(
                 string: "https://github.com/settings/tokens/new?description=\(AppBranding.title)")!
             )
+            .foregroundStyle(Color.accentColor)
           }
         }
       } header: {
