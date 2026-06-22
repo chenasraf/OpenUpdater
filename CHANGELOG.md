@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.7.0](https://github.com/chenasraf/OpenUpdater/compare/v0.6.0...v0.7.0) (2026-06-22)
+
+
+### Features
+
+* **updating:** json path array predicate [field=value] for staged rollouts ([43f0bab](https://github.com/chenasraf/OpenUpdater/commit/43f0babbb42a2b6c4c2a4639f5bd4c05920aa7c3))
+
+
+### Bug Fixes
+
+* **app:** report the real version in the About panel for source builds ([422381f](https://github.com/chenasraf/OpenUpdater/commit/422381f05054476f6c5a9ef874d2b5bcb37c221a))
+* **recipe:** Google Chrome (`com.google.Chrome`) check the full-rollout version ([7edf435](https://github.com/chenasraf/OpenUpdater/commit/7edf435dc08de5886f2bd6888bbd1668a627e3e4))
+
 ## [0.6.0](https://github.com/chenasraf/OpenUpdater/compare/v0.5.0...v0.6.0) (2026-06-22)
 
 
