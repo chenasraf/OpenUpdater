@@ -274,17 +274,17 @@ final class UpdateManager: ObservableObject {
     guard let bundle = Bundle(url: url), let info = bundle.infoDictionary else { return nil }
 
     let fallbackName = url.deletingPathExtension().lastPathComponent
-    let id = info["CFBundleIdentifier"] as? String ?? fallbackName
-    let name =
-      info["CFBundleDisplayName"] as? String
-      ?? info["CFBundleName"] as? String
-      ?? fallbackName
-    let build = info["CFBundleVersion"] as? String
+    // Treat present-but-empty plist strings as missing — some apps (e.g. Converseen)
+    // ship a blank CFBundleIdentifier/CFBundleName, so a plain cast would yield "".
+    func nonEmpty(_ key: String) -> String? {
+      (info[key] as? String).flatMap { $0.isEmpty ? nil : $0 }
+    }
+    let id = nonEmpty("CFBundleIdentifier") ?? fallbackName
+    let name = nonEmpty("CFBundleDisplayName") ?? nonEmpty("CFBundleName") ?? fallbackName
+    let build = nonEmpty("CFBundleVersion")
     // Some apps (e.g. FreeCAD) leave CFBundleShortVersionString empty — fall back to
     // the build/CFBundleVersion so we still have something to compare.
-    let shortVersion = (info["CFBundleShortVersionString"] as? String).flatMap {
-      $0.isEmpty ? nil : $0
-    }
+    let shortVersion = nonEmpty("CFBundleShortVersionString")
     let version = shortVersion ?? build ?? "—"
     // Sparkle apps advertise their appcast here — auto-detected, no recipe needed.
     let feedURL = (info["SUFeedURL"] as? String).flatMap(URL.init(string:))
