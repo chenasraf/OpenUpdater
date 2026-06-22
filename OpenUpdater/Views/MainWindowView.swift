@@ -19,7 +19,14 @@ struct MainWindowView: View {
           .badge(updateManager.updates.count)
           .tag("updates")
         Label("Installed", systemImage: "square.grid.2x2")
+          .badge(updateManager.apps.count)
           .tag("installed")
+        Label("Ignored", systemImage: "nosign")
+          .badge(updateManager.ignoredApps.filter { $0.builtInIgnoreReason == nil }.count)
+          .tag("ignored")
+        Label("Unsupported", systemImage: "questionmark.circle")
+          .badge(updateManager.unsupportedApps.count)
+          .tag("unsupported")
       }
       .navigationSplitViewColumnWidth(180)
       .safeAreaInset(edge: .bottom) {
@@ -38,12 +45,23 @@ struct MainWindowView: View {
         UpdatesView()
       case "installed":
         InstalledView()
+      case "ignored":
+        IgnoreListView()
+      case "unsupported":
+        UnsupportedAppsView(onCreateRecipe: createRecipe)
       default:
         EmptyView()
       }
     }
     .frame(minWidth: 700, minHeight: 450)
     .task { await updateManager.checkForUpdatesIfNeeded() }
+  }
+
+  /// Create a draft custom recipe for an app, then open Preferences and let it
+  /// select the new recipe in the Custom Recipes tab (which lives in that window).
+  private func createRecipe(for app: AppInfo) {
+    updateManager.pendingCustomRecipeID = updateManager.createCustomRecipeDraft(for: app)
+    openWindow(id: PreferencesWindow.id)
   }
 }
 

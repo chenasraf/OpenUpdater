@@ -12,14 +12,12 @@ import UniformTypeIdentifiers
 
 struct SettingsView: View {
   enum Tab: String, CaseIterable, Identifiable {
-    case general, updating, ignoreList, unsupported, customRecipes
+    case general, updating, customRecipes
     var id: String { rawValue }
     var title: String {
       switch self {
       case .general: return "General"
       case .updating: return "Updating"
-      case .ignoreList: return "Ignore List"
-      case .unsupported: return "Unsupported"
       case .customRecipes: return "Custom Recipes"
       }
     }
@@ -27,8 +25,6 @@ struct SettingsView: View {
       switch self {
       case .general: return "gearshape"
       case .updating: return "arrow.triangle.2.circlepath"
-      case .ignoreList: return "nosign"
-      case .unsupported: return "questionmark.circle"
       case .customRecipes: return "doc.badge.plus"
       }
     }
@@ -53,23 +49,28 @@ struct SettingsView: View {
     }
     .frame(
       minWidth: 680, idealWidth: 820, maxWidth: .infinity,
-      minHeight: 440, idealHeight: 560, maxHeight: .infinity)
+      minHeight: 440, idealHeight: 560, maxHeight: .infinity
+    )
+    // The main window's "Create Custom Recipe" hands off a draft to select here.
+    .onAppear(perform: consumePendingRecipe)
+    .onChange(of: updateManager.pendingCustomRecipeID) { _, _ in consumePendingRecipe() }
   }
 
   @ViewBuilder private var detail: some View {
     switch selection {
     case .general: GeneralSettingsView()
     case .updating: UpdatingSettingsView()
-    case .ignoreList: IgnoreListView()
-    case .unsupported: UnsupportedAppsView(onCreateRecipe: createRecipe)
     case .customRecipes: CustomRecipesView(selectedID: $customSelection)
     }
   }
 
-  /// Create a draft custom recipe for an app and jump to the Custom Recipes tab.
-  private func createRecipe(for app: AppInfo) {
-    customSelection = updateManager.createCustomRecipeDraft(for: app)
+  /// If the main window queued a draft recipe, jump to the Custom Recipes tab and
+  /// select it, then clear the request.
+  private func consumePendingRecipe() {
+    guard let id = updateManager.pendingCustomRecipeID else { return }
+    customSelection = id
     selection = .customRecipes
+    updateManager.pendingCustomRecipeID = nil
   }
 }
 

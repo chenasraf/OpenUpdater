@@ -128,6 +128,11 @@ final class UpdateManager: ObservableObject {
   /// disabled and invalid ones).
   @Published private(set) var customRecipes: [CustomRecipe] = []
 
+  /// Set when the main window's "Create Custom Recipe" action wants the Preferences
+  /// window to open Custom Recipes with this recipe selected. The two views live in
+  /// separate windows, so this published property is how the request crosses over.
+  @Published var pendingCustomRecipeID: String?
+
   /// Whether a full check has run this app session. The launch check keys off this
   /// (not `lastChecked`), so a cache-prefilled `lastChecked` doesn't suppress it.
   private var hasCheckedThisSession = false
