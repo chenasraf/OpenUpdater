@@ -225,7 +225,9 @@ jobs:
               notes = "<sparkle:releaseNotesLink>" + os.environ["NOTES_LINK"] + "</sparkle:releaseNotesLink>"
           item = item.replace("__NOTES__", notes)
           xml = open("appcast.xml").read()
-          open("appcast.xml", "w").write(xml.replace("  </channel>", item + "  </channel>", 1))
+          # Prepend after the channel header so the newest release sorts first.
+          anchor = "    <language>en</language>\n"
+          open("appcast.xml", "w").write(xml.replace(anchor, anchor + item, 1))
           PY
           git add appcast.xml
           git commit -m "chore: update appcast for ${TAG}"

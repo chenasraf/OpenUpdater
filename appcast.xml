@@ -6,6 +6,19 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.2.0</title>
+    <pubDate>Sun, 21 Jun 2026 22:54:20 +0000</pubDate>
+    <sparkle:version>16</sparkle:version>
+    <sparkle:shortVersionString>0.2.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.1.0...v0.2.0">0.2.0</a> (2026-06-21)</h2>
+<h3>Features</h3>
+<ul>
+<li>open at startup + open main window on launch (<a href="https://github.com/chenasraf/OpenUpdater/commit/ad568507cb9a9f98a11f11d6a11211e8d1c63cf1">ad56850</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.2.0/OpenUpdater-0.2.0.dmg" sparkle:edSignature="4My3Af25eHf1e2yEh3bhPENc5FfVjIkXOZ2xsWGARCBZgTXfAxWktsNdNV57LcMTWo4mGa6xCjq6QNVcQwWRAQ==" length="3081944" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.1.0</title>
     <pubDate>Sun, 21 Jun 2026 21:54:06 +0000</pubDate>
     <sparkle:version>14</sparkle:version>
@@ -57,19 +70,6 @@
 <li>isolate hdiutils/ditto to avoid freezing ui thread (<a href="https://github.com/chenasraf/OpenUpdater/commit/894f379ed9a68e389a36185d2cd3079f1f4205ee">894f379</a>)</li>
 </ul>]]></description>
     <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.1.0/OpenUpdater-0.1.0.dmg" sparkle:edSignature="9SrUK7BZNxszU4P/jHP1aqmIEnc+GigIaX0BOOsaatbcw9MDjgieKH2PHo81kocMbPgg5mZ2KETy8VwMiIz2BA==" length="3075331" type="application/octet-stream"/>
-  </item>
-  <item>
-    <title>0.2.0</title>
-    <pubDate>Sun, 21 Jun 2026 22:54:20 +0000</pubDate>
-    <sparkle:version>16</sparkle:version>
-    <sparkle:shortVersionString>0.2.0</sparkle:shortVersionString>
-    <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.1.0...v0.2.0">0.2.0</a> (2026-06-21)</h2>
-<h3>Features</h3>
-<ul>
-<li>open at startup + open main window on launch (<a href="https://github.com/chenasraf/OpenUpdater/commit/ad568507cb9a9f98a11f11d6a11211e8d1c63cf1">ad56850</a>)</li>
-</ul>]]></description>
-    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.2.0/OpenUpdater-0.2.0.dmg" sparkle:edSignature="4My3Af25eHf1e2yEh3bhPENc5FfVjIkXOZ2xsWGARCBZgTXfAxWktsNdNV57LcMTWo4mGa6xCjq6QNVcQwWRAQ==" length="3081944" type="application/octet-stream"/>
   </item>
   </channel>
 </rss>
