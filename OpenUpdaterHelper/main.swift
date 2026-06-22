@@ -87,14 +87,22 @@ final class HelperService: NSObject, NSXPCListenerDelegate, HelperProtocol {
     let fm = FileManager.default
     let dest = URL(fileURLWithPath: destination)
     let new = URL(fileURLWithPath: staged)
+    // The new app arrives from the app's temp dir, which may be on a different
+    // volume than the destination. Stage a copy next to the destination first so
+    // the swap is same-volume (atomic) and replaceItemAt can't fail cross-volume.
+    let local = dest.deletingLastPathComponent()
+      .appendingPathComponent(".\(dest.lastPathComponent).incoming")
     do {
+      try? fm.removeItem(at: local)
+      try fm.copyItem(at: new, to: local)
       if fm.fileExists(atPath: destination) {
-        _ = try fm.replaceItemAt(dest, withItemAt: new)
+        _ = try fm.replaceItemAt(dest, withItemAt: local)
       } else {
-        try fm.moveItem(at: new, to: dest)
+        try fm.moveItem(at: local, to: dest)
       }
       reply(true, nil)
     } catch {
+      try? fm.removeItem(at: local)
       reply(false, error.localizedDescription)
     }
   }

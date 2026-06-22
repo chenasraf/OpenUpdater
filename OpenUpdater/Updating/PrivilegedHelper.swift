@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 import ServiceManagement
 
 enum HelperError: Error, CustomStringConvertible {
@@ -27,6 +28,7 @@ enum HelperError: Error, CustomStringConvertible {
 @MainActor
 final class PrivilegedHelper {
   static let shared = PrivilegedHelper()
+  static let log = Logger(subsystem: "dev.casraf.OpenUpdater", category: "helper")
 
   private var connection: NSXPCConnection?
   private var service: SMAppService {
@@ -86,6 +88,30 @@ final class PrivilegedHelper {
         continuation.resume(returning: version == HelperConstants.version)
       }
     }
+  }
+
+  /// Ensure a responsive, current helper is registered before a privileged call.
+  /// A helper left over from an older version may not answer our newer requests
+  /// (you'd see "Couldn't communicate with a helper application"), so when it's
+  /// enabled but fails the version handshake, re-register to replace the stale
+  /// daemon with the one bundled in this app. Returns whether a working helper is
+  /// available.
+  func ensureReady() async -> Bool {
+    guard isEnabled else { return false }
+    if await ping() { return true }
+    Self.log.notice("Helper enabled but unresponsive/stale — re-registering")
+    // Drop the cached connection and re-register so launchd loads the daemon
+    // bundled with the current app.
+    connection?.invalidate()
+    connection = nil
+    do {
+      try await service.unregister()
+      _ = try register()
+    } catch {
+      Self.log.error("Helper re-register failed: \(String(describing: error), privacy: .public)")
+      return false
+    }
+    return await ping()
   }
 
   func installPackage(at path: String) async throws {

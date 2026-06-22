@@ -960,7 +960,7 @@ final class UpdateManager: ObservableObject {
   /// Install a `.pkg` via the root helper (no prompt) when it's enabled, else fall
   /// back to the system installer behind an admin authorization prompt.
   private func installPackage(_ archive: URL) async throws {
-    if PrivilegedHelper.shared.isEnabled, await PrivilegedHelper.shared.ping() {
+    if await PrivilegedHelper.shared.ensureReady() {
       try await PrivilegedHelper.shared.installPackage(at: archive.path)
     } else {
       try await Task.detached(priority: .userInitiated) { try Installer.installPkg(archive) }.value
@@ -974,7 +974,10 @@ final class UpdateManager: ObservableObject {
       try await Task.detached(priority: .userInitiated) {
         try Installer.replaceApp(at: destination, with: newApp)
       }.value
-    } catch InstallError.notWritable where PrivilegedHelper.shared.isEnabled {
+    } catch InstallError.notWritable {
+      guard await PrivilegedHelper.shared.ensureReady() else {
+        throw InstallError.notWritable(destination)
+      }
       try await PrivilegedHelper.shared.replaceApp(at: destination.path, with: newApp.path)
     }
   }

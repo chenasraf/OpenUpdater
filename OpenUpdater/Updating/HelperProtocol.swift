@@ -16,7 +16,7 @@ enum HelperConstants {
   /// LaunchDaemon plist embedded at Contents/Library/LaunchDaemons/<this>.
   static let daemonPlistName = "dev.casraf.OpenUpdater.Helper.plist"
   /// Bumped when the protocol/behavior changes, so the app can re-register a stale helper.
-  static let version = "1"
+  static let version = "2"
 
   /// Code-signing requirement the HELPER enforces on callers: only our app, signed
   /// by our team, may command the root helper. This is the core security gate.

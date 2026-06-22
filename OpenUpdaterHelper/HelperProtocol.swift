@@ -13,7 +13,7 @@ import Foundation
 enum HelperConstants {
   static let machServiceName = "dev.casraf.OpenUpdater.Helper"
   static let daemonPlistName = "dev.casraf.OpenUpdater.Helper.plist"
-  static let version = "1"
+  static let version = "2"
 
   static let clientRequirement =
     "identifier \"dev.casraf.OpenUpdater\" and anchor apple generic and "
