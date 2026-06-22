@@ -74,6 +74,22 @@ struct SettingsView: View {
   }
 }
 
+/// A form row whose explanatory caption sits directly beneath the control, so the
+/// hint reads as belonging to that specific field rather than the whole section.
+struct CaptionedField<Content: View, Caption: View>: View {
+  @ViewBuilder var content: Content
+  @ViewBuilder var caption: Caption
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 4) {
+      content
+      caption
+        .font(.caption).foregroundStyle(.secondary)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+  }
+}
+
 struct GeneralSettingsView: View {
   @EnvironmentObject private var updater: Updater
 
@@ -90,31 +106,33 @@ struct GeneralSettingsView: View {
         Toggle("Launch \(AppBranding.title) at login", isOn: $launchAtLogin)
           .onChange(of: launchAtLogin) { _, enabled in setLaunchAtLogin(enabled) }
         Toggle("Open the main window on launch", isOn: $openMainWindowOnLaunch)
-        Toggle("Ask before quitting open apps to update them", isOn: $confirmQuitRunningApps)
+        CaptionedField {
+          Toggle("Ask before quitting open apps to update them", isOn: $confirmQuitRunningApps)
+        } caption: {
+          Text(
+            "When an app is running, \(AppBranding.title) asks before quitting it to install an "
+              + "update. Turn this off to update open apps without prompting."
+          )
+        }
       } header: {
         Text("General")
-      } footer: {
-        Text(
-          "When an app is running, \(AppBranding.title) asks before quitting it to install an "
-            + "update. Turn this off to update open apps without prompting."
-        )
-        .font(.caption).foregroundStyle(.secondary)
       }
 
       Section {
-        Toggle(
-          "Automatically check for updates",
-          isOn: Binding(
-            get: { updater.automaticallyChecksForUpdates },
-            set: { updater.setAutomaticChecks($0) }
-          ))
+        CaptionedField {
+          Toggle(
+            "Automatically check for updates",
+            isOn: Binding(
+              get: { updater.automaticallyChecksForUpdates },
+              set: { updater.setAutomaticChecks($0) }
+            ))
+        } caption: {
+          Text("\(AppBranding.title) keeps itself up to date from its release feed.")
+        }
         Button("Check for Updates…") { updater.checkForUpdates() }
           .disabled(!updater.canCheckForUpdates)
       } header: {
         Text("\(AppBranding.title) Updates")
-      } footer: {
-        Text("\(AppBranding.title) keeps itself up to date from its release feed.")
-          .font(.caption).foregroundStyle(.secondary)
       }
     }
     .formStyle(.grouped)
@@ -351,100 +369,102 @@ struct UpdatingSettingsView: View {
   var body: some View {
     Form {
       Section {
-        Picker("Check for updates", selection: $updateManager.checkFrequency) {
-          ForEach(CheckFrequency.allCases) { frequency in
-            Text(frequency.title).tag(frequency)
+        CaptionedField {
+          Picker("Check for updates", selection: $updateManager.checkFrequency) {
+            ForEach(CheckFrequency.allCases) { frequency in
+              Text(frequency.title).tag(frequency)
+            }
           }
+        } caption: {
+          Text(
+            "How often \(AppBranding.title) checks your installed apps for new versions in "
+              + "the background. You can always check now from the main window."
+          )
         }
       } header: {
         Text("Automatic Checks")
-      } footer: {
-        Text(
-          "How often \(AppBranding.title) checks your installed apps for new versions in "
-            + "the background. You can always check now from the main window."
-        )
-        .font(.caption)
-        .foregroundStyle(.secondary)
       }
 
       Section {
-        SecureField("Personal access token", text: $token)
+        CaptionedField {
+          VStack(alignment: .leading, spacing: 8) {
+            SecureField("Personal access token", text: $token)
 
-        HStack {
-          Button("Save") {
-            let ok = GitHubToken.save(token)
-            hasStoredToken = GitHubToken.exists
-            if ok {
-              // Re-check now so the new token takes effect immediately.
-              status = "Saved — re-checking…"
-              Task { await updateManager.checkForUpdates() }
-            } else {
-              status = "Couldn't save."
+            HStack {
+              Button("Save") {
+                let ok = GitHubToken.save(token)
+                hasStoredToken = GitHubToken.exists
+                if ok {
+                  // Re-check now so the new token takes effect immediately.
+                  status = "Saved — re-checking…"
+                  Task { await updateManager.checkForUpdates() }
+                } else {
+                  status = "Couldn't save."
+                }
+              }
+              .keyboardShortcut(.defaultAction)
+              .disabled(updateManager.isChecking)
+
+              if hasStoredToken {
+                Button("Remove", role: .destructive) {
+                  GitHubToken.clear()
+                  token = ""
+                  hasStoredToken = false
+                  status = "Removed."
+                }
+              }
+
+              if let status {
+                Text(status).font(.caption).foregroundStyle(.secondary)
+              }
             }
           }
-          .keyboardShortcut(.defaultAction)
-          .disabled(updateManager.isChecking)
-
-          if hasStoredToken {
-            Button("Remove", role: .destructive) {
-              GitHubToken.clear()
-              token = ""
-              hasStoredToken = false
-              status = "Removed."
-            }
-          }
-
-          if let status {
-            Text(status).font(.caption).foregroundStyle(.secondary)
+        } caption: {
+          VStack(alignment: .leading, spacing: 6) {
+            Text(
+              "Raises GitHub's API limit from 60 to 5,000 requests/hour for update checks. "
+                + "A classic token with no scopes (or a fine-grained token with public read) is enough. "
+                + "It's stored encrypted in your Keychain."
+            )
+            Link(
+              "Create a token on GitHub…",
+              destination: URL(
+                string: "https://github.com/settings/tokens/new?description=\(AppBranding.title)")!
+            )
           }
         }
       } header: {
         Text("GitHub Access Token")
-      } footer: {
-        VStack(alignment: .leading, spacing: 6) {
-          Text(
-            "Raises GitHub's API limit from 60 to 5,000 requests/hour for update checks. "
-              + "A classic token with no scopes (or a fine-grained token with public read) is enough. "
-              + "It's stored encrypted in your Keychain."
-          )
-          Link(
-            "Create a token on GitHub…",
-            destination: URL(
-              string: "https://github.com/settings/tokens/new?description=\(AppBranding.title)")!
-          )
-        }
-        .font(.caption)
-        .foregroundStyle(.secondary)
       }
 
       Section {
-        HStack {
-          Text(helperStatusText)
-          Spacer()
-          if helperStatus == .enabled {
-            Button("Remove", role: .destructive) {
-              Task {
-                try? await PrivilegedHelper.shared.unregister()
-                refreshHelperStatus()
+        CaptionedField {
+          HStack {
+            Text(helperStatusText)
+            Spacer()
+            if helperStatus == .enabled {
+              Button("Remove", role: .destructive) {
+                Task {
+                  try? await PrivilegedHelper.shared.unregister()
+                  refreshHelperStatus()
+                }
               }
+            } else {
+              Button("Install Helper…") { installHelper() }
             }
-          } else {
-            Button("Install Helper…") { installHelper() }
           }
+        } caption: {
+          Text(
+            "Installs updates without asking for your password each time. You approve it "
+              + "once in System Settings → Login Items, then pkg installs and protected apps "
+              + "update silently."
+          )
         }
         if let helperMessage {
           Text(helperMessage).font(.caption).foregroundStyle(.secondary)
         }
       } header: {
         Text("Background Helper")
-      } footer: {
-        Text(
-          "Installs updates without asking for your password each time. You approve it "
-            + "once in System Settings → Login Items, then pkg installs and protected apps "
-            + "update silently."
-        )
-        .font(.caption)
-        .foregroundStyle(.secondary)
       }
     }
     .formStyle(.grouped)
