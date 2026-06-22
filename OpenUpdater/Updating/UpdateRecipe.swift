@@ -32,6 +32,23 @@ struct UpdateRecipe: Decodable {
 
   private let version: VersionRule?
   private let changelog: Changelog?
+  /// Optional: read the installed version by running a bundled binary, for apps that
+  /// hardcode a placeholder in Info.plist (e.g. WezTerm's permanent `0.1.0`). Absent
+  /// for the vast majority of apps, which version themselves correctly in the plist.
+  let installedVersion: InstalledVersionRule?
+
+  enum CodingKeys: String, CodingKey {
+    case id, name, homepage, check, download, channels, enabled, arch, version, changelog
+    case installedVersion = "installed_version"
+  }
+
+  /// How to read an app's installed version from a bundled executable instead of
+  /// `Info.plist`. `command` is a path relative to the `.app` bundle.
+  struct InstalledVersionRule: Decodable {
+    let command: String  // e.g. "Contents/MacOS/wezterm"
+    let args: [String]?  // e.g. ["--version"]
+    let pattern: String?  // regex, capture group 1 = version; whole trimmed output if omitted
+  }
 
   struct Check: Decodable {
     enum Kind: String, Decodable {
@@ -245,6 +262,48 @@ struct UpdateRecipe: Decodable {
       .replacingOccurrences(of: "{major}", with: parts.first ?? "")
       .replacingOccurrences(of: "{minor}", with: parts.count > 1 ? parts[1] : "")
       .replacingOccurrences(of: "{patch}", with: parts.count > 2 ? parts[2] : "")
+  }
+}
+
+/// Reads an app's installed version by running a bundled binary, for apps that
+/// hardcode a placeholder in Info.plist (e.g. WezTerm's permanent `0.1.0`, whose
+/// real version only `wezterm --version` reports). Opt-in per recipe.
+enum InstalledVersionProbe {
+  /// Run the rule's command inside `appURL` and extract the version, or `nil` when
+  /// the binary is missing, fails, times out, or produces no match.
+  static func run(_ rule: UpdateRecipe.InstalledVersionRule, appURL: URL) -> String? {
+    let executable = appURL.appendingPathComponent(rule.command)
+    guard FileManager.default.isExecutableFile(atPath: executable.path) else { return nil }
+
+    let process = Process()
+    process.executableURL = executable
+    process.arguments = rule.args ?? []
+    let pipe = Pipe()
+    process.standardOutput = pipe
+    process.standardError = Pipe()  // discard stderr; don't let it block on a full buffer
+    do {
+      try process.run()
+    } catch {
+      return nil
+    }
+    // Guard against a binary that never exits.
+    DispatchQueue.global().asyncAfter(deadline: .now() + 3) {
+      if process.isRunning { process.terminate() }
+    }
+    // Read before waiting so a large output can't deadlock the pipe.
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    process.waitUntilExit()
+
+    let text = (String(data: data, encoding: .utf8) ?? "")
+      .trimmingCharacters(in: .whitespacesAndNewlines)
+    guard !text.isEmpty else { return nil }
+    guard let pattern = rule.pattern else { return text }
+    guard let regex = try? NSRegularExpression(pattern: pattern),
+      let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+      match.numberOfRanges > 1,
+      let range = Range(match.range(at: 1), in: text)
+    else { return nil }
+    return String(text[range])
   }
 }
 

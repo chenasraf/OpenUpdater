@@ -108,6 +108,21 @@ check:
   #   html / xml:   download_pattern: 'href="([^"]+\.dmg)"'
   #   json / yaml:  download_path: path
 
+# Optional. Read the INSTALLED version by running a bundled binary, instead of from
+# Info.plist. Only needed for apps that ship a static placeholder version (e.g.
+# WezTerm hardcodes CFBundleShortVersionString to "0.1.0" forever, so its real
+# version — a date tag — is only available via `wezterm --version`). Without this,
+# such apps would perpetually show a phantom update.
+installed_version:
+  # Path to the executable, relative to the .app bundle.
+  command: Contents/MacOS/wezterm
+  # Arguments passed to it (optional).
+  args:
+    - --version
+  # Regex whose first capture group is the version. Omit to use the whole trimmed
+  # output. Compared against the latest version like any other.
+  pattern: 'wezterm (\S+)'
+
 # Optional (github_releases). How to turn a raw tag into a comparable version.
 version:
   # Leading text to strip from the tag, e.g. "v" turns "v1.2.3" into "1.2.3".
