@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.3.0](https://github.com/chenasraf/OpenUpdater/compare/v0.2.0...v0.3.0) (2026-06-22)
+
+
+### Features
+
+* **ui:** move ignore list and unsupported apps into the main window ([978d250](https://github.com/chenasraf/OpenUpdater/commit/978d25098be31bb0a643d4d16c2f697f9a2711af))
+* **updates:** add Stop button to halt the update queue ([6ca26f2](https://github.com/chenasraf/OpenUpdater/commit/6ca26f205bb1bb2ff1cbfa73c4f2cc67a829b342))
+
+
+### Bug Fixes
+
+* **installer:** accept long DMG license agreements (PAGER=cat) ([2dc820d](https://github.com/chenasraf/OpenUpdater/commit/2dc820da527eddb0e05f1c0ab9f30ec98fd6ec42))
+* **installer:** keep source extension so pkg installs work ([961a6a9](https://github.com/chenasraf/OpenUpdater/commit/961a6a98d016ef5be4abd949de97a4b3b72ce37f))
+* **recipe:** Firefox (`org.mozilla.firefox`) ([08e02c6](https://github.com/chenasraf/OpenUpdater/commit/08e02c674771b4e23595e76ba68f2a2fd8b63b82))
+* **recipe:** Google Chrome (`com.google.Chrome`) ([aedb59e](https://github.com/chenasraf/OpenUpdater/commit/aedb59e8338eb0345ecf660198c29e6513e8e817))
+* **recipe:** Visual Studio Code (`com.microsoft.VSCode`) ([49f19f5](https://github.com/chenasraf/OpenUpdater/commit/49f19f53b0b1fe71a69fcb61631bc0578499d940))
+
 ## [0.2.0](https://github.com/chenasraf/OpenUpdater/compare/v0.1.0...v0.2.0) (2026-06-21)
 
 
