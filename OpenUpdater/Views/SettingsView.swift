@@ -79,6 +79,8 @@ struct GeneralSettingsView: View {
 
   /// Open the main window automatically on launch (default on). Read by `AppDelegate`.
   @AppStorage("openMainWindowOnLaunch") private var openMainWindowOnLaunch = true
+  /// Ask before quitting a running app to update it (default on). Read by `UpdateManager`.
+  @AppStorage("confirmQuitRunningApps") private var confirmQuitRunningApps = true
   /// Mirrors the macOS login-item state for the app (default off).
   @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
 
@@ -88,8 +90,15 @@ struct GeneralSettingsView: View {
         Toggle("Launch \(AppBranding.title) at login", isOn: $launchAtLogin)
           .onChange(of: launchAtLogin) { _, enabled in setLaunchAtLogin(enabled) }
         Toggle("Open the main window on launch", isOn: $openMainWindowOnLaunch)
+        Toggle("Ask before quitting open apps to update them", isOn: $confirmQuitRunningApps)
       } header: {
         Text("General")
+      } footer: {
+        Text(
+          "When an app is running, \(AppBranding.title) asks before quitting it to install an "
+            + "update. Turn this off to update open apps without prompting."
+        )
+        .font(.caption).foregroundStyle(.secondary)
       }
 
       Section {

@@ -174,6 +174,13 @@ final class UpdateManager: ObservableObject {
   private var hasCheckedThisSession = false
 
   private static let checkFrequencyKey = "checkFrequency"
+  private static let confirmQuitKey = "confirmQuitRunningApps"
+
+  /// Whether to ask before quitting a running app to update it (default on).
+  /// Mirrored by the `confirmQuitRunningApps` toggle in General settings.
+  static var confirmQuitRunningApps: Bool {
+    UserDefaults.standard.object(forKey: confirmQuitKey) as? Bool ?? true
+  }
 
   /// How often to automatically re-check installed apps in the background.
   /// Persisted to UserDefaults; changing it reschedules the heartbeat and runs a
@@ -878,7 +885,13 @@ final class UpdateManager: ObservableObject {
 
       // Quit any running copy first; relaunch it after a successful install.
       installPhases[id] = .quitting
-      let wasRunning = await quitRunningApp(bundleID: id)
+      let quitOutcome = await quitRunningApp(bundleID: id, appName: app.name)
+      if case .cancelled = quitOutcome {
+        installPhases[id] = .idle
+        Self.log.notice("install \(id, privacy: .public): cancelled at quit prompt")
+        return
+      }
+      let wasRunning = quitOutcome == .quit
       Self.log.notice(
         "install \(id, privacy: .public): quit running app (was running: \(wasRunning, privacy: .public))"
       )
@@ -953,11 +966,32 @@ final class UpdateManager: ObservableObject {
     }
   }
 
+  /// Outcome of asking a running app to quit before an install.
+  enum QuitOutcome: Equatable {
+    /// The app wasn't running — nothing to quit, nothing to relaunch.
+    case notRunning
+    /// The app was running and has been terminated — relaunch it after installing.
+    case quit
+    /// The user declined the quit prompt — abort the install.
+    case cancelled
+  }
+
   /// Terminate any running instances of `bundleID` and wait briefly for them to
-  /// exit. Returns whether the app was running (so the caller can relaunch it).
-  private func quitRunningApp(bundleID: String) async -> Bool {
+  /// exit. When `confirmQuitRunningApps` is on, ask first and abort if declined.
+  private func quitRunningApp(bundleID: String, appName: String) async -> QuitOutcome {
     let running = NSRunningApplication.runningApplications(withBundleIdentifier: bundleID)
-    guard !running.isEmpty else { return false }
+    guard !running.isEmpty else { return .notRunning }
+
+    if Self.confirmQuitRunningApps {
+      let alert = NSAlert()
+      alert.messageText = "Quit \(appName) to update?"
+      alert.informativeText =
+        "\(appName) is open. \(AppBranding.title) needs to quit it to install the update, "
+        + "then reopens it afterwards."
+      alert.addButton(withTitle: "Quit and Update")
+      alert.addButton(withTitle: "Cancel")
+      guard alert.runModal() == .alertFirstButtonReturn else { return .cancelled }
+    }
 
     running.forEach { $0.terminate() }
     // Wait up to ~5s for a graceful quit before proceeding regardless.
@@ -965,7 +999,7 @@ final class UpdateManager: ObservableObject {
       if running.allSatisfy(\.isTerminated) { break }
       try? await Task.sleep(nanoseconds: 200_000_000)
     }
-    return true
+    return .quit
   }
 
   private func relaunch(_ appURL: URL) {
