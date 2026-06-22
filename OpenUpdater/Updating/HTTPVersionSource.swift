@@ -166,26 +166,92 @@ enum HTTPVersionSource {
   }
 
   /// Follow a dotted key path through parsed JSON or YAML, returning a stringified
-  /// scalar. Supports array indices and both `[String: Any]` and the
-  /// `[AnyHashable: Any]` maps that Yams produces.
+  /// scalar. Supports array indices (`files.0.url`) and an array-predicate segment
+  /// `[field=value]` that selects the first element whose `field` equals `value`
+  /// (e.g. `releases.[fraction=1].version` for Chrome's fully-rolled-out release).
+  /// Multiple conditions are comma-separated and must all match, e.g.
+  /// `[fraction=1,os=mac]`. Works with both `[String: Any]` and the
+  /// `[AnyHashable: Any]` maps Yams produces.
   static func keyPathValue(at path: String, in root: Any) -> String? {
     var current: Any? = root
-    for component in path.split(separator: ".") {
-      if let index = Int(component), let array = current as? [Any] {
+    for key in pathComponents(path) {
+      if key.hasPrefix("["), key.hasSuffix("]"), key.contains("=") {
+        guard let array = current as? [Any] else { return nil }
+        let conditions = parseConditions(key.dropFirst().dropLast())
+        guard !conditions.isEmpty else { return nil }
+        current = array.first { element in
+          conditions.allSatisfy { field, wanted in
+            scalarString(self.field(field, of: element)).map { matches($0, wanted) } ?? false
+          }
+        }
+      } else if let index = Int(key), let array = current as? [Any] {
         current = index < array.count ? array[index] : nil
       } else if let dict = current as? [String: Any] {
-        current = dict[String(component)]
+        current = dict[key]
       } else if let dict = current as? [AnyHashable: Any] {
-        current = dict[String(component)]
+        current = dict[key]
       } else {
         return nil
       }
     }
-    switch current {
+    return scalarString(current)
+  }
+
+  /// Split a key path on `.` while keeping `[…]` predicate segments intact, so a
+  /// dotted value inside a predicate (e.g. `[version=1.2.3]`) isn't broken up.
+  private static func pathComponents(_ path: String) -> [String] {
+    var components: [String] = []
+    var current = ""
+    var depth = 0
+    for character in path {
+      switch character {
+      case "[":
+        depth += 1
+        current.append(character)
+      case "]":
+        depth -= 1
+        current.append(character)
+      case "." where depth == 0:
+        components.append(current)
+        current = ""
+      default: current.append(character)
+      }
+    }
+    components.append(current)
+    return components
+  }
+
+  /// Parse a predicate body (`field=value` pairs separated by `,`) into conditions.
+  private static func parseConditions(_ body: Substring) -> [(field: String, value: String)] {
+    body.split(separator: ",").compactMap { clause in
+      guard let equals = clause.firstIndex(of: "=") else { return nil }
+      let field = clause[clause.startIndex..<equals].trimmingCharacters(in: .whitespaces)
+      let value = clause[clause.index(after: equals)...].trimmingCharacters(in: .whitespaces)
+      return field.isEmpty ? nil : (field, value)
+    }
+  }
+
+  /// Stringify a JSON/YAML scalar (string or number), or `nil` for containers/null.
+  private static func scalarString(_ value: Any?) -> String? {
+    switch value {
     case let string as String: return string
     case let number as NSNumber: return number.stringValue
     default: return nil
     }
+  }
+
+  /// Look up `name` in a JSON/YAML object element.
+  private static func field(_ name: String, of element: Any) -> Any? {
+    if let dict = element as? [String: Any] { return dict[name] }
+    if let dict = element as? [AnyHashable: Any] { return dict[name] }
+    return nil
+  }
+
+  /// Compare a predicate value, tolerating numeric formatting (so `1` matches `1.0`).
+  private static func matches(_ actual: String, _ wanted: String) -> Bool {
+    if actual == wanted { return true }
+    if let a = Double(actual), let b = Double(wanted) { return a == b }
+    return false
   }
 
   /// Turn an extracted download reference into a URL. Handles absolute URLs,

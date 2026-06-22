@@ -80,6 +80,11 @@ check:
 
   # json / yaml ONLY. Dotted key path to the version (array indices allowed, e.g.
   # "assets.0.name"). For electron latest-mac.yml this is just "version".
+  # An "[field=value]" segment selects the first array element whose field equals
+  # value — e.g. "releases.[fraction=1].version" picks Chrome's fully-rolled-out
+  # release, matching what its static download actually serves (the newest version
+  # may still be at a partial staged rollout the download URL doesn't serve yet).
+  # Comma-separate conditions to require all of them, e.g. "[fraction=1,os=mac]".
   # path: version
 
   # html / xml ONLY, OPTIONAL. Which match to use when `pattern` matches more than
