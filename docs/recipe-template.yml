@@ -113,3 +113,22 @@ download:
 # is used automatically and this is only a fallback.
 changelog:
   url: https://github.com/example/app/releases/tag/{tag}
+
+# Optional. Release streams the user can choose between (e.g. Stable vs ESR/LTS).
+# Omit this whole block for a normal single-stream app. When present, the user picks
+# a channel per app (right-click → Release Channel); the choice is remembered. The
+# FIRST channel is the default. A channel's `check`/`download`, when given, REPLACE
+# the base blocks above for that channel; fields it omits inherit the base — so the
+# default channel usually needs only an id and name. Example (Firefox Stable + ESR):
+# channels:
+#   - id: stable
+#     name: Stable
+#   - id: esr
+#     name: ESR
+#     check:
+#       type: json
+#       url: https://product-details.mozilla.org/1.0/firefox_versions.json
+#       path: FIREFOX_ESR
+#     download:
+#       url: "https://download.mozilla.org/?product=firefox-esr-latest-ssl&os=osx&lang=en-US"
+#       format: dmg

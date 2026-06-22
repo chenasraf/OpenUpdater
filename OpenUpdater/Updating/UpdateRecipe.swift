@@ -13,8 +13,14 @@ struct UpdateRecipe: Decodable {
   let id: String
   let name: String?
   let homepage: String?
-  let check: Check
-  let download: Download?
+  /// Mutable so `applyingChannel` can overlay a release channel's overrides onto a
+  /// copy; the decoded value is otherwise treated as read-only.
+  var check: Check
+  var download: Download?
+  /// Optional release streams (e.g. Stable / ESR / LTS). When present, the user picks
+  /// one per app; the chosen channel's `check`/`download` overlay the base ones. The
+  /// first channel is the default. Omit entirely for single-stream apps.
+  let channels: [Channel]?
   /// Custom recipes only: when `false`, the recipe is ignored (built-in/auto sources
   /// take over). Absent means enabled. Built-in recipes never set this.
   let enabled: Bool?
@@ -95,6 +101,18 @@ struct UpdateRecipe: Decodable {
     }
   }
 
+  /// A selectable release stream. `check`/`download`, when present, replace the
+  /// recipe's base blocks for this channel; absent fields inherit the base.
+  struct Channel: Decodable {
+    let id: String
+    let name: String?
+    let check: Check?
+    let download: Download?
+
+    /// Label shown in the UI; falls back to the id when no `name` is given.
+    var displayName: String { name ?? id }
+  }
+
   struct VersionRule: Decodable {
     let stripPrefix: String?
     let pattern: String?
@@ -121,6 +139,32 @@ struct UpdateRecipe: Decodable {
 
   /// Changelog URL template, or `nil` if the recipe omits one.
   var changelogTemplate: String? { changelog?.url }
+
+  // MARK: - Release channels
+
+  /// The recipe's channels, or an empty list when it defines none.
+  var channelList: [Channel] { channels ?? [] }
+
+  /// The id of the default channel (the first one), or `nil` when none are defined.
+  var defaultChannelID: String? { channels?.first?.id }
+
+  /// Resolve a channel by id, falling back to the default (first) channel. Returns
+  /// `nil` only when the recipe declares no channels.
+  func channel(id: String?) -> Channel? {
+    guard let channels, !channels.isEmpty else { return nil }
+    if let id, let match = channels.first(where: { $0.id == id }) { return match }
+    return channels.first
+  }
+
+  /// A copy of this recipe with the selected channel's `check`/`download` overlaid.
+  /// Absent channel fields keep the base values; no channels means an unchanged copy.
+  func applyingChannel(_ channelID: String?) -> UpdateRecipe {
+    guard let channel = channel(id: channelID) else { return self }
+    var copy = self
+    if let check = channel.check { copy.check = check }
+    if let download = channel.download { copy.download = download }
+    return copy
+  }
 
   private var versionRule: VersionRule { version ?? VersionRule(stripPrefix: nil, pattern: nil) }
 

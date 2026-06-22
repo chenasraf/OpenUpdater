@@ -13,6 +13,9 @@ import Foundation
 struct AppPreferences: Codable {
   /// Include pre-releases for this app. `nil` → use the recipe's `prereleases` default.
   var includePrereleases: Bool?
+  /// Selected release channel id (e.g. `stable`/`esr`). `nil` → the recipe's default
+  /// channel (its first). Ignored when the recipe defines no channels.
+  var channel: String?
   /// Never show this app as updatable.
   var ignored: Bool?
   /// Don't offer this specific version (reappears when a newer one ships).

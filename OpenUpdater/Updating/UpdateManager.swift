@@ -351,7 +351,7 @@ final class UpdateManager: ObservableObject {
   /// Returns the error when the lookup failed; `nil` on success or "no update".
   private func resolveLatest(forAppAt index: Int) async -> Error? {
     let app = apps[index]
-    let recipe = recipes[app.id]
+    let recipe = effectiveRecipe(for: app)
     guard isCheckable(app) else { return nil }
 
     do {
@@ -436,12 +436,44 @@ final class UpdateManager: ObservableObject {
   /// otherwise the recipe's `prereleases` default.
   func includePrereleases(for app: AppInfo) -> Bool {
     AppPreferences.load(for: app.id).includePrereleases
-      ?? (recipes[app.id]?.check.prereleases ?? false)
+      ?? (effectiveRecipe(for: app)?.check.prereleases ?? false)
   }
 
   /// Whether the "Check for pre-releases" toggle applies (only GitHub today).
   func supportsPrereleases(_ app: AppInfo) -> Bool {
-    recipes[app.id]?.check.kind == .githubReleases
+    effectiveRecipe(for: app)?.check.kind == .githubReleases
+  }
+
+  // MARK: - Release channels
+
+  /// This app's recipe with the user's selected release channel overlaid. `nil`
+  /// when the app has no recipe.
+  func effectiveRecipe(for app: AppInfo) -> UpdateRecipe? {
+    recipes[app.id]?.applyingChannel(AppPreferences.load(for: app.id).channel)
+  }
+
+  /// The release channels this app's recipe offers (empty when none).
+  func channels(for app: AppInfo) -> [UpdateRecipe.Channel] {
+    recipes[app.id]?.channelList ?? []
+  }
+
+  /// Whether to surface a channel picker (only when more than one channel exists).
+  func supportsChannels(_ app: AppInfo) -> Bool {
+    channels(for: app).count > 1
+  }
+
+  /// The selected channel id, resolved to the recipe's default when unset.
+  func selectedChannel(for app: AppInfo) -> String {
+    AppPreferences.load(for: app.id).channel
+      ?? recipes[app.id]?.defaultChannelID ?? ""
+  }
+
+  /// Set the per-app release channel and immediately re-check that app.
+  func setChannel(_ id: String, for app: AppInfo) async {
+    AppPreferences.update(app.id) { $0.channel = id }
+    guard let index = apps.firstIndex(where: { $0.id == app.id }) else { return }
+    _ = await resolveLatest(forAppAt: index)
+    saveCache()
   }
 
   /// Set the per-app pre-release preference and immediately re-check that app.

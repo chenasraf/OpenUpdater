@@ -353,6 +353,21 @@ struct AppContextMenuItems: View {
     }
     .disabled(updateManager.isRescanning(app.id))
 
+    if updateManager.supportsChannels(app) {
+      Divider()
+      Picker(
+        "Release Channel",
+        selection: Binding(
+          get: { updateManager.selectedChannel(for: app) },
+          set: { id in Task { await updateManager.setChannel(id, for: app) } }
+        )
+      ) {
+        ForEach(updateManager.channels(for: app), id: \.id) { channel in
+          Text(channel.displayName).tag(channel.id)
+        }
+      }
+    }
+
     if updateManager.supportsPrereleases(app) {
       Divider()
       Toggle(
