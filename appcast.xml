@@ -6,6 +6,28 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.3.0</title>
+    <pubDate>Mon, 22 Jun 2026 07:56:54 +0000</pubDate>
+    <sparkle:version>23</sparkle:version>
+    <sparkle:shortVersionString>0.3.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.2.0...v0.3.0">0.3.0</a> (2026-06-22)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>ui:</strong> move ignore list and unsupported apps into the main window (<a href="https://github.com/chenasraf/OpenUpdater/commit/978d25098be31bb0a643d4d16c2f697f9a2711af">978d250</a>)</li>
+<li><strong>updates:</strong> add Stop button to halt the update queue (<a href="https://github.com/chenasraf/OpenUpdater/commit/6ca26f205bb1bb2ff1cbfa73c4f2cc67a829b342">6ca26f2</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>installer:</strong> accept long DMG license agreements (PAGER=cat) (<a href="https://github.com/chenasraf/OpenUpdater/commit/2dc820da527eddb0e05f1c0ab9f30ec98fd6ec42">2dc820d</a>)</li>
+<li><strong>installer:</strong> keep source extension so pkg installs work (<a href="https://github.com/chenasraf/OpenUpdater/commit/961a6a98d016ef5be4abd949de97a4b3b72ce37f">961a6a9</a>)</li>
+<li><strong>recipe:</strong> Firefox (<code class="notranslate">org.mozilla.firefox</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/08e02c674771b4e23595e76ba68f2a2fd8b63b82">08e02c6</a>)</li>
+<li><strong>recipe:</strong> Google Chrome (<code class="notranslate">com.google.Chrome</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/aedb59e8338eb0345ecf660198c29e6513e8e817">aedb59e</a>)</li>
+<li><strong>recipe:</strong> Visual Studio Code (<code class="notranslate">com.microsoft.VSCode</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/49f19f53b0b1fe71a69fcb61631bc0578499d940">49f19f5</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.3.0/OpenUpdater-0.3.0.dmg" sparkle:edSignature="/SgyX63hmKVsm0buOCSEplciJ8SMnKChjD8SgcThew7e7uBklX9MRN9JE/HoYbejoTTDXruSxGfChjeuNwoaAA==" length="3089402" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.2.0</title>
     <pubDate>Sun, 21 Jun 2026 22:54:20 +0000</pubDate>
     <sparkle:version>16</sparkle:version>
