@@ -6,6 +6,26 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.5.0</title>
+    <pubDate>Mon, 22 Jun 2026 15:34:35 +0000</pubDate>
+    <sparkle:version>33</sparkle:version>
+    <sparkle:shortVersionString>0.5.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.4.0...v0.5.0">0.5.0</a> (2026-06-22)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>updating:</strong> check for updates at launch by default (<a href="https://github.com/chenasraf/OpenUpdater/commit/6f7adaae264b74fa7180f7f0b3147d8e7663cf55">6f7adaa</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>helper:</strong> re-register stale helper before privileged installs (<a href="https://github.com/chenasraf/OpenUpdater/commit/c52928e36c40e8ffe15d454f24b5bb0cc0feb181">c52928e</a>)</li>
+<li><strong>helper:</strong> surface stale helper for reinstall instead of breaking it (<a href="https://github.com/chenasraf/OpenUpdater/commit/97d660ab4010d99726531f78ec7a478fec1e41a9">97d660a</a>)</li>
+<li><strong>installer:</strong> retry root-owned app replace through privileged helper (<a href="https://github.com/chenasraf/OpenUpdater/commit/4287ec12d5e69b163d1e43b3af2a0292baa01417">4287ec1</a>)</li>
+<li><strong>updating:</strong> treat blank plist strings as missing in app scan (<a href="https://github.com/chenasraf/OpenUpdater/commit/59b349a5e74264696048eb47609f4118b0ae540a">59b349a</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.5.0/OpenUpdater-0.5.0.dmg" sparkle:edSignature="yu2L3ui+Om4nuRSo23kuZTHGg+iYPxw+CYJvpPRVtbQE2pVqP3HgioEm4FiZ4ETQOrZ9cBWdTnrrJZg1uAT6Aw==" length="3163886" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.4.0</title>
     <pubDate>Mon, 22 Jun 2026 14:36:54 +0000</pubDate>
     <sparkle:version>29</sparkle:version>
