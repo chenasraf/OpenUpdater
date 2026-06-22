@@ -7,6 +7,12 @@ check:
   repo: wezterm/wezterm
   tag_pattern: '^\d'
 
+installed_version:
+  command: Contents/MacOS/wezterm
+  args:
+    - --version
+  pattern: 'wezterm (\S+)'
+
 download:
   url: https://github.com/wezterm/wezterm/releases/download/{tag}/WezTerm-macos-{tag}.zip
   format: zip
