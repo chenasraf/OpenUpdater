@@ -14,3 +14,13 @@ check:
 download:
   url: https://download.blender.org/release/Blender{major}.{minor}/blender-{version}-macos-{arch}.dmg
   format: dmg
+
+channels:
+  - id: latest
+    name: Latest
+  - id: lts
+    name: LTS
+    check:
+      type: html
+      url: https://www.blender.org/download/lts/4-5/
+      pattern: 'Blender (\d+\.\d+\.\d+)'
