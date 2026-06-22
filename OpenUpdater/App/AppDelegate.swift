@@ -6,6 +6,7 @@
 //
 
 import AppKit
+import Combine
 import SwiftUI
 
 @MainActor
@@ -16,6 +17,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   /// The SwiftUI main window. Retained (kept out of the release-on-close path) so
   /// Cmd-W only hides it and the menubar can bring it back later.
   private weak var mainWindow: NSWindow?
+
+  /// Keeps the menubar badge in sync with the model's update count.
+  private var cancellables: Set<AnyCancellable> = []
 
   /// Single shared model layer, owned here so both the AppKit popover and the
   /// SwiftUI scene can read from the same instance.
@@ -57,6 +61,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       button.action = #selector(togglePopover)
       button.target = self
     }
+
+    // Show the number of available updates next to the menubar glyph, kept in sync
+    // with the model. `objectWillChange` fires before the value updates, so receive
+    // on the main run loop to read the settled count.
+    updateManager.objectWillChange
+      .receive(on: RunLoop.main)
+      .sink { [weak self] in self?.updateMenuBarBadge() }
+      .store(in: &cancellables)
+    updateMenuBarBadge()
 
     // Track window lifecycle: the Dock icon follows window visibility, and a
     // closed main window can be reopened from the menubar.
@@ -157,6 +170,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   }
 
   // MARK: - Status item / window
+
+  /// Append the available-update count to the status-bar glyph (hidden when zero).
+  private func updateMenuBarBadge() {
+    guard let button = statusItem?.button else { return }
+    let count = updateManager.updates.count
+    if count > 0 {
+      button.title = " \(count)"
+      button.imagePosition = .imageLeft
+    } else {
+      button.title = ""
+      button.imagePosition = .imageOnly
+    }
+  }
 
   @objc func togglePopover() {
     guard let button = statusItem.button else { return }
