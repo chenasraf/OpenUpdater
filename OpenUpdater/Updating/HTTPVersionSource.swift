@@ -21,16 +21,17 @@ import Yams
 /// relative path; it's resolved against the check URL.
 enum HTTPVersionSource {
   static func latest(for recipe: UpdateRecipe) async throws -> ReleaseResult {
-    guard let urlString = recipe.check.url, let url = URL(string: recipe.resolveArch(urlString))
+    // Resolve any `{name}` placeholders from their own pages first, then substitute
+    // them into the check URL (and, later, the download/changelog templates).
+    let resolved = try await resolvePlaceholders(recipe.check.resolve)
+
+    guard let rawURL = recipe.check.url,
+      let url = URL(string: applyPlaceholders(recipe.resolveArch(rawURL), resolved))
     else {
       throw UpdateCheckError.missingURL
     }
 
-    var request = URLRequest(url: url)
-    request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
-    let (data, response) = try await URLSession.shared.data(for: request)
-    guard let http = response as? HTTPURLResponse else { throw UpdateCheckError.badResponse(-1) }
-    guard http.statusCode == 200 else { throw UpdateCheckError.badResponse(http.statusCode) }
+    let data = try await fetch(url)
 
     let rawVersion: String
     let extractedDownload: String?
@@ -58,7 +59,8 @@ enum HTTPVersionSource {
 
     case .html, .xml:
       let body = String(data: data, encoding: .utf8) ?? ""
-      guard let pattern = recipe.check.pattern, let value = Self.firstCapture(pattern, in: body)
+      guard let pattern = recipe.check.pattern,
+        let value = Self.selectCapture(pattern, in: body, select: recipe.check.select)
       else {
         throw UpdateCheckError.extractionFailed("version")
       }
@@ -77,7 +79,9 @@ enum HTTPVersionSource {
     // (resolved against the check URL, since electron feeds give a relative path).
     var downloadURL: URL?
     if let template = recipe.download?.urlTemplate {
-      downloadURL = URL(string: recipe.expand(template, tag: rawVersion, version: version))
+      let expanded = applyPlaceholders(
+        recipe.expand(template, tag: rawVersion, version: version), resolved)
+      downloadURL = URL(string: expanded)
     } else if let extractedDownload {
       downloadURL = Self.resolveURL(extractedDownload, relativeTo: url)
     }
@@ -88,7 +92,9 @@ enum HTTPVersionSource {
 
     var changelogURL: URL?
     if let template = recipe.changelogTemplate {
-      changelogURL = URL(string: recipe.expand(template, tag: rawVersion, version: version))
+      let expanded = applyPlaceholders(
+        recipe.expand(template, tag: rawVersion, version: version), resolved)
+      changelogURL = URL(string: expanded)
     }
 
     return ReleaseResult(
@@ -98,6 +104,65 @@ enum HTTPVersionSource {
       downloadURL: downloadURL,
       format: format
     )
+  }
+
+  /// GET a URL with the app's User-Agent, returning its body or throwing on a
+  /// non-200 response.
+  private static func fetch(_ url: URL) async throws -> Data {
+    var request = URLRequest(url: url)
+    request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
+    let (data, response) = try await URLSession.shared.data(for: request)
+    guard let http = response as? HTTPURLResponse else { throw UpdateCheckError.badResponse(-1) }
+    guard http.statusCode == 200 else { throw UpdateCheckError.badResponse(http.statusCode) }
+    return data
+  }
+
+  /// Run each `resolve` step (fetch its page, extract its capture) into a map of
+  /// placeholder name → value, ready to substitute into the check's templates.
+  private static func resolvePlaceholders(
+    _ steps: [String: UpdateRecipe.ResolveStep]?
+  ) async throws -> [String: String] {
+    guard let steps else { return [:] }
+    var values: [String: String] = [:]
+    for (name, step) in steps {
+      guard let url = URL(string: step.url) else { throw UpdateCheckError.missingURL }
+      let body = String(data: try await fetch(url), encoding: .utf8) ?? ""
+      guard let value = selectCapture(step.pattern, in: body, select: step.select) else {
+        throw UpdateCheckError.extractionFailed(name)
+      }
+      values[name] = value
+    }
+    return values
+  }
+
+  /// Substitute `{name}` placeholders with their resolved values.
+  private static func applyPlaceholders(_ template: String, _ values: [String: String]) -> String {
+    values.reduce(template) { $0.replacingOccurrences(of: "{\($1.key)}", with: $1.value) }
+  }
+
+  /// All first-capture-group matches of `pattern` in `text`, in document order.
+  static func allCaptures(_ pattern: String, in text: String) -> [String] {
+    guard
+      let regex = try? NSRegularExpression(pattern: pattern, options: [.dotMatchesLineSeparators])
+    else { return [] }
+    let range = NSRange(text.startIndex..., in: text)
+    return regex.matches(in: text, range: range).compactMap { match in
+      guard match.numberOfRanges > 1, let captured = Range(match.range(at: 1), in: text) else {
+        return nil
+      }
+      return String(text[captured])
+    }
+  }
+
+  /// Pick one capture per the `select` rule: the first match, or the highest version.
+  static func selectCapture(
+    _ pattern: String, in text: String, select: UpdateRecipe.Select
+  ) -> String? {
+    let captures = allCaptures(pattern, in: text)
+    switch select {
+    case .first: return captures.first
+    case .latest: return VersionCompare.highest(captures)
+    }
   }
 
   /// Follow a dotted key path through parsed JSON or YAML, returning a stringified

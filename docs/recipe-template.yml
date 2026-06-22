@@ -82,6 +82,25 @@ check:
   # "assets.0.name"). For electron latest-mac.yml this is just "version".
   # path: version
 
+  # html / xml ONLY, OPTIONAL. Which match to use when `pattern` matches more than
+  # once: `first` (document order, the default) or `latest` (the highest version
+  # among all matches, comparing every run of digits — so "4.5.10" beats "4.5.9").
+  # select: latest
+
+  # html / xml / json / yaml ONLY, OPTIONAL. Resolve `{name}` placeholders from other
+  # pages before this check runs, then substitute them into check.url and the
+  # download / changelog templates. Use it to discover a value (e.g. the current
+  # release series) instead of pinning it in the recipe. Each step fetches its `url`
+  # as text and extracts capture group 1 of `pattern`; `select` (first|latest) picks
+  # the match. Example — track Blender's newest LTS series without hardcoding it:
+  # url: https://www.blender.org/download/lts/{series}/
+  # select: latest
+  # resolve:
+  #   series:
+  #     url: https://www.blender.org/download/lts/
+  #     pattern: '/download/lts/([0-9-]+)/'
+  #     select: latest
+
   # html / xml / json / yaml ONLY, OPTIONAL. Pull the download URL straight from
   # the same response instead of (or in addition to) the `download.url` template
   # below. Enables plain HTTP(S) downloads where the link isn't predictable. An

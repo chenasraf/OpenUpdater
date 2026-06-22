@@ -57,6 +57,12 @@ struct UpdateRecipe: Decodable {
     let path: String?  // json: dotted key path (supports array indices)
     let downloadPattern: String?  // html/xml: regex, capture group 1 = download URL
     let downloadPath: String?  // json: key path to a download URL
+    // When a `pattern` matches several times, which match to use (html/xml only).
+    let select: Select
+    // Placeholders resolved from other pages before the check runs, substituted as
+    // `{name}` into this check's `url` (and the download/changelog templates). Lets a
+    // recipe discover a value — e.g. the current release series — instead of pinning it.
+    let resolve: [String: ResolveStep]?
 
     enum CodingKeys: String, CodingKey {
       case kind = "type"
@@ -70,6 +76,8 @@ struct UpdateRecipe: Decodable {
       case path
       case downloadPattern = "download_pattern"
       case downloadPath = "download_path"
+      case select
+      case resolve
     }
 
     init(from decoder: Decoder) throws {
@@ -85,6 +93,8 @@ struct UpdateRecipe: Decodable {
       path = try container.decodeIfPresent(String.self, forKey: .path)
       downloadPattern = try container.decodeIfPresent(String.self, forKey: .downloadPattern)
       downloadPath = try container.decodeIfPresent(String.self, forKey: .downloadPath)
+      select = try container.decodeIfPresent(Select.self, forKey: .select) ?? .first
+      resolve = try container.decodeIfPresent([String: ResolveStep].self, forKey: .resolve)
     }
 
     /// Whether a release tag passes this recipe's tag filters. A tag must match
@@ -98,6 +108,34 @@ struct UpdateRecipe: Decodable {
     private static func regexMatches(_ string: String, _ pattern: String) -> Bool {
       guard let regex = try? NSRegularExpression(pattern: pattern) else { return false }
       return regex.firstMatch(in: string, range: NSRange(string.startIndex..., in: string)) != nil
+    }
+  }
+
+  /// Which match to take when a regex matches more than once.
+  enum Select: String, Decodable {
+    case first  // the first match in document order (default)
+    case latest  // the highest version among all matches
+  }
+
+  /// A pre-fetch step that discovers a placeholder value from another page. The
+  /// `url` is fetched as text, `pattern`'s first capture group is extracted, and
+  /// `select` decides which match to use when there are several.
+  struct ResolveStep: Decodable {
+    let url: String
+    let pattern: String
+    let select: Select
+
+    enum CodingKeys: String, CodingKey {
+      case url
+      case pattern
+      case select
+    }
+
+    init(from decoder: Decoder) throws {
+      let container = try decoder.container(keyedBy: CodingKeys.self)
+      url = try container.decode(String.self, forKey: .url)
+      pattern = try container.decode(String.self, forKey: .pattern)
+      select = try container.decodeIfPresent(Select.self, forKey: .select) ?? .first
     }
   }
 
@@ -254,6 +292,20 @@ enum VersionCompare {
       if l != r { return l > r }
     }
     return false
+  }
+
+  /// The highest of several version-ish strings, comparing every run of digits in
+  /// turn (so `4-5` > `4-2`, `4.5.10` > `4.5.9`). Ties keep the earlier value.
+  /// Returns `nil` for an empty input.
+  static func highest(_ versions: [String]) -> String? {
+    versions.max { looseComponents($0).lexicographicallyPrecedes(looseComponents($1)) }
+  }
+
+  /// Every run of digits in a string, as integers (e.g. `4-5` → `[4, 5]`). Unlike
+  /// `numericComponents` this ignores all non-digit separators, so it orders series
+  /// labels and dotted versions alike.
+  private static func looseComponents(_ value: String) -> [Int] {
+    value.split(whereSeparator: { !$0.isNumber }).map { Int($0) ?? 0 }
   }
 
   private static func numericComponents(_ version: String) -> [Int] {
