@@ -9,9 +9,8 @@ finds newer versions, and updates them in a click. It isn't limited to App Store
 package manager — it covers regular Mac apps: GitHub releases, Sparkle-based apps, and direct
 downloads.
 
-The **"open"** part is the registry of _where_ to find updates: a crowdsourced, community-maintained
-set of update sources. Coverage grows as people add recipes, so OpenUpdater can keep up with apps
-that have no built-in updater of their own.
+OpenUpdater provides a crowdsourced, community-maintained set of update sources. Coverage grows as
+people add recipes, so OpenUpdater can keep up with apps that have no built-in updater of their own.
 
 <div align="center">
   <img src="docs/screenshots/screenshot-01.png" width="820" alt="OpenUpdater showing available updates" />
@@ -96,6 +95,8 @@ Open **Preferences** (⌘,) to:
 - See your **unsupported apps** — the ones with no update source yet. From here you can copy or
   export their bundle IDs, or open a pre-filled GitHub issue to request support, which helps grow
   the community registry.
+- Install or remove the optional **Background Helper** (see
+  [Installing updates](#installing-updates) below).
 
 ## How it works
 
@@ -109,6 +110,29 @@ For each installed app, OpenUpdater figures out the latest version using the bes
 
 When you update, OpenUpdater downloads the new build, verifies it's the right app and validly
 signed, then swaps it into place — sending the old version to the Trash.
+
+### Installing updates
+
+Most updates are a simple swap — replacing an app in `/Applications` with a newer copy — and need no
+special permissions. Two cases need administrator rights: an app that ships as a `.pkg` installer,
+and replacing an app you don't have write access to (e.g. one installed by another admin or sitting
+in a protected location). For those, OpenUpdater shows the standard macOS password prompt for that
+one install.
+
+If you'd rather not be asked each time, install the optional **Background Helper** from
+**Preferences → Background Helper**. It's a small privileged service that performs exactly those two
+operations — running `.pkg` installers and replacing protected apps — so that, once set up, updates
+apply without a password prompt. Setup is one-time:
+
+1. Click **Install Helper…**.
+2. Approve **OpenUpdater** in **System Settings → General → Login Items & Extensions** when macOS
+   asks (the helper status then shows _Installed and enabled_).
+
+The helper runs as a separate XPC daemon, registered through Apple's `SMAppService`. It only acts on
+requests from OpenUpdater itself — every call is checked against the app's code signature before
+anything runs — and does nothing beyond installing/replacing apps. You can take it out at any time
+with **Remove**, which unregisters the daemon; OpenUpdater falls back to the per-install password
+prompt. The helper is entirely optional — everything works without it.
 
 ## Contributing
 
