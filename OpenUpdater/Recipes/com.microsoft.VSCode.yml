@@ -6,3 +6,7 @@ check:
   type: json
   url: https://update.code.visualstudio.com/api/releases/stable
   path: "0"
+
+download:
+  url: https://update.code.visualstudio.com/{version}/darwin-universal/stable
+  format: zip
