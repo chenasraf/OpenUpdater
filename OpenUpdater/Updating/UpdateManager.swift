@@ -293,10 +293,11 @@ final class UpdateManager: ObservableObject {
     // the build/CFBundleVersion so we still have something to compare.
     let shortVersion = nonEmpty("CFBundleShortVersionString")
     var version = shortVersion ?? build ?? "—"
-    // A recipe can override the plist version by reading it from a bundled binary,
-    // for apps that ship a static placeholder (e.g. WezTerm's permanent "0.1.0").
+    // A recipe can override how the installed version is read — from a bundled
+    // binary, a different plist key, or via a normalizing pattern — for apps that
+    // ship a placeholder (WezTerm's "0.1.0") or an oddly-formatted version (Zoom).
     if let rule = recipes[id]?.installedVersion,
-      let probed = InstalledVersionProbe.run(rule, appURL: url)
+      let probed = InstalledVersionProbe.resolve(rule, appURL: url, info: info)
     {
       version = probed
     }
@@ -1047,10 +1048,10 @@ final class UpdateManager: ObservableObject {
       $0.isEmpty ? nil : $0
     }
     var version = shortVersion ?? build ?? apps[index].installedVersion
-    // Honor a recipe's command-based version override (e.g. WezTerm), so a refresh
-    // doesn't revert to the plist placeholder.
+    // Honor a recipe's installed-version override (e.g. WezTerm, Zoom), so a refresh
+    // doesn't revert to the raw plist value.
     if let rule = recipes[id]?.installedVersion,
-      let probed = InstalledVersionProbe.run(rule, appURL: apps[index].url)
+      let probed = InstalledVersionProbe.resolve(rule, appURL: apps[index].url, info: info)
     {
       version = probed
     }

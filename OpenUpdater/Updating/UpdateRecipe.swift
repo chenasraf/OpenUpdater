@@ -32,9 +32,11 @@ struct UpdateRecipe: Decodable {
 
   private let version: VersionRule?
   private let changelog: Changelog?
-  /// Optional: read the installed version by running a bundled binary, for apps that
-  /// hardcode a placeholder in Info.plist (e.g. WezTerm's permanent `0.1.0`). Absent
-  /// for the vast majority of apps, which version themselves correctly in the plist.
+  /// Optional: override how the installed version is read, for apps whose default
+  /// `CFBundleShortVersionString` is a placeholder (WezTerm's permanent `0.1.0`) or
+  /// formatted differently from the upstream version (Zoom's `7.1.0 (83064)` vs the
+  /// feed's `7.1.0.83064`). Absent for the vast majority of apps, which version
+  /// themselves correctly in the plist.
   let installedVersion: InstalledVersionRule?
 
   enum CodingKeys: String, CodingKey {
@@ -42,12 +44,15 @@ struct UpdateRecipe: Decodable {
     case installedVersion = "installed_version"
   }
 
-  /// How to read an app's installed version from a bundled executable instead of
-  /// `Info.plist`. `command` is a path relative to the `.app` bundle.
+  /// How to read an app's installed version. The raw value comes from a bundled
+  /// binary's output (`command`) or a specific Info.plist key (`key`); if neither is
+  /// set it's the usual `CFBundleShortVersionString`/`CFBundleVersion`. `pattern`
+  /// then optionally extracts the comparable version from that raw value.
   struct InstalledVersionRule: Decodable {
-    let command: String  // e.g. "Contents/MacOS/wezterm"
-    let args: [String]?  // e.g. ["--version"]
-    let pattern: String?  // regex, capture group 1 = version; whole trimmed output if omitted
+    let command: String?  // run this bundled executable, e.g. "Contents/MacOS/wezterm"
+    let args: [String]?  // arguments for `command`, e.g. ["--version"]
+    let key: String?  // OR read this Info.plist key, e.g. "CFBundleVersion"
+    let pattern: String?  // regex, capture group 1 = version; raw value used as-is if omitted
   }
 
   struct Check: Decodable {
@@ -265,19 +270,43 @@ struct UpdateRecipe: Decodable {
   }
 }
 
-/// Reads an app's installed version by running a bundled binary, for apps that
-/// hardcode a placeholder in Info.plist (e.g. WezTerm's permanent `0.1.0`, whose
-/// real version only `wezterm --version` reports). Opt-in per recipe.
+/// Resolves an app's installed version per a recipe's `installed_version` rule, for
+/// apps whose plist version is a placeholder (WezTerm's permanent `0.1.0`) or
+/// formatted unlike the upstream feed (Zoom's `7.1.0 (83064)`). Opt-in per recipe.
 enum InstalledVersionProbe {
-  /// Run the rule's command inside `appURL` and extract the version, or `nil` when
-  /// the binary is missing, fails, times out, or produces no match.
-  static func run(_ rule: UpdateRecipe.InstalledVersionRule, appURL: URL) -> String? {
-    let executable = appURL.appendingPathComponent(rule.command)
+  /// Produce the comparable installed version: take the raw value from the rule's
+  /// `command` output or `key` (Info.plist), then apply `pattern` if present.
+  /// Returns `nil` when nothing usable is produced.
+  static func resolve(
+    _ rule: UpdateRecipe.InstalledVersionRule, appURL: URL, info: [String: Any]
+  ) -> String? {
+    let raw: String?
+    if let command = rule.command {
+      raw = runCommand(command, args: rule.args ?? [], appURL: appURL)
+    } else if let key = rule.key {
+      raw = (info[key] as? String).flatMap { $0.isEmpty ? nil : $0 }
+    } else {
+      raw = nil
+    }
+    guard let raw, !raw.isEmpty else { return nil }
+    guard let pattern = rule.pattern else { return raw }
+    guard let regex = try? NSRegularExpression(pattern: pattern),
+      let match = regex.firstMatch(in: raw, range: NSRange(raw.startIndex..., in: raw)),
+      match.numberOfRanges > 1,
+      let range = Range(match.range(at: 1), in: raw)
+    else { return nil }
+    return String(raw[range])
+  }
+
+  /// Run a bundled binary and return its trimmed output, or `nil` when the binary is
+  /// missing, fails, or times out.
+  private static func runCommand(_ command: String, args: [String], appURL: URL) -> String? {
+    let executable = appURL.appendingPathComponent(command)
     guard FileManager.default.isExecutableFile(atPath: executable.path) else { return nil }
 
     let process = Process()
     process.executableURL = executable
-    process.arguments = rule.args ?? []
+    process.arguments = args
     let pipe = Pipe()
     process.standardOutput = pipe
     process.standardError = Pipe()  // discard stderr; don't let it block on a full buffer
@@ -296,14 +325,7 @@ enum InstalledVersionProbe {
 
     let text = (String(data: data, encoding: .utf8) ?? "")
       .trimmingCharacters(in: .whitespacesAndNewlines)
-    guard !text.isEmpty else { return nil }
-    guard let pattern = rule.pattern else { return text }
-    guard let regex = try? NSRegularExpression(pattern: pattern),
-      let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
-      match.numberOfRanges > 1,
-      let range = Range(match.range(at: 1), in: text)
-    else { return nil }
-    return String(text[range])
+    return text.isEmpty ? nil : text
   }
 }
 

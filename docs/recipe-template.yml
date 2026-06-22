@@ -108,20 +108,28 @@ check:
   #   html / xml:   download_pattern: 'href="([^"]+\.dmg)"'
   #   json / yaml:  download_path: path
 
-# Optional. Read the INSTALLED version by running a bundled binary, instead of from
-# Info.plist. Only needed for apps that ship a static placeholder version (e.g.
-# WezTerm hardcodes CFBundleShortVersionString to "0.1.0" forever, so its real
-# version — a date tag — is only available via `wezterm --version`). Without this,
-# such apps would perpetually show a phantom update.
+# Optional. Override how the INSTALLED version is read, instead of the default
+# CFBundleShortVersionString. Needed for apps that ship a static placeholder (e.g.
+# WezTerm hardcodes CFBundleShortVersionString to "0.1.0" forever) or format their
+# version unlike the upstream feed (e.g. Zoom's plist says "7.1.0 (83064)" while its
+# feed says "7.1.0.83064"). Without this, such apps perpetually show a phantom update.
+#
+# The raw value comes from `command` (a bundled binary's output) OR `key` (a specific
+# Info.plist key); `pattern` then optionally extracts the comparable version from it.
+#
+# Example — read from a binary (WezTerm):
 installed_version:
   # Path to the executable, relative to the .app bundle.
   command: Contents/MacOS/wezterm
   # Arguments passed to it (optional).
   args:
     - --version
-  # Regex whose first capture group is the version. Omit to use the whole trimmed
-  # output. Compared against the latest version like any other.
+  # Regex whose first capture group is the version. Omit to use the raw value as-is.
   pattern: 'wezterm (\S+)'
+#
+# Example — read a different Info.plist key (Zoom), no pattern needed:
+# installed_version:
+#   key: CFBundleVersion
 
 # Optional (github_releases). How to turn a raw tag into a comparable version.
 version:
