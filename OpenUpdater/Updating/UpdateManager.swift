@@ -175,11 +175,18 @@ final class UpdateManager: ObservableObject {
 
   private static let checkFrequencyKey = "checkFrequency"
   private static let confirmQuitKey = "confirmQuitRunningApps"
+  private static let checkOnLaunchKey = "checkForUpdatesOnLaunch"
 
   /// Whether to ask before quitting a running app to update it (default on).
   /// Mirrored by the `confirmQuitRunningApps` toggle in General settings.
   static var confirmQuitRunningApps: Bool {
     UserDefaults.standard.object(forKey: confirmQuitKey) as? Bool ?? true
+  }
+
+  /// Whether to run a full update check at launch regardless of the periodic
+  /// schedule (default on). Mirrored by a toggle in Updating settings.
+  static var checkForUpdatesOnLaunch: Bool {
+    UserDefaults.standard.object(forKey: checkOnLaunchKey) as? Bool ?? true
   }
 
   /// How often to automatically re-check installed apps in the background.
@@ -537,11 +544,17 @@ final class UpdateManager: ObservableObject {
   }
 
   /// Run an initial check once per session (e.g. at launch / when the main window
-  /// first appears), but only if one is due under the chosen frequency — so a
-  /// manual-only setting never auto-checks, and a fresh cached result is reused.
+  /// first appears). When "check on launch" is on, always run a full check so the
+  /// list reflects reality at launch; otherwise only check if one is due under the
+  /// chosen frequency — so a manual-only setting never auto-checks and a fresh
+  /// cached result is reused.
   func checkForUpdatesIfNeeded() async {
     guard !hasCheckedThisSession, !isChecking else { return }
-    await runPeriodicCheckIfDue()
+    if Self.checkForUpdatesOnLaunch {
+      await checkForUpdates()
+    } else {
+      await runPeriodicCheckIfDue()
+    }
   }
 
   // MARK: - Periodic checks

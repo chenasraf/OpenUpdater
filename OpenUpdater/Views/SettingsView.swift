@@ -352,6 +352,9 @@ struct UnsupportedAppsView: View {
 
 struct UpdatingSettingsView: View {
   @EnvironmentObject private var updateManager: UpdateManager
+  /// Run a full update check at launch, regardless of the periodic schedule
+  /// (default on). Read by `UpdateManager`.
+  @AppStorage("checkForUpdatesOnLaunch") private var checkForUpdatesOnLaunch = true
   @State private var token: String
   @State private var hasStoredToken: Bool
   @State private var status: String?
@@ -379,6 +382,14 @@ struct UpdatingSettingsView: View {
           Text(
             "How often \(AppBranding.title) checks your installed apps for new versions in "
               + "the background. You can always check now from the main window."
+          )
+        }
+        CaptionedField {
+          Toggle("Check for updates at launch", isOn: $checkForUpdatesOnLaunch)
+        } caption: {
+          Text(
+            "Run a fresh check every time \(AppBranding.title) starts, even if a scheduled "
+              + "check isn't due yet."
           )
         }
       } header: {
