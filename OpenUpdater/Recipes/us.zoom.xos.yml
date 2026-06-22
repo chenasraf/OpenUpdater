@@ -7,6 +7,9 @@ check:
   url: https://zoom.us/rest/download?os=mac
   path: result.downloadVO.zoomArm64.version
 
+installed_version:
+  key: CFBundleVersion
+
 download:
   url: https://zoom.us/client/{version}/zoomusInstallerFull.pkg?archType=arm64
   format: pkg
