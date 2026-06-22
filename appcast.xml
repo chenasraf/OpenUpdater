@@ -11,7 +11,51 @@
     <sparkle:version>14</sparkle:version>
     <sparkle:shortVersionString>0.1.0</sparkle:shortVersionString>
     <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-    <sparkle:releaseNotesLink>https://github.com/chenasraf/OpenUpdater/releases/tag/v0.1.0</sparkle:releaseNotesLink>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.1.0...v0.1.0">0.1.0</a> (2026-06-21)</h2>
+<h3>Features</h3>
+<ul>
+<li>add app icon (<a href="https://github.com/chenasraf/OpenUpdater/commit/053166f925dc3998df990694ff035f895adb9d1e">053166f</a>)</li>
+<li>add issue tempates, add request button to unsupported apps (<a href="https://github.com/chenasraf/OpenUpdater/commit/c7240b5c56ed5e642d92e8a717003d270c86ce2d">c7240b5</a>)</li>
+<li>add recipe for Firefox (<code class="notranslate">org.mozilla.firefox</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/af67625ad6613352514f6d3ee571afac00cc5af3">af67625</a>)</li>
+<li>add recipe for Google Chrome (<code class="notranslate">com.google.Chrome</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/1afaea6794f8df18ec6d425e60f7ea1763edff70">1afaea6</a>)</li>
+<li>add recipe for Stremio (<code class="notranslate">com.westbridge.stremio5-mac</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/e0d2ef6b402b852c080dac90b1c586b0f5f223c3">e0d2ef6</a>)</li>
+<li>add recipe for Studio 3T (<code class="notranslate">com.install4j.0526-4458-1435-8154.837</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/c372b997ca47e41a2a0651c724576b59d27612a8">c372b99</a>)</li>
+<li>add recipe for VS Code (<code class="notranslate">com.microsoft.VSCode</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/13fed0eb8950c1b477c0da56252c2f6f4bb1b879">13fed0e</a>)</li>
+<li>add self-update via sparkle (<a href="https://github.com/chenasraf/OpenUpdater/commit/2ef2e35ee7180b90ba9f2c0f7b036faa6f9c934d">2ef2e35</a>)</li>
+<li>add timeouts for installs, cache icons (<a href="https://github.com/chenasraf/OpenUpdater/commit/27ef4b2cd9503537385c60010ff989b255841628">27ef4b2</a>)</li>
+<li>app store update check (<a href="https://github.com/chenasraf/OpenUpdater/commit/e32b33a4e35ea43a201a7b1b899be8ccc07d77a3">e32b33a</a>)</li>
+<li>cache update check results on disk (<a href="https://github.com/chenasraf/OpenUpdater/commit/8ae601280a97c2aedc9c62f73521d9efc476a697">8ae6012</a>)</li>
+<li>cancel app updates mid-flight (<a href="https://github.com/chenasraf/OpenUpdater/commit/94b7a997eca42168f2dd92c3ab36e7cf6f63d283">94b7a99</a>)</li>
+<li>detect and ignore steam and built-in apple apps (<a href="https://github.com/chenasraf/OpenUpdater/commit/7725ba78b6f5cda1f4973158a9a9e37fb5616ea3">7725ba7</a>)</li>
+<li>github + sparkle update checkers (<a href="https://github.com/chenasraf/OpenUpdater/commit/366ff19c9628e00c3c84f9c0cd34232263959536">366ff19</a>)</li>
+<li>ignore apps/versions (<a href="https://github.com/chenasraf/OpenUpdater/commit/bbe63cac5ec633595362ec6fedac8fa040a52ff6">bbe63ca</a>)</li>
+<li>immediately hid app after upate (<a href="https://github.com/chenasraf/OpenUpdater/commit/9f4caec21fdd0bb5cf3b169a35659514dd8c8ea6">9f4caec</a>)</li>
+<li>improve error detection, add version separate placeholders (<a href="https://github.com/chenasraf/OpenUpdater/commit/134920830bc580f837da4d54d91e44fc099ce590">1349208</a>)</li>
+<li>initial app UI + app list (<a href="https://github.com/chenasraf/OpenUpdater/commit/f4899cfbc71a0aa037504da222282771b8918e0a">f4899cf</a>)</li>
+<li>manual update dialog (<a href="https://github.com/chenasraf/OpenUpdater/commit/b472da40a6ff415c24a0d74970ad1adf48bd3afd">b472da4</a>)</li>
+<li>more recipes (<a href="https://github.com/chenasraf/OpenUpdater/commit/8f0855c112c2a7b433c998747392597486ead88d">8f0855c</a>)</li>
+<li>more recipes, http/yaml source types (<a href="https://github.com/chenasraf/OpenUpdater/commit/39f777881a01d8fd3d6bf644eb40a236d6051fdd">39f7778</a>)</li>
+<li>multi select + update (<a href="https://github.com/chenasraf/OpenUpdater/commit/3bfa267ad3a20a7a76cd1963f3b9da72f11e3a79">3bfa267</a>)</li>
+<li>multi-selection context menu (<a href="https://github.com/chenasraf/OpenUpdater/commit/d4a20002fbcd807ecc4b29fb2c3cbbf2f6f54a4f">d4a2000</a>)</li>
+<li>override prerelease option in context menu (<a href="https://github.com/chenasraf/OpenUpdater/commit/f41788d6ee5f0eaa962bb7e93bec5fbfbccfb9d6">f41788d</a>)</li>
+<li>privileged helper (<a href="https://github.com/chenasraf/OpenUpdater/commit/219c3a094dd7869bd963262f3ef970fcf535c419">219c3a0</a>)</li>
+<li>re-scan individual app (<a href="https://github.com/chenasraf/OpenUpdater/commit/dbd5276ee893727137c021c26436dcd2c25136d5">dbd5276</a>)</li>
+<li>settings with github token field, more recipes, pkg support (<a href="https://github.com/chenasraf/OpenUpdater/commit/70b22a62fe9ee8817a2dcb4d09ae4b62dea4a1ae">70b22a6</a>)</li>
+<li>show dock icon when main window open (<a href="https://github.com/chenasraf/OpenUpdater/commit/06fc9e2ca2829ea602a28f2d23ee076c78b20132">06fc9e2</a>)</li>
+<li>show error details on failure (<a href="https://github.com/chenasraf/OpenUpdater/commit/d4786697332287becb66f608dde92c2b895127e5">d478669</a>)</li>
+<li>split ignore list view (<a href="https://github.com/chenasraf/OpenUpdater/commit/57082b9885bc3c0060390193ce7f2e399a6b823c">57082b9</a>)</li>
+<li>support custom recipes (<a href="https://github.com/chenasraf/OpenUpdater/commit/b2c36393a59081f9fb39ea2f5dd714d4e684a389">b2c3639</a>)</li>
+<li>tag ignore/pattern in github releases, more recipes (<a href="https://github.com/chenasraf/OpenUpdater/commit/c6859df24d650c3a29a4c62a3b96e1b7f95b7c82">c6859df</a>)</li>
+<li>unquarantine, progress bar, quit before replace + relaunch (<a href="https://github.com/chenasraf/OpenUpdater/commit/7222508e6d9053df41f269e43fb08c2b3f298ebd">7222508</a>)</li>
+<li>unsupported list + export/report (<a href="https://github.com/chenasraf/OpenUpdater/commit/252da67ffef8f304d13d41dd52f8cf09914b3fdc">252da67</a>)</li>
+<li>update ignore list + allow yml to override ignore (<a href="https://github.com/chenasraf/OpenUpdater/commit/ec604e9b51ddf59b9c85e180b02232e63dc90383">ec604e9</a>)</li>
+<li>update menubar window design (<a href="https://github.com/chenasraf/OpenUpdater/commit/b50a937e394fdf7d95e44556bc1b41661fbfc474">b50a937</a>)</li>
+<li>walk subdirectories in /Applications and ~/Applications (<a href="https://github.com/chenasraf/OpenUpdater/commit/c1663bb1f8a60aa8965644b1ead212e4d4df4f30">c1663bb</a>)</li>
+</ul>
+<h3>Performance Improvements</h3>
+<ul>
+<li>isolate hdiutils/ditto to avoid freezing ui thread (<a href="https://github.com/chenasraf/OpenUpdater/commit/894f379ed9a68e389a36185d2cd3079f1f4205ee">894f379</a>)</li>
+</ul>]]></description>
     <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.1.0/OpenUpdater-0.1.0.dmg" sparkle:edSignature="9SrUK7BZNxszU4P/jHP1aqmIEnc+GigIaX0BOOsaatbcw9MDjgieKH2PHo81kocMbPgg5mZ2KETy8VwMiIz2BA==" length="3075331" type="application/octet-stream"/>
   </item>
   <item>
@@ -20,7 +64,11 @@
     <sparkle:version>16</sparkle:version>
     <sparkle:shortVersionString>0.2.0</sparkle:shortVersionString>
     <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-    <sparkle:releaseNotesLink>https://github.com/chenasraf/OpenUpdater/releases/tag/v0.2.0</sparkle:releaseNotesLink>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.1.0...v0.2.0">0.2.0</a> (2026-06-21)</h2>
+<h3>Features</h3>
+<ul>
+<li>open at startup + open main window on launch (<a href="https://github.com/chenasraf/OpenUpdater/commit/ad568507cb9a9f98a11f11d6a11211e8d1c63cf1">ad56850</a>)</li>
+</ul>]]></description>
     <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.2.0/OpenUpdater-0.2.0.dmg" sparkle:edSignature="4My3Af25eHf1e2yEh3bhPENc5FfVjIkXOZ2xsWGARCBZgTXfAxWktsNdNV57LcMTWo4mGa6xCjq6QNVcQwWRAQ==" length="3081944" type="application/octet-stream"/>
   </item>
   </channel>

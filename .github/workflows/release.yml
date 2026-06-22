@@ -168,6 +168,7 @@ jobs:
 
       - name: Sign update & update Sparkle appcast
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
         run: |
           set -euo pipefail
@@ -180,8 +181,19 @@ jobs:
           # sign_update prints: sparkle:edSignature="…" length="…"
           SIG="$("$RUNNER_TEMP/bin/sign_update" --ed-key-file "$RUNNER_TEMP/sparkle_key" "$DMG")"
           DMG_URL="https://github.com/${{ github.repository }}/releases/download/${TAG}/$(basename "$DMG")"
-          NOTES="https://github.com/${{ github.repository }}/releases/tag/${TAG}"
+          NOTES_LINK="https://github.com/${{ github.repository }}/releases/tag/${TAG}"
           PUBDATE="$(LC_ALL=C date -u +'%a, %d %b %Y %H:%M:%S +0000')"
+
+          # Embed just the release changelog in the appcast so Sparkle shows the
+          # actual notes, not the whole GitHub release page. release-please writes
+          # the changelog into the release body; render it to HTML via GitHub's API.
+          gh release view "$TAG" --json body -q .body > "$RUNNER_TEMP/notes.md"
+          if [ -s "$RUNNER_TEMP/notes.md" ]; then
+            gh api --method POST /markdown -f mode=gfm -F text=@"$RUNNER_TEMP/notes.md" \
+              > "$RUNNER_TEMP/notes.html"
+          else
+            : > "$RUNNER_TEMP/notes.html"
+          fi
 
           cat > "$RUNNER_TEMP/item.xml" <<ITEM
             <item>
@@ -190,7 +202,7 @@ jobs:
               <sparkle:version>${{ github.run_number }}</sparkle:version>
               <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
               <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-              <sparkle:releaseNotesLink>${NOTES}</sparkle:releaseNotesLink>
+              __NOTES__
               <enclosure url="${DMG_URL}" ${SIG} type="application/octet-stream"/>
             </item>
           ITEM
@@ -200,9 +212,18 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin master
           git checkout -B master origin/master
-          python3 - "$RUNNER_TEMP/item.xml" <<'PY'
-          import sys
+          NOTES_LINK="$NOTES_LINK" python3 - "$RUNNER_TEMP/item.xml" "$RUNNER_TEMP/notes.html" <<'PY'
+          import os, sys
           item = open(sys.argv[1]).read()
+          html = open(sys.argv[2]).read().strip()
+          if html:
+              # Wrap the rendered changelog in CDATA; neutralise any literal "]]>".
+              cdata = "<![CDATA[" + html.replace("]]>", "]]]]><![CDATA[>") + "]]>"
+              notes = "<description>" + cdata + "</description>"
+          else:
+              # No body to render — fall back to linking the GitHub release page.
+              notes = "<sparkle:releaseNotesLink>" + os.environ["NOTES_LINK"] + "</sparkle:releaseNotesLink>"
+          item = item.replace("__NOTES__", notes)
           xml = open("appcast.xml").read()
           open("appcast.xml", "w").write(xml.replace("  </channel>", item + "  </channel>", 1))
           PY
