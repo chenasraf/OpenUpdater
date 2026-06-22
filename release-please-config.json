@@ -4,7 +4,10 @@
   "packages": {
     ".": {
       "release-type": "simple",
-      "package-name": "OpenUpdater"
+      "package-name": "OpenUpdater",
+      "extra-files": [
+        "OpenUpdater.xcodeproj/project.pbxproj"
+      ]
     }
   }
 }
