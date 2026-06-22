@@ -6,3 +6,7 @@ check:
   type: json
   url: https://product-details.mozilla.org/1.0/firefox_versions.json
   path: LATEST_FIREFOX_VERSION
+
+download:
+  url: "https://download.mozilla.org/?product=firefox-latest-ssl&os=osx&lang=en-US"
+  format: dmg
