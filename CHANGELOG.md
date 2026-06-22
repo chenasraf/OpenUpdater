@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.0](https://github.com/chenasraf/OpenUpdater/compare/v0.5.0...v0.6.0) (2026-06-22)
+
+
+### Features
+
+* **recipe:** WezTerm (`com.github.wez.wezterm`) read version via `wezterm --version` ([1ec79b9](https://github.com/chenasraf/OpenUpdater/commit/1ec79b9fcfa8d8e8afc1a642ff834c238d5c2430))
+* **updating:** installed_version can read a plist key, not just a command ([a408864](https://github.com/chenasraf/OpenUpdater/commit/a408864395200d953014ef5f396bc3e7bb082aa8))
+* **updating:** read installed version from a bundled binary via recipe ([ec05279](https://github.com/chenasraf/OpenUpdater/commit/ec05279daaec0f23b0c1e724bb76a26fdc3d698c))
+
+
+### Bug Fixes
+
+* **recipe:** Zoom (`us.zoom.xos`) compare against CFBundleVersion ([09c200f](https://github.com/chenasraf/OpenUpdater/commit/09c200f983b197bd1ac9d25514c0fd93187b48c9))
+
 ## [0.5.0](https://github.com/chenasraf/OpenUpdater/compare/v0.4.0...v0.5.0) (2026-06-22)
 
 
