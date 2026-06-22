@@ -6,6 +6,33 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.4.0</title>
+    <pubDate>Mon, 22 Jun 2026 14:36:54 +0000</pubDate>
+    <sparkle:version>29</sparkle:version>
+    <sparkle:shortVersionString>0.4.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.3.0...v0.4.0">0.4.0</a> (2026-06-22)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>menubar:</strong> show available-update count next to the icon (<a href="https://github.com/chenasraf/OpenUpdater/commit/c0e078bdac91e6a0921b8fe71147980ae6bf8282">c0e078b</a>)</li>
+<li><strong>recipe:</strong> Blender (<code class="notranslate">org.blenderfoundation.blender</code>) add LTS channel (<a href="https://github.com/chenasraf/OpenUpdater/commit/24f758f00a53124be3cccb86c7804f4a9b2ea541">24f758f</a>)</li>
+<li><strong>recipe:</strong> Blender (<code class="notranslate">org.blenderfoundation.blender</code>) track LTS series dynamically (<a href="https://github.com/chenasraf/OpenUpdater/commit/b1db30a1830d7d885919b5f6a6aeb56583aa7517">b1db30a</a>)</li>
+<li><strong>recipe:</strong> Firefox (<code class="notranslate">org.mozilla.firefox</code>) add ESR channel (<a href="https://github.com/chenasraf/OpenUpdater/commit/68f86bfd9f0dc6fbcdd8dae0e4a53939f0ced9da">68f86bf</a>)</li>
+<li><strong>recipe:</strong> LibreOffice (<code class="notranslate">org.libreoffice.script</code>) add Fresh/Still channels (<a href="https://github.com/chenasraf/OpenUpdater/commit/a72b0e8f85df4a3ba387f9932a4605946d5e12af">a72b0e8</a>)</li>
+<li><strong>recipe:</strong> Thunderbird (<code class="notranslate">org.mozilla.thunderbird</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/8bbd865512e91abc14164cab479b394cffabb552">8bbd865</a>)</li>
+<li><strong>recipe:</strong> Wireshark (<code class="notranslate">org.wireshark.Wireshark</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/a857fad07e4c33e7ddbdad5f846ec48c800f5d15">a857fad</a>)</li>
+<li><strong>updating:</strong> confirm before quitting open apps to update them (<a href="https://github.com/chenasraf/OpenUpdater/commit/e921f02d8d95237ceed42fa2338dae5333e5735d">e921f02</a>)</li>
+<li><strong>updating:</strong> periodic update checks with selectable frequency (<a href="https://github.com/chenasraf/OpenUpdater/commit/a0fb11e58fbebd7787a8537bc51e8ef791c450f5">a0fb11e</a>)</li>
+<li><strong>updating:</strong> resolve placeholders from other pages and select:latest for HTTP checks (<a href="https://github.com/chenasraf/OpenUpdater/commit/33febcef2ae469e5a34ce7c0ac5298ba9ba9a7e7">33febce</a>)</li>
+<li><strong>updating:</strong> selectable release channels (ESR/LTS/etc.) per app (<a href="https://github.com/chenasraf/OpenUpdater/commit/bbb46224fbf3413e56277cdf231e9bc90a119e5e">bbb4622</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>settings:</strong> restore link color for the GitHub token link (<a href="https://github.com/chenasraf/OpenUpdater/commit/13ad8e9253b797d354cd98295af8a113948f21f0">13ad8e9</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.4.0/OpenUpdater-0.4.0.dmg" sparkle:edSignature="x1C9aUnhmQ2VFxjWmcuNA5g0ZwFONNPdWuBmTmns9XhdMhnr173B/BaF6gdQl0GMfd9SSUN5sWWMpEbVyNQWCQ==" length="3151102" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.3.0</title>
     <pubDate>Mon, 22 Jun 2026 07:56:54 +0000</pubDate>
     <sparkle:version>23</sparkle:version>
