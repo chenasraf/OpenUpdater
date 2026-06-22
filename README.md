@@ -43,8 +43,9 @@ people add recipes, so OpenUpdater can keep up with apps that have no built-in u
 2. Open the DMG and drag **OpenUpdater** into your **Applications** folder.
 3. Launch it from Applications. OpenUpdater appears in your menubar (the two-arrows icon).
 
-> [!NOTE] The first time you open it, macOS may ask you to confirm. If it's blocked, right-click the
-> app in Finder and choose **Open**, then confirm.
+> [!NOTE]  
+> The first time you open it, macOS may ask you to confirm. If it's blocked, right-click the app in
+> Finder and choose **Open**, then confirm.
 
 **Requirements:** macOS 15 (Sequoia) or later.
 
