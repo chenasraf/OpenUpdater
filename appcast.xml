@@ -6,6 +6,25 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.6.0</title>
+    <pubDate>Mon, 22 Jun 2026 20:25:50 +0000</pubDate>
+    <sparkle:version>36</sparkle:version>
+    <sparkle:shortVersionString>0.6.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.5.0...v0.6.0">0.6.0</a> (2026-06-22)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>recipe:</strong> WezTerm (<code class="notranslate">com.github.wez.wezterm</code>) read version via <code class="notranslate">wezterm --version</code> (<a href="https://github.com/chenasraf/OpenUpdater/commit/1ec79b9fcfa8d8e8afc1a642ff834c238d5c2430">1ec79b9</a>)</li>
+<li><strong>updating:</strong> installed_version can read a plist key, not just a command (<a href="https://github.com/chenasraf/OpenUpdater/commit/a408864395200d953014ef5f396bc3e7bb082aa8">a408864</a>)</li>
+<li><strong>updating:</strong> read installed version from a bundled binary via recipe (<a href="https://github.com/chenasraf/OpenUpdater/commit/ec05279daaec0f23b0c1e724bb76a26fdc3d698c">ec05279</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>recipe:</strong> Zoom (<code class="notranslate">us.zoom.xos</code>) compare against CFBundleVersion (<a href="https://github.com/chenasraf/OpenUpdater/commit/09c200f983b197bd1ac9d25514c0fd93187b48c9">09c200f</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.6.0/OpenUpdater-0.6.0.dmg" sparkle:edSignature="4J8lMCXsSDBZNe98amJWy2sYxayJ1hFp4F8ZuLHB99a4VZKRBK7UzxSUtWgq/8qH+DU9IhiQwOcIrP0KoKaIDQ==" length="3181453" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.5.0</title>
     <pubDate>Mon, 22 Jun 2026 15:34:35 +0000</pubDate>
     <sparkle:version>33</sparkle:version>
