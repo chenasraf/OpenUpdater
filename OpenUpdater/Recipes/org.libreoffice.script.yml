@@ -5,7 +5,7 @@ homepage: https://www.libreoffice.org
 check:
   type: html
   url: https://www.libreoffice.org/download/download-libreoffice/
-  pattern: 'LibreOffice (\d+\.\d+\.\d+)'
+  pattern: 'value="latest" data-version-dir="(\d+\.\d+\.\d+)"'
 
 arch:
   arm64: aarch64
@@ -14,3 +14,13 @@ arch:
 download:
   url: https://download.documentfoundation.org/libreoffice/stable/{version}/mac/{arch}/LibreOffice_{version}_MacOS_{arch}.dmg
   format: dmg
+
+channels:
+  - id: fresh
+    name: Fresh
+  - id: still
+    name: Still
+    check:
+      type: html
+      url: https://www.libreoffice.org/download/download-libreoffice/
+      pattern: 'value="previous" data-version-dir="(\d+\.\d+\.\d+)"'
