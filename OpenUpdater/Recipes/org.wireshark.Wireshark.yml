@@ -1,0 +1,29 @@
+id: org.wireshark.Wireshark
+name: Wireshark
+homepage: https://www.wireshark.org
+
+arch:
+  arm64: "Arm%2064"
+  x86_64: "Intel%2064"
+
+check:
+  type: html
+  url: https://www.wireshark.org/download.html
+  pattern: 'Stable Release: (\d+\.\d+\.\d+)'
+
+download:
+  url: https://www.wireshark.org/download/osx/Wireshark%20{version}.dmg
+  format: dmg
+
+channels:
+  - id: stable
+    name: Stable
+  - id: old-stable
+    name: Old Stable
+    check:
+      type: html
+      url: https://www.wireshark.org/download.html
+      pattern: 'Old Stable Release: (\d+\.\d+\.\d+)'
+    download:
+      url: https://www.wireshark.org/download/osx/Wireshark%20{version}%20{arch}.dmg
+      format: dmg
