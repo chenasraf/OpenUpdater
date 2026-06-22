@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.5.0](https://github.com/chenasraf/OpenUpdater/compare/v0.4.0...v0.5.0) (2026-06-22)
+
+
+### Features
+
+* **updating:** check for updates at launch by default ([6f7adaa](https://github.com/chenasraf/OpenUpdater/commit/6f7adaae264b74fa7180f7f0b3147d8e7663cf55))
+
+
+### Bug Fixes
+
+* **helper:** re-register stale helper before privileged installs ([c52928e](https://github.com/chenasraf/OpenUpdater/commit/c52928e36c40e8ffe15d454f24b5bb0cc0feb181))
+* **helper:** surface stale helper for reinstall instead of breaking it ([97d660a](https://github.com/chenasraf/OpenUpdater/commit/97d660ab4010d99726531f78ec7a478fec1e41a9))
+* **installer:** retry root-owned app replace through privileged helper ([4287ec1](https://github.com/chenasraf/OpenUpdater/commit/4287ec12d5e69b163d1e43b3af2a0292baa01417))
+* **updating:** treat blank plist strings as missing in app scan ([59b349a](https://github.com/chenasraf/OpenUpdater/commit/59b349a5e74264696048eb47609f4118b0ae540a))
+
 ## [0.4.0](https://github.com/chenasraf/OpenUpdater/compare/v0.3.0...v0.4.0) (2026-06-22)
 
 
