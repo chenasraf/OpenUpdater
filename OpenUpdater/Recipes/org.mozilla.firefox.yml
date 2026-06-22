@@ -10,3 +10,16 @@ check:
 download:
   url: "https://download.mozilla.org/?product=firefox-latest-ssl&os=osx&lang=en-US"
   format: dmg
+
+channels:
+  - id: stable
+    name: Stable
+  - id: esr
+    name: ESR
+    check:
+      type: json
+      url: https://product-details.mozilla.org/1.0/firefox_versions.json
+      path: FIREFOX_ESR
+    download:
+      url: "https://download.mozilla.org/?product=firefox-esr-latest-ssl&os=osx&lang=en-US"
+      format: dmg
