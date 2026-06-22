@@ -1,0 +1,25 @@
+id: org.mozilla.thunderbird
+name: Thunderbird
+homepage: https://www.thunderbird.net/
+
+check:
+  type: json
+  url: https://product-details.mozilla.org/1.0/thunderbird_versions.json
+  path: LATEST_THUNDERBIRD_VERSION
+
+download:
+  url: "https://download.mozilla.org/?product=thunderbird-latest-ssl&os=osx&lang=en-US"
+  format: dmg
+
+channels:
+  - id: stable
+    name: Stable
+  - id: esr
+    name: ESR
+    check:
+      type: json
+      url: https://product-details.mozilla.org/1.0/thunderbird_versions.json
+      path: THUNDERBIRD_ESR
+    download:
+      url: "https://download.mozilla.org/?product=thunderbird-esr-latest-ssl&os=osx&lang=en-US"
+      format: dmg
