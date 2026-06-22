@@ -342,6 +342,23 @@ struct UpdatingSettingsView: View {
   var body: some View {
     Form {
       Section {
+        Picker("Check for updates", selection: $updateManager.checkFrequency) {
+          ForEach(CheckFrequency.allCases) { frequency in
+            Text(frequency.title).tag(frequency)
+          }
+        }
+      } header: {
+        Text("Automatic Checks")
+      } footer: {
+        Text(
+          "How often \(AppBranding.title) checks your installed apps for new versions in "
+            + "the background. You can always check now from the main window."
+        )
+        .font(.caption)
+        .foregroundStyle(.secondary)
+      }
+
+      Section {
         SecureField("Personal access token", text: $token)
 
         HStack {

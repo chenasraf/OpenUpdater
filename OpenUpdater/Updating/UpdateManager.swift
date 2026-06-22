@@ -19,6 +19,42 @@ enum UpdateSource: String, Codable {
   case unknown
 }
 
+/// How often OpenUpdater automatically re-checks installed apps for new versions.
+enum CheckFrequency: String, CaseIterable, Identifiable {
+  case manual
+  case daily
+  case everyTwoDays
+  case weekly
+  case everyTwoWeeks
+  case monthly
+
+  var id: String { rawValue }
+
+  var title: String {
+    switch self {
+    case .manual: return "Manual only"
+    case .daily: return "Once a day"
+    case .everyTwoDays: return "Once every 2 days"
+    case .weekly: return "Once a week"
+    case .everyTwoWeeks: return "Once every 2 weeks"
+    case .monthly: return "Once a month"
+    }
+  }
+
+  /// The minimum time between automatic checks, or `nil` for manual-only.
+  var interval: TimeInterval? {
+    let day: TimeInterval = 24 * 60 * 60
+    switch self {
+    case .manual: return nil
+    case .daily: return day
+    case .everyTwoDays: return 2 * day
+    case .weekly: return 7 * day
+    case .everyTwoWeeks: return 14 * day
+    case .monthly: return 30 * day
+    }
+  }
+}
+
 /// A single installed application and what we know about its updates.
 struct AppInfo: Identifiable, Hashable {
   /// Bundle identifier (`CFBundleIdentifier`).
@@ -137,14 +173,37 @@ final class UpdateManager: ObservableObject {
   /// (not `lastChecked`), so a cache-prefilled `lastChecked` doesn't suppress it.
   private var hasCheckedThisSession = false
 
+  private static let checkFrequencyKey = "checkFrequency"
+
+  /// How often to automatically re-check installed apps in the background.
+  /// Persisted to UserDefaults; changing it reschedules the heartbeat and runs a
+  /// check immediately if one is already due under the new interval.
+  @Published var checkFrequency: CheckFrequency {
+    didSet {
+      guard checkFrequency != oldValue else { return }
+      UserDefaults.standard.set(checkFrequency.rawValue, forKey: Self.checkFrequencyKey)
+      scheduleHeartbeat()
+      Task { await runPeriodicCheckIfDue() }
+    }
+  }
+
+  /// Repeating heartbeat driving periodic checks. It fires a few times an hour; the
+  /// real decision (whether a check is due) compares `lastChecked` to the chosen
+  /// interval, so it tolerates sleep/wake and relaunches gracefully.
+  private var heartbeat: Timer?
+  private static let heartbeatInterval: TimeInterval = 30 * 60
+
   static let log = Logger(subsystem: "dev.casraf.OpenUpdater", category: "updates")
 
   init() {
+    let storedFrequency = UserDefaults.standard.string(forKey: Self.checkFrequencyKey)
+    checkFrequency = storedFrequency.flatMap(CheckFrequency.init(rawValue:)) ?? .daily
     builtInRecipes = RecipeStore.loadAll()
     recipes = builtInRecipes
     loadCustomRecipes()
     scanInstalledApps()
     applyCachedResults()
+    scheduleHeartbeat()
     Self.log.notice(
       "Loaded \(self.builtInRecipes.count, privacy: .public) built-in + \(self.customRecipes.count, privacy: .public) custom recipe(s), scanned \(self.apps.count, privacy: .public) app(s)"
     )
@@ -438,10 +497,37 @@ final class UpdateManager: ObservableObject {
       "Couldn't reach \(failures) update source\(failures == 1 ? "" : "s"). Check your connection and try again."
   }
 
-  /// Run an initial check once per session (e.g. when the main window first appears).
-  /// The cache may have prefilled `lastChecked`, so this keys off the session flag.
+  /// Run an initial check once per session (e.g. at launch / when the main window
+  /// first appears), but only if one is due under the chosen frequency — so a
+  /// manual-only setting never auto-checks, and a fresh cached result is reused.
   func checkForUpdatesIfNeeded() async {
     guard !hasCheckedThisSession, !isChecking else { return }
+    await runPeriodicCheckIfDue()
+  }
+
+  // MARK: - Periodic checks
+
+  /// (Re)start the background heartbeat for the current frequency. A manual-only
+  /// frequency tears the timer down entirely.
+  private func scheduleHeartbeat() {
+    heartbeat?.invalidate()
+    heartbeat = nil
+    guard checkFrequency.interval != nil else { return }
+    let timer = Timer(timeInterval: Self.heartbeatInterval, repeats: true) { [weak self] _ in
+      Task { @MainActor in await self?.runPeriodicCheckIfDue() }
+    }
+    timer.tolerance = 5 * 60
+    RunLoop.main.add(timer, forMode: .common)
+    heartbeat = timer
+  }
+
+  /// Run a check if the chosen interval has elapsed since the last one. No-op for
+  /// manual-only, while a check is running, or when the last check is still fresh.
+  func runPeriodicCheckIfDue() async {
+    guard let interval = checkFrequency.interval, !isChecking else { return }
+    if let lastChecked, Date().timeIntervalSince(lastChecked) < interval { return }
+    Self.log.notice(
+      "Periodic check due (frequency: \(self.checkFrequency.rawValue, privacy: .public))")
     await checkForUpdates()
   }
 
