@@ -149,7 +149,13 @@ nonisolated enum Installer {
   /// Trash. Uses `replaceItemAt` for an in-place, same-volume swap.
   static func replaceApp(at destination: URL, with newApp: URL) throws {
     let directory = destination.deletingLastPathComponent()
-    guard FileManager.default.isWritableFile(atPath: directory.path) else {
+    // Replacing needs write access to both the containing directory and the existing
+    // bundle — some apps (e.g. Google Chrome, left root-owned by Keystone) sit in a
+    // writable /Applications but are themselves owned by another user.
+    let existing = FileManager.default.fileExists(atPath: destination.path)
+    guard FileManager.default.isWritableFile(atPath: directory.path),
+      !existing || FileManager.default.isWritableFile(atPath: destination.path)
+    else {
       throw InstallError.notWritable(destination)
     }
 
@@ -164,8 +170,29 @@ nonisolated enum Installer {
       // replaceItemAt moves the original aside; if the destination is missing
       // (fresh install), fall back to a plain move.
       try? FileManager.default.removeItem(at: staged)
+      // Surface permission failures as `.notWritable` so the caller can retry the
+      // swap through the privileged helper instead of treating it as fatal.
+      if isPermissionDenied(error) { throw InstallError.notWritable(destination) }
       throw error
     }
+  }
+
+  /// Whether `error` (or any error it wraps) is a permission-denied failure —
+  /// Cocoa's `NSFileWriteNoPermissionError` or POSIX `EACCES`/`EPERM`.
+  private static func isPermissionDenied(_ error: Error) -> Bool {
+    let nsError = error as NSError
+    if nsError.domain == NSCocoaErrorDomain, nsError.code == NSFileWriteNoPermissionError {
+      return true
+    }
+    if nsError.domain == NSPOSIXErrorDomain,
+      nsError.code == Int(EACCES) || nsError.code == Int(EPERM)
+    {
+      return true
+    }
+    if let underlying = nsError.userInfo[NSUnderlyingErrorKey] as? NSError {
+      return isPermissionDenied(underlying)
+    }
+    return false
   }
 
   // MARK: - Helpers
