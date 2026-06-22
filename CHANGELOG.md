@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.4.0](https://github.com/chenasraf/OpenUpdater/compare/v0.3.0...v0.4.0) (2026-06-22)
+
+
+### Features
+
+* **menubar:** show available-update count next to the icon ([c0e078b](https://github.com/chenasraf/OpenUpdater/commit/c0e078bdac91e6a0921b8fe71147980ae6bf8282))
+* **recipe:** Blender (`org.blenderfoundation.blender`) add LTS channel ([24f758f](https://github.com/chenasraf/OpenUpdater/commit/24f758f00a53124be3cccb86c7804f4a9b2ea541))
+* **recipe:** Blender (`org.blenderfoundation.blender`) track LTS series dynamically ([b1db30a](https://github.com/chenasraf/OpenUpdater/commit/b1db30a1830d7d885919b5f6a6aeb56583aa7517))
+* **recipe:** Firefox (`org.mozilla.firefox`) add ESR channel ([68f86bf](https://github.com/chenasraf/OpenUpdater/commit/68f86bfd9f0dc6fbcdd8dae0e4a53939f0ced9da))
+* **recipe:** LibreOffice (`org.libreoffice.script`) add Fresh/Still channels ([a72b0e8](https://github.com/chenasraf/OpenUpdater/commit/a72b0e8f85df4a3ba387f9932a4605946d5e12af))
+* **recipe:** Thunderbird (`org.mozilla.thunderbird`) ([8bbd865](https://github.com/chenasraf/OpenUpdater/commit/8bbd865512e91abc14164cab479b394cffabb552))
+* **recipe:** Wireshark (`org.wireshark.Wireshark`) ([a857fad](https://github.com/chenasraf/OpenUpdater/commit/a857fad07e4c33e7ddbdad5f846ec48c800f5d15))
+* **updating:** confirm before quitting open apps to update them ([e921f02](https://github.com/chenasraf/OpenUpdater/commit/e921f02d8d95237ceed42fa2338dae5333e5735d))
+* **updating:** periodic update checks with selectable frequency ([a0fb11e](https://github.com/chenasraf/OpenUpdater/commit/a0fb11e58fbebd7787a8537bc51e8ef791c450f5))
+* **updating:** resolve placeholders from other pages and select:latest for HTTP checks ([33febce](https://github.com/chenasraf/OpenUpdater/commit/33febcef2ae469e5a34ce7c0ac5298ba9ba9a7e7))
+* **updating:** selectable release channels (ESR/LTS/etc.) per app ([bbb4622](https://github.com/chenasraf/OpenUpdater/commit/bbb46224fbf3413e56277cdf231e9bc90a119e5e))
+
+
+### Bug Fixes
+
+* **settings:** restore link color for the GitHub token link ([13ad8e9](https://github.com/chenasraf/OpenUpdater/commit/13ad8e9253b797d354cd98295af8a113948f21f0))
+
 ## [0.3.0](https://github.com/chenasraf/OpenUpdater/compare/v0.2.0...v0.3.0) (2026-06-22)
 
 
