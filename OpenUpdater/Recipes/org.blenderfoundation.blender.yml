@@ -22,5 +22,11 @@ channels:
     name: LTS
     check:
       type: html
-      url: https://www.blender.org/download/lts/4-5/
+      url: https://www.blender.org/download/lts/{series}/
       pattern: 'Blender (\d+\.\d+\.\d+)'
+      select: latest
+      resolve:
+        series:
+          url: https://www.blender.org/download/lts/
+          pattern: '/download/lts/([0-9-]+)/'
+          select: latest
