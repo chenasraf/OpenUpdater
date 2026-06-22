@@ -975,10 +975,13 @@ final class UpdateManager: ObservableObject {
         try Installer.replaceApp(at: destination, with: newApp)
       }.value
     } catch InstallError.notWritable {
-      guard await PrivilegedHelper.shared.ensureReady() else {
+      if await PrivilegedHelper.shared.ensureReady() {
+        try await PrivilegedHelper.shared.replaceApp(at: destination.path, with: newApp.path)
+      } else if await PrivilegedHelper.shared.needsReinstall() {
+        throw HelperError.needsReinstall
+      } else {
         throw InstallError.notWritable(destination)
       }
-      try await PrivilegedHelper.shared.replaceApp(at: destination.path, with: newApp.path)
     }
   }
 

@@ -360,6 +360,8 @@ struct UpdatingSettingsView: View {
   @State private var status: String?
   @State private var helperStatus: SMAppService.Status = .notRegistered
   @State private var helperMessage: String?
+  /// Registered/approved but reporting an older version — needs a reinstall.
+  @State private var helperStale = false
 
   init() {
     // Load at construction so the field is populated on first render — onAppear
@@ -454,7 +456,9 @@ struct UpdatingSettingsView: View {
           HStack {
             Text(helperStatusText)
             Spacer()
-            if helperStatus == .enabled {
+            if helperStatus == .enabled && helperStale {
+              Button("Reinstall Helper…") { reinstallHelper() }
+            } else if helperStatus == .enabled {
               Button("Remove", role: .destructive) {
                 Task {
                   try? await PrivilegedHelper.shared.unregister()
@@ -484,6 +488,9 @@ struct UpdatingSettingsView: View {
   }
 
   private var helperStatusText: String {
+    if helperStatus == .enabled && helperStale {
+      return "Update required — reinstall the helper"
+    }
     switch helperStatus {
     case .enabled: return "Installed and enabled"
     case .requiresApproval: return "Waiting for approval in System Settings"
@@ -495,6 +502,9 @@ struct UpdatingSettingsView: View {
 
   private func refreshHelperStatus() {
     helperStatus = PrivilegedHelper.shared.status
+    // A registered helper from an older build answers with a stale version — flag it
+    // so the user can reinstall rather than hitting silent install failures.
+    Task { helperStale = await PrivilegedHelper.shared.needsReinstall() }
   }
 
   private func installHelper() {
@@ -510,6 +520,25 @@ struct UpdatingSettingsView: View {
     } catch {
       helperStatus = PrivilegedHelper.shared.status
       helperMessage = "Couldn't install the helper: \(error.localizedDescription)"
+    }
+  }
+
+  private func reinstallHelper() {
+    Task {
+      do {
+        let status = try await PrivilegedHelper.shared.reinstall()
+        helperStatus = status
+        helperStale = await PrivilegedHelper.shared.needsReinstall()
+        if status == .requiresApproval {
+          helperMessage = "Approve \(AppBranding.title) under Login Items to finish."
+          SMAppService.openSystemSettingsLoginItems()
+        } else if status == .enabled {
+          helperMessage = "Helper reinstalled."
+        }
+      } catch {
+        helperStatus = PrivilegedHelper.shared.status
+        helperMessage = "Couldn't reinstall the helper: \(error.localizedDescription)"
+      }
     }
   }
 }

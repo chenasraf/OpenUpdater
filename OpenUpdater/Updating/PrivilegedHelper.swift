@@ -11,11 +11,15 @@ import ServiceManagement
 
 enum HelperError: Error, CustomStringConvertible {
   case unavailable
+  case needsReinstall
   case failed(String)
 
   var description: String {
     switch self {
     case .unavailable: return "The privileged helper isn't available"
+    case .needsReinstall:
+      return "The background helper is out of date after an update. Reinstall it in "
+        + "Settings → Updating → Background Helper, then try again."
     case .failed(let message): return message
     }
   }
@@ -90,28 +94,33 @@ final class PrivilegedHelper {
     }
   }
 
-  /// Ensure a responsive, current helper is registered before a privileged call.
-  /// A helper left over from an older version may not answer our newer requests
-  /// (you'd see "Couldn't communicate with a helper application"), so when it's
-  /// enabled but fails the version handshake, re-register to replace the stale
-  /// daemon with the one bundled in this app. Returns whether a working helper is
-  /// available.
+  /// Whether a working, current helper is available to take a privileged call —
+  /// registered, approved, and answering our version handshake.
   func ensureReady() async -> Bool {
     guard isEnabled else { return false }
-    if await ping() { return true }
-    Self.log.notice("Helper enabled but unresponsive/stale — re-registering")
-    // Drop the cached connection and re-register so launchd loads the daemon
-    // bundled with the current app.
+    return await ping()
+  }
+
+  /// True when the helper is registered/approved but answers with a different
+  /// version than this app bundles — i.e. it was left behind by an older build and
+  /// must be reinstalled before silent installs work again. Distinct from "not
+  /// installed", which the user fixes by installing the helper for the first time.
+  func needsReinstall() async -> Bool {
+    guard isEnabled else { return false }
+    return !(await ping())
+  }
+
+  /// Explicitly reinstall a stale helper: unregister the old daemon and register
+  /// the one bundled with this app. The user approves the new registration once in
+  /// System Settings → Login Items (the returned status is `.requiresApproval`
+  /// until they do). Driven by the Reinstall button in settings, never silently
+  /// mid-install — re-registering drops the existing approval.
+  @discardableResult
+  func reinstall() async throws -> SMAppService.Status {
     connection?.invalidate()
     connection = nil
-    do {
-      try await service.unregister()
-      _ = try register()
-    } catch {
-      Self.log.error("Helper re-register failed: \(String(describing: error), privacy: .public)")
-      return false
-    }
-    return await ping()
+    if isEnabled { try await service.unregister() }
+    return try register()
   }
 
   func installPackage(at path: String) async throws {
