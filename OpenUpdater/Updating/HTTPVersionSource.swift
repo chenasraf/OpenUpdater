@@ -235,13 +235,14 @@ enum HTTPVersionSource {
   static func keyPathValue(at path: String, in root: Any) -> String? {
     var current: Any? = root
     for key in pathComponents(path) {
-      if key.hasPrefix("["), key.hasSuffix("]"), key.contains("=") {
+      if key.hasPrefix("["), key.hasSuffix("]"), key.contains("=") || key.contains("~") {
         guard let array = current as? [Any] else { return nil }
         let conditions = parseConditions(key.dropFirst().dropLast())
         guard !conditions.isEmpty else { return nil }
         current = array.first { element in
-          conditions.allSatisfy { field, wanted in
-            scalarString(self.field(field, of: element)).map { matches($0, wanted) } ?? false
+          conditions.allSatisfy { field, op, wanted in
+            guard let actual = scalarString(self.field(field, of: element)) else { return false }
+            return op == "~" ? actual.contains(wanted) : matches(actual, wanted)
           }
         }
       } else if let index = Int(key), let array = current as? [Any] {
@@ -281,13 +282,18 @@ enum HTTPVersionSource {
     return components
   }
 
-  /// Parse a predicate body (`field=value` pairs separated by `,`) into conditions.
-  private static func parseConditions(_ body: Substring) -> [(field: String, value: String)] {
+  /// Parse a predicate body into conditions. Each clause is `field=value` (exact
+  /// match) or `field~value` (substring match), separated by `,`. The substring form
+  /// selects an array element by part of a longer field — e.g. `[link~mac_arm]` picks
+  /// the asset whose download URL contains `mac_arm`.
+  private static func parseConditions(_ body: Substring) -> [(
+    field: String, op: Character, value: String
+  )] {
     body.split(separator: ",").compactMap { clause in
-      guard let equals = clause.firstIndex(of: "=") else { return nil }
-      let field = clause[clause.startIndex..<equals].trimmingCharacters(in: .whitespaces)
-      let value = clause[clause.index(after: equals)...].trimmingCharacters(in: .whitespaces)
-      return field.isEmpty ? nil : (field, value)
+      guard let sep = clause.firstIndex(where: { $0 == "=" || $0 == "~" }) else { return nil }
+      let field = clause[clause.startIndex..<sep].trimmingCharacters(in: .whitespaces)
+      let value = clause[clause.index(after: sep)...].trimmingCharacters(in: .whitespaces)
+      return field.isEmpty ? nil : (field, clause[sep], value)
     }
   }
 

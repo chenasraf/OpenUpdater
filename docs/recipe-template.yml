@@ -90,6 +90,9 @@ check:
   # release, matching what its static download actually serves (the newest version
   # may still be at a partial staged rollout the download URL doesn't serve yet).
   # Comma-separate conditions to require all of them, e.g. "[fraction=1,os=mac]".
+  # "[field~value]" matches when the field CONTAINS value (substring) — use it to pick
+  # an asset by part of a longer string, e.g. a download array where only the URL
+  # distinguishes platforms: "download.[link~mac_arm].link". Combine with {arch}.
   # path: version
 
   # html / xml ONLY, OPTIONAL. Which match to use when `pattern` matches more than
