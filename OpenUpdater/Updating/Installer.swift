@@ -177,6 +177,52 @@ nonisolated enum Installer {
     }
   }
 
+  /// Squirrel.Mac apps (Discord, Slack, and most Electron apps) self-update through a
+  /// `ShipIt` helper: the app stages a copy of an update and writes a pending request
+  /// that, on its next launch, copies that staged bundle over the app in `/Applications`.
+  /// After we replace such an app in place, that pending request rolls our update right
+  /// back to the staged (now stale) version — exactly the "update, re-scan, same version"
+  /// loop. Remove any pending request that targets the app we just installed, along with
+  /// the staged bundle it points at, so our update sticks. Matched by the request's
+  /// `targetBundleURL` so we never touch another app's pending update.
+  static func clearPendingSquirrelUpdate(for installedApp: URL) {
+    guard isSquirrelApp(installedApp) else { return }
+    let fm = FileManager.default
+    let targetPath = installedApp.standardizedFileURL.path
+
+    // Squirrel keeps its state in a per-app directory under Application Support (e.g.
+    // Discord's `~/Library/Application Support/discord/`) or Caches.
+    let roots =
+      fm.urls(for: .applicationSupportDirectory, in: .userDomainMask)
+      + fm.urls(for: .cachesDirectory, in: .userDomainMask)
+    for root in roots {
+      let dirs = (try? fm.contentsOfDirectory(at: root, includingPropertiesForKeys: nil)) ?? []
+      for dir in dirs {
+        let request = dir.appendingPathComponent("ShipIt_request.json")
+        guard let data = try? Data(contentsOf: request),
+          let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+          let targetString = json["targetBundleURL"] as? String,
+          URL(string: targetString)?.standardizedFileURL.path == targetPath
+        else { continue }
+        // Drop the staged bundle this request would have reinstalled (…/app-<version>/).
+        if let updateString = json["updateBundleURL"] as? String,
+          let staged = URL(string: updateString)?.deletingLastPathComponent(),
+          staged.lastPathComponent.hasPrefix("app-")
+        {
+          try? fm.removeItem(at: staged)
+        }
+        try? fm.removeItem(at: request)
+      }
+    }
+  }
+
+  /// Whether `app` bundles Squirrel.Mac — the self-update framework most Electron apps
+  /// ship (`Contents/Frameworks/Squirrel.framework`).
+  private static func isSquirrelApp(_ app: URL) -> Bool {
+    FileManager.default.fileExists(
+      atPath: app.appendingPathComponent("Contents/Frameworks/Squirrel.framework").path)
+  }
+
   /// Whether `error` (or any error it wraps) is a permission-denied failure —
   /// Cocoa's `NSFileWriteNoPermissionError` or POSIX `EACCES`/`EPERM`.
   private static func isPermissionDenied(_ error: Error) -> Bool {

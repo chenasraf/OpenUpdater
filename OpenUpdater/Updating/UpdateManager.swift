@@ -947,6 +947,13 @@ final class UpdateManager: ObservableObject {
         try await replaceApp(newApp, at: destination)
       }
 
+      // Squirrel.Mac self-updaters (Discord, Slack, …) stage a copy and reinstall it on
+      // next launch, which would roll our update straight back. Clear any such pending
+      // request before we relaunch, so what we just installed sticks.
+      await Task.detached(priority: .userInitiated) {
+        Installer.clearPendingSquirrelUpdate(for: destination)
+      }.value
+
       refreshInstalledVersion(id: id)
       updatedThisSession.insert(id)
       installPhases[id] = .idle
