@@ -31,6 +31,13 @@ enum HTTPVersionSource {
       throw UpdateCheckError.missingURL
     }
 
+    // A redirect check resolves a "latest" download endpoint (e.g. Slack's
+    // /ssb/download-osx-universal) to its final URL and reads the version out of that
+    // URL — no body download. The resolved URL doubles as the download.
+    if recipe.check.kind == .redirect {
+      return try await latestByRedirect(for: recipe, checkURL: url, resolved: resolved)
+    }
+
     let data = try await fetch(url)
 
     let rawVersion: String
@@ -104,6 +111,59 @@ enum HTTPVersionSource {
       downloadURL: downloadURL,
       format: format
     )
+  }
+
+  /// Resolve a redirect-based "latest" endpoint: follow its redirects to the final
+  /// URL, extract the version from that URL with the recipe's `pattern`, and use the
+  /// resolved URL as the download (unless a `download.url` template overrides it).
+  private static func latestByRedirect(
+    for recipe: UpdateRecipe, checkURL url: URL, resolved: [String: String]
+  ) async throws -> ReleaseResult {
+    let finalURL = try await finalRedirectURL(url)
+    guard let pattern = recipe.check.pattern,
+      let rawVersion = firstCapture(recipe.resolveArch(pattern), in: finalURL.absoluteString)
+    else {
+      throw UpdateCheckError.extractionFailed("version")
+    }
+    let version = recipe.normalizeVersion(fromTag: rawVersion)
+
+    // The resolved URL is the download; an explicit recipe template still wins.
+    var downloadURL: URL? = finalURL
+    if let template = recipe.download?.urlTemplate {
+      downloadURL = URL(
+        string: applyPlaceholders(
+          recipe.expand(template, tag: rawVersion, version: version), resolved))
+    }
+
+    let format =
+      recipe.download?.format
+      ?? downloadURL.flatMap { ArchiveFormat(inferringFrom: $0)?.rawValue }
+
+    var changelogURL: URL?
+    if let template = recipe.changelogTemplate {
+      changelogURL = URL(
+        string: applyPlaceholders(
+          recipe.expand(template, tag: rawVersion, version: version), resolved))
+    }
+
+    return ReleaseResult(
+      tag: rawVersion, version: version, changelogURL: changelogURL,
+      downloadURL: downloadURL, format: format)
+  }
+
+  /// Follow `url`'s redirect chain to the final URL without downloading the body it
+  /// points at. A `HEAD` keeps the version check cheap even when the target is a large
+  /// dmg/zip; `URLSession` follows redirects and reports the final URL on the response.
+  private static func finalRedirectURL(_ url: URL) async throws -> URL {
+    var request = URLRequest(url: url)
+    request.httpMethod = "HEAD"
+    request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
+    let (_, response) = try await URLSession.shared.data(for: request)
+    guard let http = response as? HTTPURLResponse else { throw UpdateCheckError.badResponse(-1) }
+    guard http.statusCode == 200, let finalURL = http.url else {
+      throw UpdateCheckError.badResponse(http.statusCode)
+    }
+    return finalURL
   }
 
   /// GET a URL with the app's User-Agent, returning its body or throwing on a

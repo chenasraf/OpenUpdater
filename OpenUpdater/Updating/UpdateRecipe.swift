@@ -63,6 +63,7 @@ struct UpdateRecipe: Decodable {
       case xml  // fetch XML, extract version via regex
       case json  // fetch JSON, extract version via a key path
       case yaml  // fetch YAML (e.g. electron latest-mac.yml), extract via a key path
+      case redirect  // resolve a "latest" download redirect, extract version from the final URL
     }
     let kind: Kind
     let repo: String?  // github_releases

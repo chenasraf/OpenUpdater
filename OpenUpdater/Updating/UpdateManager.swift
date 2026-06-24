@@ -392,7 +392,7 @@ final class UpdateManager: ObservableObject {
           else { throw UpdateCheckError.missingFeed }
           result = try await SparkleSource.latest(feedURL: feedURL)
           source = .sparkle
-        case .html, .xml, .json, .yaml:
+        case .html, .xml, .json, .yaml, .redirect:
           result = try await HTTPVersionSource.latest(for: recipe)
           source = .http
         }

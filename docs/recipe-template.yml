@@ -48,6 +48,8 @@ check:
   #   xml              — fetch XML, extract the version with a regex
   #   json             — fetch JSON, extract the version with a key path
   #   yaml             — fetch YAML (e.g. electron's latest-mac.yml) via a key path
+  #   redirect         — follow a "latest" download redirect, read the version from
+  #                      the final URL (e.g. Slack). The resolved URL is the download.
   type: github_releases
 
   # github_releases ONLY. "owner/name" of the repo.
@@ -71,12 +73,15 @@ check:
   # build numbers (sparkle:version / CFBundleVersion), so `version` below is ignored.
   # feed: https://example.com/appcast.xml
 
-  # html / xml / json ONLY. The page or API to fetch.
+  # html / xml / json / redirect. The page, API, or redirecting endpoint to fetch.
   # url: https://example.com/latest
 
-  # html / xml ONLY. Regex whose first capture group is the version. (`version`
-  # rules below still apply afterward.)
-  # pattern: 'Version (\d+\.\d+\.\d+)'
+  # html / xml / redirect. Regex whose first capture group is the version. (`version`
+  # rules below still apply afterward.) For html/xml it matches the response body;
+  # for redirect it matches the final URL after redirects, so the version embedded in
+  # a download path is captured without downloading the file.
+  #   html / xml:   pattern: 'Version (\d+\.\d+\.\d+)'
+  #   redirect:     pattern: '/universal/([0-9.]+)/'
 
   # json / yaml ONLY. Dotted key path to the version (array indices allowed, e.g.
   # "assets.0.name"). For electron latest-mac.yml this is just "version".
