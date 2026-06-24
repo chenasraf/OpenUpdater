@@ -1,0 +1,20 @@
+id: com.google.android.studio
+name: Android Studio
+homepage: https://developer.android.com/studio
+
+check:
+  type: json
+  url: https://jb.gg/android-studio-releases-list.json
+  path: content.item.[channel=Release].build
+  download_path: content.item.[channel=Release].download.[link~{arch}].link
+
+arch:
+  arm64: mac_arm
+  x86_64: mac.dmg
+
+version:
+  strip_prefix: "AI-"
+
+installed_version:
+  key: CFBundleVersion
+  pattern: 'AI-(.+)'
