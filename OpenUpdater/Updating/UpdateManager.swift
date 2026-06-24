@@ -379,9 +379,14 @@ final class UpdateManager: ObservableObject {
     do {
       let result: ReleaseResult
       let source: UpdateSource
-      // Precedence: an explicit recipe overrides a Sparkle feed, which overrides
-      // App Store auto-detection.
-      if let recipe {
+      // Precedence: a Mac App Store install always updates through the App Store —
+      // never replace it with a direct-download build, even when a recipe exists for
+      // the same bundle id (e.g. Slack ships on both). Otherwise an explicit recipe
+      // overrides a Sparkle feed, which overrides App Store auto-detection.
+      if app.isAppStoreApp {
+        result = try await AppStoreSource.latest(bundleID: app.id)
+        source = .appStore
+      } else if let recipe {
         switch recipe.check.kind {
         case .githubReleases:
           result = try await GitHubReleaseSource.latest(
