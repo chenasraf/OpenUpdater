@@ -1,0 +1,8 @@
+id: com.tinyspeck.slackmacgap
+name: Slack
+homepage: https://slack.com
+
+check:
+  type: redirect
+  url: https://slack.com/ssb/download-osx-universal
+  pattern: /universal/([0-9.]+)/
