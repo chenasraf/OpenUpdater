@@ -11,9 +11,19 @@ enum ArchiveFormat: String {
   case dmg
   case zip
   case pkg
+  case tar  // .tar and compressed tarballs (.tar.gz/.tgz/.tar.xz/.tar.bz2)
 
   /// Infer from a filename/URL extension (e.g. an appcast enclosure URL).
   init?(inferringFrom url: URL) {
+    // Tarballs use a compound extension (.tar.gz, .tgz); `pathExtension` only sees the
+    // final component, so match the whole filename for those.
+    let name = url.lastPathComponent.lowercased()
+    if name.hasSuffix(".tar") || name.hasSuffix(".tar.gz") || name.hasSuffix(".tgz")
+      || name.hasSuffix(".tar.xz") || name.hasSuffix(".tar.bz2")
+    {
+      self = .tar
+      return
+    }
     switch url.pathExtension.lowercased() {
     case "dmg": self = .dmg
     case "zip": self = .zip
@@ -124,6 +134,11 @@ nonisolated enum Installer {
     switch format {
     case .zip:
       try run("/usr/bin/ditto", ["-x", "-k", archive.path, work.path])
+      app = try locateApp(in: work)
+    case .tar:
+      // bsdtar detects gzip/xz/bzip2 from the content, so `-xf` covers every tarball
+      // regardless of the temp file's extension.
+      try run("/usr/bin/tar", ["-xf", archive.path, "-C", work.path])
       app = try locateApp(in: work)
     case .dmg:
       app = try extractFromDMG(archive, into: work)

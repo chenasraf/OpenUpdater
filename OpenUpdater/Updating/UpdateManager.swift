@@ -929,7 +929,7 @@ final class UpdateManager: ObservableObject {
         Self.log.notice("install \(id, privacy: .public): running pkg installer")
         try await installPackage(archive)
 
-      case .dmg, .zip:
+      case .dmg, .zip, .tar:
         installPhases[id] = .extracting
         Self.log.notice(
           "install \(id, privacy: .public): extracting \(format.rawValue, privacy: .public)")

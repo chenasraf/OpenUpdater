@@ -158,7 +158,9 @@ download:
   # The download URL. OPTIONAL — omit it when the URL is pulled from the response
   # via check.download_pattern / download_path; then this block just sets `format`.
   url: https://github.com/example/app/releases/download/{tag}/App-{version}-{arch}.dmg
-  # One of: dmg | zip | pkg
+  # One of: dmg | zip | pkg | tar (tar covers .tar / .tar.gz / .tgz / .tar.xz /
+  # .tar.bz2). Usually inferred from the URL's extension; set it when the URL has no
+  # recognizable extension.
   format: dmg
 
 # Optional. Release-notes link. For sparkle, the appcast's own release-notes link
