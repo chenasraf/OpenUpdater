@@ -6,6 +6,24 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.7.0</title>
+    <pubDate>Wed, 24 Jun 2026 11:40:44 +0000</pubDate>
+    <sparkle:version>39</sparkle:version>
+    <sparkle:shortVersionString>0.7.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.6.0...v0.7.0">0.7.0</a> (2026-06-22)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>updating:</strong> json path array predicate [field=value] for staged rollouts (<a href="https://github.com/chenasraf/OpenUpdater/commit/43f0babbb42a2b6c4c2a4639f5bd4c05920aa7c3">43f0bab</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>app:</strong> report the real version in the About panel for source builds (<a href="https://github.com/chenasraf/OpenUpdater/commit/422381f05054476f6c5a9ef874d2b5bcb37c221a">422381f</a>)</li>
+<li><strong>recipe:</strong> Google Chrome (<code class="notranslate">com.google.Chrome</code>) check the full-rollout version (<a href="https://github.com/chenasraf/OpenUpdater/commit/7edf435dc08de5886f2bd6888bbd1668a627e3e4">7edf435</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.7.0/OpenUpdater-0.7.0.dmg" sparkle:edSignature="wfXVL1BXK/AsftDrGlXSUdB2gtx8b+fuMeAemd8ix9HT+DrA5BqMWSSF9v2MzmYwAW4WYtp00tSFxYrNaZqVCQ==" length="3184378" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.6.0</title>
     <pubDate>Mon, 22 Jun 2026 20:25:50 +0000</pubDate>
     <sparkle:version>36</sparkle:version>
