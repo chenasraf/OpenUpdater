@@ -47,7 +47,7 @@ people add recipes, so OpenUpdater can keep up with apps that have no built-in u
 > The first time you open it, macOS may ask you to confirm. If it's blocked, right-click the app in
 > Finder and choose **Open**, then confirm.
 
-**Requirements:** macOS 15 (Sequoia) or later.
+**Requirements:** macOS 13 (Ventura) or later.
 
 ## Usage
 

@@ -53,7 +53,7 @@ struct SettingsView: View {
     )
     // The main window's "Create Custom Recipe" hands off a draft to select here.
     .onAppear(perform: consumePendingRecipe)
-    .onChange(of: updateManager.pendingCustomRecipeID) { _, _ in consumePendingRecipe() }
+    .onChange(of: updateManager.pendingCustomRecipeID) { _ in consumePendingRecipe() }
   }
 
   @ViewBuilder private var detail: some View {
@@ -104,7 +104,7 @@ struct GeneralSettingsView: View {
     Form {
       Section {
         Toggle("Launch \(AppBranding.title) at login", isOn: $launchAtLogin)
-          .onChange(of: launchAtLogin) { _, enabled in setLaunchAtLogin(enabled) }
+          .onChange(of: launchAtLogin) { enabled in setLaunchAtLogin(enabled) }
         Toggle("Open the main window on launch", isOn: $openMainWindowOnLaunch)
         CaptionedField {
           Toggle("Ask before quitting open apps to update them", isOn: $confirmQuitRunningApps)
@@ -594,7 +594,7 @@ struct CustomRecipesView: View {
       }
     }
     .onAppear(perform: syncDraft)
-    .onChange(of: selectedID) { _, _ in syncDraft() }
+    .onChange(of: selectedID) { _ in syncDraft() }
   }
 
   /// Load the selected recipe's on-disk text into the editor buffer.
