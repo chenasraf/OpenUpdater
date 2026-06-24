@@ -1,0 +1,9 @@
+id: com.runningwithcrayons.Alfred
+name: Alfred
+homepage: https://www.alfredapp.com
+
+check:
+  type: xml
+  url: https://www.alfredapp.com/app/update5/general.xml
+  pattern: '<key>version</key>\s*<string>([^<]+)</string>'
+  download_pattern: '<key>location</key>\s*<string>([^<]+)</string>'
