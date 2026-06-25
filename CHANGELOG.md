@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.8.0](https://github.com/chenasraf/OpenUpdater/compare/v0.7.0...v0.8.0) (2026-06-25)
+
+
+### Features
+
+* **app:** lower deployment target to macOS 13 (Ventura) ([66ecabe](https://github.com/chenasraf/OpenUpdater/commit/66ecabe8523c7acc034c3b3fa72009f62b9db50a))
+* **installer:** support tar/tar.gz app archives ([3380276](https://github.com/chenasraf/OpenUpdater/commit/338027664aa84b8f5b78fe492576ba33bfd57fcc))
+* **recipe:** Alfred (com.runningwithcrayons.Alfred) ([11ea526](https://github.com/chenasraf/OpenUpdater/commit/11ea526ee34b9629a290d238534fa7e516c22d82))
+* **recipe:** Android Studio (com.google.android.studio) ([0114e60](https://github.com/chenasraf/OpenUpdater/commit/0114e60be70e6120a2cbccd3d7314ba3abac3828))
+* **recipe:** GOG Galaxy (com.gog.galaxy) ([13f9cda](https://github.com/chenasraf/OpenUpdater/commit/13f9cda7d8882f65a74b4b9553f027ad49f255a5))
+* **recipe:** Slack (com.tinyspeck.slackmacgap) ([70ba3d8](https://github.com/chenasraf/OpenUpdater/commit/70ba3d87c1f9c52e840e082f2ce3227113789a8a))
+* **updating:** json path substring predicate [field~value] ([7b60e7d](https://github.com/chenasraf/OpenUpdater/commit/7b60e7d93781f02173aaad1752e045193e55ec23))
+* **updating:** redirect check type for version-in-URL download endpoints ([42d7206](https://github.com/chenasraf/OpenUpdater/commit/42d720639dc2a21a8caf47a2af2d159959741ab2))
+
+
+### Bug Fixes
+
+* **updating:** clear pending Squirrel.Mac rollback so in-place updates stick ([b89d5a6](https://github.com/chenasraf/OpenUpdater/commit/b89d5a651342407f75cdd1da4b642d72c46ba79c))
+* **updating:** keep Mac App Store installs on the App Store over a recipe ([f4db1a3](https://github.com/chenasraf/OpenUpdater/commit/f4db1a32024c79214dea3bf77aabf0b510da2e57))
+
 ## [0.7.0](https://github.com/chenasraf/OpenUpdater/compare/v0.6.0...v0.7.0) (2026-06-22)
 
 
