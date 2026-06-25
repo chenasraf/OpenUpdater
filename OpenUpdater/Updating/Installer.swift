@@ -436,8 +436,11 @@ private final class DownloadDelegate: NSObject, URLSessionDownloadDelegate, @unc
       var destination = FileManager.default.temporaryDirectory
         .appendingPathComponent(UUID().uuidString)
       // Preserve the source extension. dmg/zip are content-sniffed, but `installer`
-      // rejects a `.pkg` whose path has no recognizable package extension.
-      if let ext = downloadTask.originalRequest?.url?.pathExtension, !ext.isEmpty {
+      // rejects a `.pkg` whose path has no recognizable package extension. Prefer the
+      // final (post-redirect) URL — some download endpoints carry the real filename
+      // only after redirecting (e.g. GOG's `…/download?path=…/foo.pkg` → `…/foo.pkg`).
+      let extensions = [downloadTask.response?.url, downloadTask.originalRequest?.url]
+      if let ext = extensions.compactMap({ $0?.pathExtension }).first(where: { !$0.isEmpty }) {
         destination.appendPathExtension(ext)
       }
       try FileManager.default.moveItem(at: location, to: destination)
