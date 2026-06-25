@@ -7,3 +7,6 @@ check:
   url: https://www.gog.com/galaxy
   pattern: 'galaxy_client_(\d+\.\d+\.\d+)'
   download_pattern: '(https://content-system\.gog\.com/open_link/download\?path=/open/galaxy/client/galaxy_client_[\d.]+\.pkg)'
+
+download:
+  format: pkg
