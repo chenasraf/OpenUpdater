@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.10.0](https://github.com/chenasraf/OpenUpdater/compare/v0.9.0...v0.10.0) (2026-06-26)
+
+
+### Features
+
+* **ui:** add a status bar showing check and install progress ([f6f3916](https://github.com/chenasraf/OpenUpdater/commit/f6f3916be23499cd86a00ad35e05a42fd313bfc2))
+* **ui:** refine menubar header and footer with icons ([88aab54](https://github.com/chenasraf/OpenUpdater/commit/88aab5492df3af680ef6f8078e26a059b6566f9c))
+* **ui:** show ignore reason via popover and gray out ignored apps ([1ac581a](https://github.com/chenasraf/OpenUpdater/commit/1ac581a37533e3592e8f57e0c29e25975bf4da74))
+* **updating:** order installs in a list-ordered, per-app cancellable queue ([a8cbb1f](https://github.com/chenasraf/OpenUpdater/commit/a8cbb1f73590f480f3a8de3d2ad44aac53b12329))
+
 ## [0.9.0](https://github.com/chenasraf/OpenUpdater/compare/v0.8.0...v0.9.0) (2026-06-26)
 
 
