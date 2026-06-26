@@ -30,6 +30,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   /// `@StateObject` would never start Sparkle.
   let updater = Updater()
 
+  /// SwiftUI's `openWindow`, captured from the scene at launch so AppKit code (the
+  /// menubar popover) can open scene-managed windows like Preferences by id.
+  var openWindowByID: ((String) -> Void)?
+
   func applicationDidFinishLaunching(_ notification: Notification) {
     // Start menubar-only (no Dock icon). The Dock icon appears only while a real
     // window is open — see syncActivationPolicy().
@@ -216,12 +220,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       window.makeKeyAndOrderFront(nil)
       return
     }
-    for menu in NSApp.mainMenu?.items.compactMap(\.submenu) ?? [] {
-      let index = menu.indexOfItem(withTitle: "Preferences…")
-      if index >= 0 {
-        menu.performActionForItem(at: index)
-        return
-      }
-    }
+    openWindowByID?(PreferencesWindow.id)
   }
 }

@@ -23,9 +23,7 @@ struct OpenUpdaterApp: App {
 
   var body: some Scene {
     Window(AppBranding.title, id: "main") {
-      MainWindowView()
-        .environmentObject(appDelegate.updateManager)
-        .environmentObject(appDelegate.updater)
+      MainWindowRoot(appDelegate: appDelegate)
     }
     .windowStyle(.titleBar)
     .windowToolbarStyle(.unified)
@@ -54,6 +52,20 @@ struct OpenUpdaterApp: App {
 
 enum PreferencesWindow {
   static let id = "preferences"
+}
+
+/// The main window's content, wrapped so it can capture SwiftUI's `openWindow` into
+/// the AppDelegate — letting the AppKit menubar popover open the Preferences window.
+private struct MainWindowRoot: View {
+  let appDelegate: AppDelegate
+  @Environment(\.openWindow) private var openWindow
+
+  var body: some View {
+    MainWindowView()
+      .environmentObject(appDelegate.updateManager)
+      .environmentObject(appDelegate.updater)
+      .onAppear { appDelegate.openWindowByID = { openWindow(id: $0) } }
+  }
 }
 
 /// The "Preferences…" menu command (⌘,). A small view so it can use `openWindow`.
