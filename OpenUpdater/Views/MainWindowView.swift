@@ -115,16 +115,13 @@ struct UpdatesView: View {
         }
         if !selection.isEmpty {
           Button("Update Selected (\(selectedInstallableCount))") {
-            let ids = selection
-            Task {
-              await updateManager.updateSelected(ids)
-              selection = []
-            }
+            updateManager.updateSelected(selection)
+            selection = []
           }
-          .disabled(updateManager.isUpdatingAll || selectedInstallableCount == 0)
+          .disabled(selectedInstallableCount == 0)
         }
         Button {
-          Task { await updateManager.updateAll() }
+          updateManager.updateAll()
         } label: {
           if updateManager.isUpdatingAll {
             HStack(spacing: 6) {
@@ -225,17 +222,19 @@ struct UpdateRow: View {
       if app.source == .appStore {
         Button("App Store") { updateManager.openInAppStore(app) }
           .buttonStyle(.bordered)
-          .disabled(updateManager.isUpdatingAll)
           .help("Update this app in the App Store")
       } else if app.downloadURL == nil {
         Button("Manual Update…") { updateManager.manualUpdate(app) }
           .buttonStyle(.bordered)
-          .disabled(updateManager.isUpdatingAll)
           .help("\(AppBranding.title) can't auto-install this update — choose how to update.")
       } else {
-        Button("Update") { updateManager.startInstall(app) }
+        Button("Update") { updateManager.enqueueInstall(app) }
           .buttonStyle(.borderedProminent)
-          .disabled(updateManager.isUpdatingAll)
+      }
+    case .queued:
+      HStack(spacing: 6) {
+        Text("Queued").font(.caption).foregroundStyle(.secondary)
+        cancelButton
       }
     case .downloading(let fraction):
       HStack(spacing: 6) {
@@ -261,7 +260,7 @@ struct UpdateRow: View {
         }
         .buttonStyle(.plain)
         .help("Show error details")
-        Button("Retry") { updateManager.startInstall(app) }
+        Button("Retry") { updateManager.enqueueInstall(app) }
       }
     }
   }

@@ -805,37 +805,86 @@ final class UpdateManager: ObservableObject {
 
   /// Progress of an in-flight install, keyed by bundle identifier.
   @Published private(set) var installPhases: [String: InstallPhase] = [:]
-  /// True while `updateAll()` is walking the update list.
-  @Published private(set) var isUpdatingAll = false
+  /// Apps queued for install, in order. The head is the one currently installing;
+  /// the rest wait their turn. Drained one at a time by `queueWorker`.
+  @Published private(set) var installQueue: [AppInfo] = []
 
   func installPhase(for id: String) -> InstallPhase { installPhases[id] ?? .idle }
 
+  /// True while anything is in the install queue (installing or waiting).
+  var isUpdatingAll: Bool { !installQueue.isEmpty }
+
+  /// Whether `id` is currently installing or waiting in the queue.
+  func isQueued(_ id: String) -> Bool { installQueue.contains { $0.id == id } }
+
+  /// The single task draining the queue, or nil when idle.
+  private var queueWorker: Task<Void, Never>?
   /// Running install tasks, keyed by bundle id, so they can be cancelled.
   private var installTasks: [String: Task<Void, Never>] = [:]
 
-  /// Start (and track) an install for `app`.
-  func startInstall(_ app: AppInfo) {
-    guard installTasks[app.id] == nil else { return }
-    let id = app.id
-    installTasks[id] = Task {
-      await installUpdate(app)
-      installTasks[id] = nil
+  /// Add `app` to the install queue (no-op if already queued) and make sure the
+  /// worker is draining it. The app is inserted at its place in the update list
+  /// rather than the end, so queue order follows the list the user sees — but it
+  /// never jumps ahead of whatever's already installing.
+  func enqueueInstall(_ app: AppInfo) {
+    guard !isQueued(app.id) else { return }
+    installPhases[app.id] = .queued
+
+    let listIndex = Dictionary(updates.enumerated().map { ($1.id, $0) }) { a, _ in a }
+    let newPlace = listIndex[app.id] ?? .max
+    // Keep the not-yet-started items sorted by list position; skip the one already
+    // installing so it stays at the head.
+    var index = installQueue.count
+    for (i, queued) in installQueue.enumerated() where installTasks[queued.id] == nil {
+      if (listIndex[queued.id] ?? .max) > newPlace {
+        index = i
+        break
+      }
+    }
+    installQueue.insert(app, at: index)
+    startQueueWorker()
+  }
+
+  /// Drain the queue one app at a time, head first, until it's empty.
+  private func startQueueWorker() {
+    guard queueWorker == nil else { return }
+    queueWorker = Task { [weak self] in
+      guard let self else { return }
+      while let app = self.installQueue.first {
+        let id = app.id
+        let task = Task { await self.installUpdate(app) }
+        self.installTasks[id] = task
+        await task.value
+        self.installTasks[id] = nil
+        // Drop the app we just finished (cancel may have removed it already).
+        self.installQueue.removeAll { $0.id == id }
+      }
+      self.queueWorker = nil
     }
   }
 
-  /// Cancel a running install. The install bails at its next cancellation check
-  /// (or the download is aborted), then resets the row to idle.
+  /// Remove `app` from the queue. If it's the one installing, cancel it (the install
+  /// bails at its next cancellation check, then resets the row to idle); if it's only
+  /// waiting, drop it from the queue and clear its queued state.
   func cancelInstall(_ app: AppInfo) {
-    installTasks[app.id]?.cancel()
+    let id = app.id
+    let isRunning = installTasks[id] != nil
+    installQueue.removeAll { $0.id == id }
+    if isRunning {
+      installTasks[id]?.cancel()
+    } else {
+      installPhases[id] = .idle
+    }
   }
 
-  /// Set while a batch is being stopped, so `installBatch` won't start the next app.
-  private var batchStopped = false
-
   /// Stop a running "Update All"/"Update Selected": cancel the in-flight install and
-  /// don't proceed to the remaining apps in the queue.
+  /// clear everything still waiting in the queue.
   func stopBatch() {
-    batchStopped = true
+    let runningIDs = Set(installTasks.keys)
+    for app in installQueue where !runningIDs.contains(app.id) {
+      installPhases[app.id] = .idle
+    }
+    installQueue.removeAll { !runningIDs.contains($0.id) }
     installTasks.values.forEach { $0.cancel() }
   }
 
@@ -914,32 +963,16 @@ final class UpdateManager: ObservableObject {
   /// Apps that have an update AND something we can actually download/install.
   var installableUpdates: [AppInfo] { updates.filter { $0.downloadURL != nil } }
 
-  /// Install every available update, one at a time, waiting for each to finish.
-  func updateAll() async {
-    await installBatch(installableUpdates)
-  }
-
-  /// Install just the selected apps (by bundle id), one at a time.
-  func updateSelected(_ ids: Set<String>) async {
-    await installBatch(installableUpdates.filter { ids.contains($0.id) })
-  }
-
-  /// Run a sequential install over `targets`. `installUpdate` swallows its own
-  /// errors (leaving a `.failed` phase on the row), so a failure never stops the
-  /// chain — it just stays visible in the list.
-  private func installBatch(_ targets: [AppInfo]) async {
-    guard !isUpdatingAll else { return }
-    isUpdatingAll = true
-    batchStopped = false
-    defer { isUpdatingAll = false }
-
+  /// Queue every available update for install, one at a time.
+  func updateAll() {
+    let targets = installableUpdates
     Self.log.notice("Batch update: \(targets.count, privacy: .public) app(s)")
-    for app in targets {  // snapshot; the list shrinks as installs succeed
-      if batchStopped { break }  // Stop pressed — don't start the next app.
-      // Go through startInstall so each row stays individually cancellable.
-      startInstall(app)
-      await installTasks[app.id]?.value
-    }
+    targets.forEach { enqueueInstall($0) }
+  }
+
+  /// Queue just the selected apps (by bundle id) for install, one at a time.
+  func updateSelected(_ ids: Set<String>) {
+    installableUpdates.filter { ids.contains($0.id) }.forEach { enqueueInstall($0) }
   }
 
   /// Download and install the update for `app`, reporting progress via `installPhases`.
@@ -1132,6 +1165,7 @@ final class UpdateManager: ObservableObject {
 /// Where an in-flight install currently is.
 enum InstallPhase: Equatable {
   case idle
+  case queued  // waiting in the install queue, not started yet
   case downloading(Double)  // fraction complete, 0…1
   case extracting
   case verifying

@@ -83,17 +83,14 @@ struct ContentView: View {
       Spacer()
       if !selection.isEmpty {
         Button("Update \(selectedInstallableCount)") {
-          let ids = selection
-          Task {
-            await updateManager.updateSelected(ids)
-            selection = []
-          }
+          updateManager.updateSelected(selection)
+          selection = []
         }
         .controlSize(.small)
-        .disabled(updateManager.isUpdatingAll || selectedInstallableCount == 0)
+        .disabled(selectedInstallableCount == 0)
       }
       Button {
-        Task { await updateManager.updateAll() }
+        updateManager.updateAll()
       } label: {
         if updateManager.isUpdatingAll {
           HStack(spacing: 4) {
