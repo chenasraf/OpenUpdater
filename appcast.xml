@@ -6,6 +6,25 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.9.0</title>
+    <pubDate>Fri, 26 Jun 2026 16:14:00 +0000</pubDate>
+    <sparkle:version>45</sparkle:version>
+    <sparkle:shortVersionString>0.9.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.8.0...v0.9.0">0.9.0</a> (2026-06-26)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>updating:</strong> sync community recipes from GitHub at runtime (<a href="https://github.com/chenasraf/OpenUpdater/commit/fcbce3e6bb51b4d5b934191e6128697c2c30ed58">fcbce3e</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>installer:</strong> name downloads from the final redirect URL (<a href="https://github.com/chenasraf/OpenUpdater/commit/9b8694449e5c94b2104442501fd10d29d1fabd59">9b86944</a>)</li>
+<li><strong>recipe:</strong> GOG Galaxy (com.gog.galaxy) (<a href="https://github.com/chenasraf/OpenUpdater/commit/b9a4ea5d12e089ab76ad8b8d4bdb98d82cb054ec">b9a4ea5</a>)</li>
+<li><strong>updating:</strong> shield the update check from caller cancellation (<a href="https://github.com/chenasraf/OpenUpdater/commit/1c2de590c5561b89ffb476fe935053b35f9c1555">1c2de59</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.9.0/OpenUpdater-0.9.0.dmg" sparkle:edSignature="5TG32dATcM8TIOcAlJ3z8GdMnJ93ynTWbmM/VdNtwLJvbilQkBqRg23VFzCqkiowJshhhe918n79XsxueQjWBQ==" length="3242727" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.8.0</title>
     <pubDate>Thu, 25 Jun 2026 06:50:23 +0000</pubDate>
     <sparkle:version>42</sparkle:version>
