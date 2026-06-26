@@ -6,6 +6,22 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.10.0</title>
+    <pubDate>Fri, 26 Jun 2026 17:45:31 +0000</pubDate>
+    <sparkle:version>49</sparkle:version>
+    <sparkle:shortVersionString>0.10.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.9.0...v0.10.0">0.10.0</a> (2026-06-26)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>ui:</strong> add a status bar showing check and install progress (<a href="https://github.com/chenasraf/OpenUpdater/commit/f6f3916be23499cd86a00ad35e05a42fd313bfc2">f6f3916</a>)</li>
+<li><strong>ui:</strong> refine menubar header and footer with icons (<a href="https://github.com/chenasraf/OpenUpdater/commit/88aab5492df3af680ef6f8078e26a059b6566f9c">88aab54</a>)</li>
+<li><strong>ui:</strong> show ignore reason via popover and gray out ignored apps (<a href="https://github.com/chenasraf/OpenUpdater/commit/1ac581a37533e3592e8f57e0c29e25975bf4da74">1ac581a</a>)</li>
+<li><strong>updating:</strong> order installs in a list-ordered, per-app cancellable queue (<a href="https://github.com/chenasraf/OpenUpdater/commit/a8cbb1f73590f480f3a8de3d2ad44aac53b12329">a8cbb1f</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.10.0/OpenUpdater-0.10.0.dmg" sparkle:edSignature="ng+PaWR4LhxO1umRqn1p7r8JhfDLS+7hnpqCzUd2vRMemCyXFnyJvsLlTAvAb8fpmEZQ+y9pu3itTWreEzRZDQ==" length="3279831" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.9.0</title>
     <pubDate>Fri, 26 Jun 2026 16:14:00 +0000</pubDate>
     <sparkle:version>45</sparkle:version>
