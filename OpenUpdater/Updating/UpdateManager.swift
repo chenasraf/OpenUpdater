@@ -127,8 +127,26 @@ final class UpdateManager: ObservableObject {
   @Published private(set) var lastError: String?
   /// Bundle ids currently being re-scanned individually, for per-row feedback.
   @Published private(set) var rescanningIDs: Set<String> = []
+  /// What the in-progress check is doing right now (recipe sync, current app), shown
+  /// in the status bar. `nil` when no check is running.
+  @Published private(set) var checkStatusDetail: String?
 
   func isRescanning(_ id: String) -> Bool { rescanningIDs.contains(id) }
+
+  /// A single line for the status bar: an in-flight install, then an in-flight check,
+  /// then the last-checked time as the resting default.
+  var statusLine: String {
+    if let app = installQueue.first {
+      return "Updating \(app.name) — \(installPhase(for: app.id).statusLabel)"
+    }
+    if isChecking {
+      return checkStatusDetail ?? "Checking for updates…"
+    }
+    if let lastChecked {
+      return "Last checked \(lastChecked.formatted(date: .omitted, time: .shortened))"
+    }
+    return "Not checked yet"
+  }
 
   /// Apps that currently have an update available (excluding ignored ones, and ones
   /// updated this session) — used to badge the menubar icon.
@@ -365,6 +383,7 @@ final class UpdateManager: ObservableObject {
   }
 
   private func runCheck() async {
+    defer { checkStatusDetail = nil }
     // Pull the latest community recipes first (best-effort) so this check uses them.
     await syncRemoteRecipes()
 
@@ -374,8 +393,11 @@ final class UpdateManager: ObservableObject {
 
     var failures = 0
     var rateLimited = false
+    var done = 0
     for index in apps.indices {
       guard isCheckable(apps[index]) else { continue }
+      done += 1
+      checkStatusDetail = "Checking \(apps[index].name) (\(done)/\(checkable))…"
       if let error = await resolveLatest(forAppAt: index) {
         failures += 1
         if case UpdateCheckError.rateLimited = error { rateLimited = true }
@@ -690,6 +712,7 @@ final class UpdateManager: ObservableObject {
   /// changed. Gated by the "Automatically update recipes" setting.
   func syncRemoteRecipes() async {
     guard Self.autoUpdateRecipes else { return }
+    checkStatusDetail = "Syncing community recipes…"
     if await RemoteRecipeStore.sync(appVersion: Self.appVersion) {
       loadRemoteRecipes()
     }
@@ -1172,4 +1195,18 @@ enum InstallPhase: Equatable {
   case quitting
   case installing
   case failed(String)
+
+  /// Short label for the status bar.
+  var statusLabel: String {
+    switch self {
+    case .idle: return "Idle"
+    case .queued: return "Queued"
+    case .downloading(let fraction): return "Downloading \(Int(fraction * 100))%"
+    case .extracting: return "Extracting"
+    case .verifying: return "Verifying"
+    case .quitting: return "Quitting app"
+    case .installing: return "Installing"
+    case .failed: return "Failed"
+    }
+  }
 }

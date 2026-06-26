@@ -40,18 +40,21 @@ struct MainWindowView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
       }
     } detail: {
-      switch selectedTab {
-      case "updates":
-        UpdatesView()
-      case "installed":
-        InstalledView()
-      case "ignored":
-        IgnoreListView()
-      case "unsupported":
-        UnsupportedAppsView(onCreateRecipe: createRecipe)
-      default:
-        EmptyView()
+      Group {
+        switch selectedTab {
+        case "updates":
+          UpdatesView()
+        case "installed":
+          InstalledView()
+        case "ignored":
+          IgnoreListView()
+        case "unsupported":
+          UnsupportedAppsView(onCreateRecipe: createRecipe)
+        default:
+          EmptyView()
+        }
       }
+      .safeAreaInset(edge: .bottom, spacing: 0) { StatusBar() }
     }
     .frame(minWidth: 700, minHeight: 450)
     .task { await updateManager.checkForUpdatesIfNeeded() }
@@ -62,6 +65,31 @@ struct MainWindowView: View {
   private func createRecipe(for app: AppInfo) {
     updateManager.pendingCustomRecipeID = updateManager.createCustomRecipeDraft(for: app)
     openWindow(id: PreferencesWindow.id)
+  }
+}
+
+/// Thin bar across the bottom of the window: the current activity (an in-flight
+/// install or check, with the per-app/recipe detail) and, at rest, the last-checked
+/// time. The individual list rows keep their own inline progress as well.
+struct StatusBar: View {
+  @EnvironmentObject private var updateManager: UpdateManager
+
+  var body: some View {
+    HStack(spacing: 6) {
+      if updateManager.isChecking || updateManager.isUpdatingAll {
+        ProgressView().controlSize(.small)
+      }
+      Text(updateManager.statusLine)
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .lineLimit(1)
+        .truncationMode(.middle)
+      Spacer(minLength: 0)
+    }
+    .padding(.horizontal, 12)
+    .padding(.vertical, 6)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .background(.bar)
   }
 }
 
@@ -108,11 +136,6 @@ struct UpdatesView: View {
         Text("^[\(updateManager.updates.count) update](inflect: true) available")
           .font(.headline)
         Spacer()
-        if let lastCheckedText {
-          Text(lastCheckedText)
-            .font(.caption)
-            .foregroundStyle(.secondary)
-        }
         if !selection.isEmpty {
           Button("Update Selected (\(selectedInstallableCount))") {
             updateManager.updateSelected(selection)

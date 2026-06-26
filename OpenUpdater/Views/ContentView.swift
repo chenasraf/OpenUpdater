@@ -133,11 +133,13 @@ struct ContentView: View {
     HStack(spacing: 8) {
       Button("Quit") { NSApp.terminate(nil) }
         .buttonStyle(.plain).foregroundStyle(.secondary).font(.caption)
-      Spacer()
-      if let lastChecked = updateManager.lastChecked {
-        Text("Checked \(lastChecked.formatted(date: .omitted, time: .shortened))")
-          .font(.caption).foregroundStyle(.secondary)
+      if updateManager.isChecking || updateManager.isUpdatingAll {
+        ProgressView().controlSize(.small).scaleEffect(0.7)
       }
+      Text(updateManager.statusLine)
+        .font(.caption).foregroundStyle(.secondary)
+        .lineLimit(1).truncationMode(.middle)
+      Spacer(minLength: 4)
       resizeGrip
     }
     .padding(.horizontal, 12).padding(.vertical, 8)
