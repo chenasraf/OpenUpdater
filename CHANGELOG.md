@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.0](https://github.com/chenasraf/OpenUpdater/compare/v0.8.0...v0.9.0) (2026-06-26)
+
+
+### Features
+
+* **updating:** sync community recipes from GitHub at runtime ([fcbce3e](https://github.com/chenasraf/OpenUpdater/commit/fcbce3e6bb51b4d5b934191e6128697c2c30ed58))
+
+
+### Bug Fixes
+
+* **installer:** name downloads from the final redirect URL ([9b86944](https://github.com/chenasraf/OpenUpdater/commit/9b8694449e5c94b2104442501fd10d29d1fabd59))
+* **recipe:** GOG Galaxy (com.gog.galaxy) ([b9a4ea5](https://github.com/chenasraf/OpenUpdater/commit/b9a4ea5d12e089ab76ad8b8d4bdb98d82cb054ec))
+* **updating:** shield the update check from caller cancellation ([1c2de59](https://github.com/chenasraf/OpenUpdater/commit/1c2de590c5561b89ffb476fe935053b35f9c1555))
+
 ## [0.8.0](https://github.com/chenasraf/OpenUpdater/compare/v0.7.0...v0.8.0) (2026-06-25)
 
 
