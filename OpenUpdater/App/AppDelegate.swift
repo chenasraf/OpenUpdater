@@ -45,7 +45,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     popover.contentSize = NSSize(
       width: savedWidth > 0 ? savedWidth : 460, height: savedHeight > 0 ? savedHeight : 560)
     let hosting = NSHostingController(
-      rootView: ContentView(openMainWindow: openMainWindow).environmentObject(updateManager))
+      rootView: ContentView(openMainWindow: openMainWindow, openPreferences: openPreferences)
+        .environmentObject(updateManager))
     hosting.sizingOptions = [.preferredContentSize]
     popover.contentViewController = hosting
 
@@ -202,5 +203,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     suppressLaunchWindow = false
     let window = mainWindow ?? NSApp.windows.first(where: isAppWindow)
     window?.makeKeyAndOrderFront(nil)
+  }
+
+  /// Open the SwiftUI Preferences window from the menubar popover. It's scene-managed,
+  /// so bring an existing one forward, otherwise trigger its menu command (⌘,) to create it.
+  func openPreferences() {
+    popover.performClose(nil)
+    NSApp.setActivationPolicy(.regular)
+    NSApp.activate(ignoringOtherApps: true)
+    if let window = NSApp.windows.first(where: { $0.identifier?.rawValue == PreferencesWindow.id })
+    {
+      window.makeKeyAndOrderFront(nil)
+      return
+    }
+    for menu in NSApp.mainMenu?.items.compactMap(\.submenu) ?? [] {
+      let index = menu.indexOfItem(withTitle: "Preferences…")
+      if index >= 0 {
+        menu.performActionForItem(at: index)
+        return
+      }
+    }
   }
 }

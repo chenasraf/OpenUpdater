@@ -11,6 +11,7 @@ import SwiftUI
 /// with per-row install controls and a right-click menu — in a compact form.
 struct ContentView: View {
   let openMainWindow: () -> Void
+  let openPreferences: () -> Void
   @EnvironmentObject private var updateManager: UpdateManager
   @State private var selection: Set<AppInfo.ID> = []
   // Persisted popover size; the resize grip writes these and the popover follows.
@@ -32,8 +33,9 @@ struct ContentView: View {
 
   private var header: some View {
     HStack(spacing: 8) {
-      Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
-        .foregroundStyle(.tint)
+      Image(nsImage: NSApp.applicationIconImage)
+        .resizable()
+        .frame(width: 20, height: 20)
       Text(AppBranding.title).font(.headline)
       Spacer()
       Button {
@@ -46,13 +48,22 @@ struct ContentView: View {
         }
       }
       .buttonStyle(.plain)
+      .focusable(false)
       .disabled(updateManager.isChecking)
       .help("Check for updates")
+
+      Button(action: openPreferences) {
+        Image(systemName: "gearshape")
+      }
+      .buttonStyle(.plain)
+      .focusable(false)
+      .help("Preferences")
 
       Button(action: openMainWindow) {
         Image(systemName: "arrow.up.left.and.arrow.down.right")
       }
       .buttonStyle(.plain)
+      .focusable(false)
       .help("Open full window")
     }
     .padding(.horizontal, 12).padding(.vertical, 10)
@@ -131,8 +142,14 @@ struct ContentView: View {
 
   private var footer: some View {
     HStack(spacing: 8) {
-      Button("Quit") { NSApp.terminate(nil) }
-        .buttonStyle(.plain).foregroundStyle(.secondary).font(.caption)
+      Button {
+        NSApp.terminate(nil)
+      } label: {
+        Image(systemName: "power")
+      }
+      .buttonStyle(.plain).foregroundStyle(.secondary)
+      .focusable(false)
+      .help("Quit \(AppBranding.title)")
       if updateManager.isChecking || updateManager.isUpdatingAll {
         ProgressView().controlSize(.small).scaleEffect(0.7)
       }
