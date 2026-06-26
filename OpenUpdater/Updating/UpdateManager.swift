@@ -158,7 +158,9 @@ final class UpdateManager: ObservableObject {
 
   /// Recipes bundled with the app, keyed by bundle identifier.
   private let builtInRecipes: [String: UpdateRecipe]
-  /// Active recipes: the built-in set with enabled custom recipes layered on top.
+  /// Recipes synced from GitHub at runtime (Application Support); override built-ins.
+  private var remoteRecipes: [String: UpdateRecipe] = [:]
+  /// Active recipes: built-in, with downloaded then enabled custom recipes layered on top.
   private var recipes: [String: UpdateRecipe]
   /// User-authored recipes from Application Support, for the Preferences list (includes
   /// disabled and invalid ones).
@@ -176,6 +178,19 @@ final class UpdateManager: ObservableObject {
   private static let checkFrequencyKey = "checkFrequency"
   private static let confirmQuitKey = "confirmQuitRunningApps"
   private static let checkOnLaunchKey = "checkForUpdatesOnLaunch"
+  private static let autoUpdateRecipesKey = "autoUpdateRecipes"
+
+  /// Whether to sync community recipes from GitHub before checks (default on).
+  /// Mirrored by a toggle in General settings.
+  static var autoUpdateRecipes: Bool {
+    UserDefaults.standard.object(forKey: autoUpdateRecipesKey) as? Bool ?? true
+  }
+
+  /// The running app's marketing version (e.g. "0.9.0"), used to gate downloaded
+  /// recipes that need a newer engine than this build.
+  static var appVersion: String {
+    Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0.0"
+  }
 
   /// Whether to ask before quitting a running app to update it (default on).
   /// Mirrored by the `confirmQuitRunningApps` toggle in General settings.
@@ -214,12 +229,13 @@ final class UpdateManager: ObservableObject {
     checkFrequency = storedFrequency.flatMap(CheckFrequency.init(rawValue:)) ?? .daily
     builtInRecipes = RecipeStore.loadAll()
     recipes = builtInRecipes
+    remoteRecipes = RemoteRecipeStore.loadAll()
     loadCustomRecipes()
     scanInstalledApps()
     applyCachedResults()
     scheduleHeartbeat()
     Self.log.notice(
-      "Loaded \(self.builtInRecipes.count, privacy: .public) built-in + \(self.customRecipes.count, privacy: .public) custom recipe(s), scanned \(self.apps.count, privacy: .public) app(s)"
+      "Loaded \(self.builtInRecipes.count, privacy: .public) built-in + \(self.remoteRecipes.count, privacy: .public) community + \(self.customRecipes.count, privacy: .public) custom recipe(s), scanned \(self.apps.count, privacy: .public) app(s)"
     )
   }
 
@@ -339,6 +355,9 @@ final class UpdateManager: ObservableObject {
     guard !isChecking else { return }
     isChecking = true
     defer { isChecking = false }
+
+    // Pull the latest community recipes first (best-effort) so this check uses them.
+    await syncRemoteRecipes()
 
     var checkable = 0
     for app in apps where isCheckable(app) { checkable += 1 }
@@ -641,13 +660,45 @@ final class UpdateManager: ObservableObject {
     rebuildActiveRecipes()
   }
 
-  /// Merge enabled, valid custom recipes over the built-in set (custom wins by id).
+  /// Build the active set by layering, lowest to highest: built-in → downloaded
+  /// (community) → enabled custom recipes. Each tier overrides the previous by id.
   private func rebuildActiveRecipes() {
     var merged = builtInRecipes
+    merged.merge(remoteRecipes) { _, new in new }
     for custom in customRecipes where custom.enabled && custom.parseError == nil {
       if let recipe = CustomRecipeStore.decoded(custom.text) { merged[recipe.id] = recipe }
     }
     recipes = merged
+  }
+
+  /// Reload downloaded community recipes from disk and rebuild the active set.
+  private func loadRemoteRecipes() {
+    remoteRecipes = RemoteRecipeStore.loadAll()
+    rebuildActiveRecipes()
+  }
+
+  /// Sync community recipes from GitHub (best-effort) and reload them if anything
+  /// changed. Gated by the "Automatically update recipes" setting.
+  func syncRemoteRecipes() async {
+    guard Self.autoUpdateRecipes else { return }
+    // Run in an unstructured Task so it survives cancellation of the enclosing check —
+    // the launch check runs in a cancellable SwiftUI `.task`, and a best-effort recipe
+    // sync shouldn't be aborted (and falsely logged as failed) just because that view
+    // went away. The sync is internally best-effort and bounded by URLSession timeouts.
+    let changed = await Task { await RemoteRecipeStore.sync(appVersion: Self.appVersion) }.value
+    if changed { loadRemoteRecipes() }
+  }
+
+  /// Delete the downloaded community recipes (falling back to built-ins) and fetch a
+  /// fresh copy. An explicit user action, so it re-downloads even when auto-update is
+  /// off; if the re-download fails (offline), the built-in set stays in effect.
+  func resetRemoteRecipes() async {
+    RemoteRecipeStore.clear()
+    loadRemoteRecipes()
+    if await RemoteRecipeStore.sync(appVersion: Self.appVersion) {
+      loadRemoteRecipes()
+    }
+    await checkForUpdates()
   }
 
   /// Re-resolve a single app after its recipe changed. Clears stale results if the

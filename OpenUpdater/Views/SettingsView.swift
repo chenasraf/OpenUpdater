@@ -355,6 +355,10 @@ struct UpdatingSettingsView: View {
   /// Run a full update check at launch, regardless of the periodic schedule
   /// (default on). Read by `UpdateManager`.
   @AppStorage("checkForUpdatesOnLaunch") private var checkForUpdatesOnLaunch = true
+  /// Sync the crowdsourced recipe set from GitHub before checks (default on). Read by
+  /// `UpdateManager`.
+  @AppStorage("autoUpdateRecipes") private var autoUpdateRecipes = true
+  @State private var isResettingRecipes = false
   @State private var token: String
   @State private var hasStoredToken: Bool
   @State private var status: String?
@@ -392,6 +396,33 @@ struct UpdatingSettingsView: View {
           Text(
             "Run a fresh check every time \(AppBranding.title) starts, even if a scheduled "
               + "check isn't due yet."
+          )
+        }
+        CaptionedField {
+          Toggle("Automatically update community recipes", isOn: $autoUpdateRecipes)
+        } caption: {
+          Text(
+            "Before each check, \(AppBranding.title) downloads the latest crowdsourced recipes "
+              + "from GitHub, so it can update more apps without waiting for a new "
+              + "\(AppBranding.title) release."
+          )
+        }
+        CaptionedField {
+          HStack {
+            Button("Reset downloaded recipes") {
+              isResettingRecipes = true
+              Task {
+                await updateManager.resetRemoteRecipes()
+                isResettingRecipes = false
+              }
+            }
+            .disabled(isResettingRecipes)
+            if isResettingRecipes { ProgressView().controlSize(.small) }
+          }
+        } caption: {
+          Text(
+            "Delete the recipes downloaded from GitHub and fetch a fresh copy. Use this if a "
+              + "synced recipe is misbehaving."
           )
         }
       } header: {

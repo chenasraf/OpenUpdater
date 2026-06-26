@@ -358,8 +358,8 @@ enum RecipeStore {
   }
 }
 
-/// Compares dotted version strings.
-enum VersionCompare {
+/// Compares dotted version strings. `nonisolated` — pure math, callable from any actor.
+nonisolated enum VersionCompare {
   /// True when `latest` is a strictly newer release than `installed`.
   ///
   /// Only the leading run of dot-separated integers is compared; trailing

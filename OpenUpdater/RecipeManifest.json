@@ -1,0 +1,256 @@
+{
+  "hash": "94eba3d041bb8cd891047e99181f0e523996386b0945b6d6b5f87aa1fc7f1b2e",
+  "recipes": [
+    {
+      "file": "app.zen-browser.zen.yml",
+      "minApp": "0.0.0",
+      "sha": "aeab9a46508c66d977c706612cc0640a3989af8914b50892558ad7e8f5535aee"
+    },
+    {
+      "file": "bobko.aerospace.yml",
+      "minApp": "0.0.0",
+      "sha": "13a0cb205cee9f1634a7bf5f05a61237428e907c9625d09c1d89ec84b9509add"
+    },
+    {
+      "file": "ch.protonmail.desktop.yml",
+      "minApp": "0.0.0",
+      "sha": "223464bc34581be5ba4a77f1b1e841ff19fac5ac1985ce91c42fd42a93b60102"
+    },
+    {
+      "file": "com.1password.1password.yml",
+      "minApp": "0.0.0",
+      "sha": "70a5da39100917f616407be9a49a20241a46c89606353b3bd8b3a4637100e4d9"
+    },
+    {
+      "file": "com.canva.affinity.yml",
+      "minApp": "0.0.0",
+      "sha": "dea22fa01d54bc909afcbaa3ca3c7fc791498e105350f780191c1353a239e6e2"
+    },
+    {
+      "file": "com.docker.docker.yml",
+      "minApp": "0.0.0",
+      "sha": "e5a57ad40ad42c30faab5672fa93d44bd7009cf268294cb2a4da03e7a6f20815"
+    },
+    {
+      "file": "com.dwarvesv.minimalbar.yml",
+      "minApp": "0.0.0",
+      "sha": "195ddc3f2b2a6013d7bfd6533747ad66586e8277c7e7f8eeab344c351d357d5b"
+    },
+    {
+      "file": "com.endrift.mgba-qt.yml",
+      "minApp": "0.0.0",
+      "sha": "8655f9eb74df49604d2f6d02aff264eee9e9536914acc34c99d4b352135f54e9"
+    },
+    {
+      "file": "com.github.wez.wezterm.yml",
+      "minApp": "0.0.0",
+      "sha": "3f690cfa80d05e851c6f9ab2ca961dd13ad46becc6e285fb5be437b4b844606b"
+    },
+    {
+      "file": "com.gog.galaxy.yml",
+      "minApp": "0.0.0",
+      "sha": "90441f74052313478fc7b730962d4a7fd9262000c4b96ff927c007ca70fff6c0"
+    },
+    {
+      "file": "com.google.Chrome.yml",
+      "minApp": "0.0.0",
+      "sha": "ba8d40e37559f8954aade495f74592d7faf50ef51664fd96f6bb612b39165b68"
+    },
+    {
+      "file": "com.google.android.studio.yml",
+      "minApp": "0.9.0",
+      "sha": "cfaafb24556da26ceca4249c15ef85088b7e69ba234e5123acdd46ad8827eb6e"
+    },
+    {
+      "file": "com.hankinsoft.osx.SQLProPostgres.yml",
+      "minApp": "0.0.0",
+      "sha": "f3193034a0aab5e30e83349db25297e1e230450a93de2f1d5c541424509ae67e"
+    },
+    {
+      "file": "com.hankinsoft.osx.mysql.yml",
+      "minApp": "0.0.0",
+      "sha": "94b7c49655846dd1bd7205da7cdb7d96ab1351ae00b29532949605909d1add04"
+    },
+    {
+      "file": "com.hankinsoft.osx.sqliteprofessional.yml",
+      "minApp": "0.0.0",
+      "sha": "e701e8b5c4f0a7e2bd56f22227bd7293002b7727636dcb27bec62b3ae5d7d170"
+    },
+    {
+      "file": "com.hnc.Discord.yml",
+      "minApp": "0.0.0",
+      "sha": "dcb7deb7cedf46eff1b82daa581c48e3b6a4e44cf7a230b62a74bc813064d73e"
+    },
+    {
+      "file": "com.install4j.0526-4458-1435-8154.837.yml",
+      "minApp": "0.0.0",
+      "sha": "33395c63c8b0dc76db8482ac4704e770f7d437eb0cef26b1e2ad49706cc23fcf"
+    },
+    {
+      "file": "com.microsoft.VSCode.yml",
+      "minApp": "0.0.0",
+      "sha": "d6b468b61392f39fa3a8e4381eeb08357746b0c73250ab81de716fc66d763fe0"
+    },
+    {
+      "file": "com.mitchellh.ghostty.yml",
+      "minApp": "0.0.0",
+      "sha": "bbf173dedd3d451986f7da90a9d3ebb03ecb8e628ab7720f8d79efdaba80ce7f"
+    },
+    {
+      "file": "com.nextcloud.desktopclient.yml",
+      "minApp": "0.0.0",
+      "sha": "468db28d0c31f652d170c6d6521675fc09beb0eed6c3fb9aa2728fe8a6e7a1e7"
+    },
+    {
+      "file": "com.nextcloud.talk.mac.yml",
+      "minApp": "0.0.0",
+      "sha": "9df787514bdc1b7c19cbca7a2404a6ddbe7747d346c8f12664ae98d6281dde89"
+    },
+    {
+      "file": "com.protonmail.bridge.yml",
+      "minApp": "0.0.0",
+      "sha": "aef3bf46ae8b8a37a4a207b73489eb2b6e02134fae097a80f25cda8c08cace7b"
+    },
+    {
+      "file": "com.raspberrypi.rpi-imager.yml",
+      "minApp": "0.0.0",
+      "sha": "b65928a77f4aefd0ec5c259285f7e7c223cb681eae8cf5069ebd3bffad4679be"
+    },
+    {
+      "file": "com.runningwithcrayons.Alfred.yml",
+      "minApp": "0.9.0",
+      "sha": "e2cca6bb51369b3022f04b8bfc893796576c2f2926fe8a8c0711b50d246d197a"
+    },
+    {
+      "file": "com.tinyspeck.slackmacgap.yml",
+      "minApp": "0.9.0",
+      "sha": "9d8617a2b2fd519c8b6bfb96bc4b930d0dc13a931a18f59de953bce5639c26f6"
+    },
+    {
+      "file": "com.utmapp.UTM.yml",
+      "minApp": "0.0.0",
+      "sha": "afdeefe6edafe42a3a9fb50de849428c7d64ab775b3e9f3ebab3ac959bf992ca"
+    },
+    {
+      "file": "com.westbridge.stremio5-mac.yml",
+      "minApp": "0.0.0",
+      "sha": "e41fb30b762869cf898ece45eeec4e5fb641bfeb8e37c81d7661fae0c050fff3"
+    },
+    {
+      "file": "com.yourcompany.converseen.yml",
+      "minApp": "0.0.0",
+      "sha": "0c84da8be1349fc1a896ff1355ed22dc727ee05b836aae256d5b821f05809d13"
+    },
+    {
+      "file": "dev.mandre.rquickshare.yml",
+      "minApp": "0.0.0",
+      "sha": "6be35f10dd2f67c4e3792252933731ff7fa24f46a8863158a647a859ec252c01"
+    },
+    {
+      "file": "io.balena.etcher.yml",
+      "minApp": "0.0.0",
+      "sha": "3d78897f73ba8f8af304132669c39b2655f4f6d96ec1c73c35622fb4779ed187"
+    },
+    {
+      "file": "io.ganeshrvel.openmtp.yml",
+      "minApp": "0.0.0",
+      "sha": "688cd2df1f244c7545ce7192af4f8e96ec468f56d7af7780f72c745e585e9f75"
+    },
+    {
+      "file": "io.tailscale.ipn.macsys.yml",
+      "minApp": "0.0.0",
+      "sha": "e3859ff0eb44a9aa3b0bbf43d79c16333443a6109221037ea60377a89263d92b"
+    },
+    {
+      "file": "md.obsidian.yml",
+      "minApp": "0.0.0",
+      "sha": "099fcec4aee3c7a4bfcd13ff253fde4b9eda227b244909bec8ad712f58a65eb0"
+    },
+    {
+      "file": "net.kovidgoyal.calibre.yml",
+      "minApp": "0.0.0",
+      "sha": "e01b4c827b292f6913739542d157a053c04bcad9970c52287295b876aafde85b"
+    },
+    {
+      "file": "net.runelite.launcher.yml",
+      "minApp": "0.0.0",
+      "sha": "285e68f4e6741dc6be16af2e2cd5e127cb7e449eddffc5e9c93c973935ed27dc"
+    },
+    {
+      "file": "net.sourceforge.grandperspectiv.yml",
+      "minApp": "0.0.0",
+      "sha": "034714ce55123c4f61504e6271b15a66641c651b707c0191be2bb24ea75d6eea"
+    },
+    {
+      "file": "nl.ultimaker.cura_UltiMaker_Cura.yml",
+      "minApp": "0.0.0",
+      "sha": "48b177813a3e96b156b9da3c746f3d149ebe6d9d96c69eab4a3db74ac3966c2c"
+    },
+    {
+      "file": "org.aseprite.Aseprite.yml",
+      "minApp": "0.0.0",
+      "sha": "13b5fd7f3b9ceca412a5ac5018edd879e05d24c16ba7811902f6696fef82d5f7"
+    },
+    {
+      "file": "org.audacityteam.audacity.yml",
+      "minApp": "0.0.0",
+      "sha": "1ca8d45259dcf7c69572e1501df7eee2d2a96ba5890beb1d87e519da0d572212"
+    },
+    {
+      "file": "org.blenderfoundation.blender.yml",
+      "minApp": "0.0.0",
+      "sha": "f672086889288da0d9c7a34d559c731fc4e819f1e09d477719cb53932995616c"
+    },
+    {
+      "file": "org.freecad.FreeCAD.yml",
+      "minApp": "0.0.0",
+      "sha": "73c2679257c92e48f3296fc9ebce01d0fef30236fb3eef3252bcb3340682440e"
+    },
+    {
+      "file": "org.godotengine.godot.yml",
+      "minApp": "0.0.0",
+      "sha": "5f0c291d0a8ab91f151aa4e377031d56229bed2f64ee554e629f0cd6b231f9e3"
+    },
+    {
+      "file": "org.keepassxc.keepassxc.yml",
+      "minApp": "0.0.0",
+      "sha": "35460e4a8eeec2feb971eb909a72f8ec39bb73ad3086ccd133a66f7749cd4a07"
+    },
+    {
+      "file": "org.libreoffice.script.yml",
+      "minApp": "0.0.0",
+      "sha": "f45e4c171b61dfff467647329c3ce9ce019f0e73d2e0214d2594c95b48399213"
+    },
+    {
+      "file": "org.mozilla.firefox.yml",
+      "minApp": "0.0.0",
+      "sha": "f2d1d95d7deb79b58c93ecc14dbed69deeb47671156d77791fb65201a44cf01d"
+    },
+    {
+      "file": "org.mozilla.thunderbird.yml",
+      "minApp": "0.0.0",
+      "sha": "fec30a7705a25397a4d44916df1530e9e78c6405743e109c57284b340ce13ae3"
+    },
+    {
+      "file": "org.sithlord48.blackchocobo.yml",
+      "minApp": "0.0.0",
+      "sha": "70f969d339ac914e59e9ae7a6e7c09a15dc1745a6007f2c37f374857b87905b8"
+    },
+    {
+      "file": "org.videolan.vlc.yml",
+      "minApp": "0.0.0",
+      "sha": "6fc5e62170fcd139150429d96ff5ac205cb645c16698c1bf785e3f7e2c7042a2"
+    },
+    {
+      "file": "org.wireshark.Wireshark.yml",
+      "minApp": "0.0.0",
+      "sha": "d2bab80b9bd2e3a0c88835d26b73ff0944cb2ae83e0b7357b31b0c27f276a431"
+    },
+    {
+      "file": "us.zoom.xos.yml",
+      "minApp": "0.0.0",
+      "sha": "b0b2aa8a2bcf1bda436aba6ef0be4b5d2236cef67d56f9e08914bdd7e6cd2519"
+    }
+  ],
+  "schema": 1
+}

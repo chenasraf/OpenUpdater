@@ -11,6 +11,11 @@
 # no recipe. Use a recipe to: cover a non-Sparkle app (GitHub releases), name a
 # Sparkle feed for an app that sets it dynamically, or override an app's own feed.
 #
+# Recipes sync to users at runtime from this repo (a generated RecipeManifest.json
+# indexes them via `make manifest` / a pre-commit hook), so a new or fixed recipe
+# reaches users without an app update. The manifest auto-stamps each recipe's minimum
+# app version from the features it uses — you don't set that yourself.
+#
 # Placeholders (usable in download.url, changelog.url, check.url/feed/pattern/path):
 #   {tag}      the raw upstream tag/version, e.g. "v0.20.3-Beta"
 #   {version}      the normalized version after `version` rules, e.g. "0.20.3-Beta"

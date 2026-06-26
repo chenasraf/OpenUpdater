@@ -7,7 +7,7 @@ ICONSET     := OpenUpdater/Assets.xcassets/AppIcon.appiconset
 MENUBAR_SVG := Design/MenuBarIcon.svg
 MENUBARSET  := OpenUpdater/Assets.xcassets/MenuBarIcon.imageset
 
-.PHONY: build run format clean install-hooks icon
+.PHONY: build run format clean install-hooks icon manifest
 
 ## build: compile the app (into Xcode's shared DerivedData, so make & Xcode agree)
 build:
@@ -20,6 +20,10 @@ run: build
 ## format: format all Swift sources in place
 format:
 	$(SWIFT_FORMAT) format --in-place --recursive OpenUpdater
+
+## manifest: regenerate OpenUpdater/RecipeManifest.json from the recipes (for runtime sync)
+manifest:
+	python3 scripts/gen_recipe_manifest.py
 
 ## install-hooks: install git hooks via lefthook
 install-hooks:

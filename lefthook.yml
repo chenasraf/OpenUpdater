@@ -5,6 +5,12 @@ pre-commit:
       glob: "*.swift"
       run: xcrun swift-format format --in-place {staged_files}
       stage_fixed: true
+    # Regenerate the recipe manifest (hash + per-recipe min app version) whenever a
+    # recipe changes, and stage it into the same commit so the published manifest always
+    # matches the committed recipes.
+    recipe-manifest:
+      glob: "OpenUpdater/Recipes/*.yml"
+      run: python3 scripts/gen_recipe_manifest.py && git add OpenUpdater/RecipeManifest.json
     # lint:
     #   glob: "*.swift"
     #   run: |
