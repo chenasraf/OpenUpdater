@@ -355,7 +355,16 @@ final class UpdateManager: ObservableObject {
     guard !isChecking else { return }
     isChecking = true
     defer { isChecking = false }
+    // Shield the work from caller cancellation. The launch check runs in the main
+    // window's `.task`, which SwiftUI cancels when that window is restored/closed during
+    // launch — that would otherwise abort the in-flight network lookups mid-batch and
+    // leave a half-finished check (and many spurious failures). An unstructured Task
+    // isn't cancelled by its creator, so the check always runs to completion; closing
+    // the window mid-check no longer aborts it either.
+    await Task { await self.runCheck() }.value
+  }
 
+  private func runCheck() async {
     // Pull the latest community recipes first (best-effort) so this check uses them.
     await syncRemoteRecipes()
 
@@ -681,12 +690,9 @@ final class UpdateManager: ObservableObject {
   /// changed. Gated by the "Automatically update recipes" setting.
   func syncRemoteRecipes() async {
     guard Self.autoUpdateRecipes else { return }
-    // Run in an unstructured Task so it survives cancellation of the enclosing check —
-    // the launch check runs in a cancellable SwiftUI `.task`, and a best-effort recipe
-    // sync shouldn't be aborted (and falsely logged as failed) just because that view
-    // went away. The sync is internally best-effort and bounded by URLSession timeouts.
-    let changed = await Task { await RemoteRecipeStore.sync(appVersion: Self.appVersion) }.value
-    if changed { loadRemoteRecipes() }
+    if await RemoteRecipeStore.sync(appVersion: Self.appVersion) {
+      loadRemoteRecipes()
+    }
   }
 
   /// Delete the downloaded community recipes (falling back to built-ins) and fetch a
