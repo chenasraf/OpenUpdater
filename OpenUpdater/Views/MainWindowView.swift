@@ -309,6 +309,30 @@ struct UpdateRow: View {
   }
 }
 
+/// Info icon for an ignored app: tapping it shows why it's ignored in a popover
+/// anchored below the icon; clicking out (or the icon) dismisses it.
+struct IgnoreReasonButton: View {
+  let message: String
+  @State private var showing = false
+
+  var body: some View {
+    Button {
+      showing.toggle()
+    } label: {
+      Image(systemName: "info.circle").foregroundStyle(.secondary)
+    }
+    .buttonStyle(.plain)
+    .popover(isPresented: $showing, arrowEdge: .bottom) {
+      Text(message)
+        .font(.callout)
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(width: 260, alignment: .leading)
+        .padding(12)
+    }
+    .help("Why is this app ignored?")
+  }
+}
+
 struct InstalledView: View {
   @EnvironmentObject private var updateManager: UpdateManager
 
@@ -321,6 +345,9 @@ struct InstalledView: View {
           Text(app.id)
             .font(.caption)
             .foregroundStyle(.secondary)
+        }
+        if let message = ignoreMessage(for: app) {
+          IgnoreReasonButton(message: message)
         }
         Spacer()
         if updateManager.isRescanning(app.id) {
@@ -341,6 +368,8 @@ struct InstalledView: View {
             .foregroundStyle(.secondary)
         }
       }
+      // Gray out ignored apps (by OpenUpdater or the user) to signal they're skipped.
+      .opacity(ignoreMessage(for: app) == nil ? 1 : 0.5)
       // Run the separator edge-to-edge, including under the app icon.
       .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
       .appContextMenu(app)
@@ -348,6 +377,21 @@ struct InstalledView: View {
     .toolbar {
       ToolbarItem(placement: .primaryAction) { CheckForUpdatesButton() }
     }
+  }
+
+  /// Why this app is being skipped, or `nil` if it isn't ignored. OpenUpdater's own
+  /// built-in ignore wins over a user ignore (it's what actually suppresses checks).
+  private func ignoreMessage(for app: AppInfo) -> String? {
+    if let reason = app.builtInIgnoreReason {
+      return "Ignored by \(AppBranding.title). Reason: \(reason)"
+    }
+    if app.ignored {
+      return "Ignored by user. Scope: Entire app"
+    }
+    if let version = app.ignoredVersion {
+      return "Ignored by user. Scope: Version \(version)"
+    }
+    return nil
   }
 }
 
