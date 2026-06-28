@@ -398,6 +398,10 @@ final class UpdateManager: ObservableObject {
       guard isCheckable(apps[index]) else { continue }
       done += 1
       checkStatusDetail = "Checking \(apps[index].name) (\(done)/\(checkable))…"
+      // Re-read the installed version from disk first, so an app updated since the
+      // cached scan (by us or externally) is compared against what's actually
+      // installed and drops off the updates list — matching a single-app re-scan.
+      refreshInstalledVersion(id: apps[index].id)
       if let error = await resolveLatest(forAppAt: index) {
         failures += 1
         if case UpdateCheckError.rateLimited = error { rateLimited = true }
