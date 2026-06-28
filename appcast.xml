@@ -6,6 +6,26 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.11.0</title>
+    <pubDate>Sun, 28 Jun 2026 17:22:52 +0000</pubDate>
+    <sparkle:version>59</sparkle:version>
+    <sparkle:shortVersionString>0.11.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.10.0...v0.11.0">0.11.0</a> (2026-06-28)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>recipe:</strong> Zen Browser (<code class="notranslate">app.zen-browser.zen</code>) - add changelog (<a href="https://github.com/chenasraf/OpenUpdater/commit/b90972b5236cd4ef14b909a748d438e69e5eadd6">b90972b</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>recipe:</strong> 1Password (<code class="notranslate">com.1password.1password</code>) - add channels (<a href="https://github.com/chenasraf/OpenUpdater/commit/0c9ee5d6de89153863ddd78de110e3a219551e7b">0c9ee5d</a>)</li>
+<li><strong>recipe:</strong> 1Password (<code class="notranslate">com.1password.1password</code>) - improve version detection (<a href="https://github.com/chenasraf/OpenUpdater/commit/ea9cc2f9357a47efae537d5e4929708a8b93ec71">ea9cc2f</a>)</li>
+<li><strong>ui:</strong> open Preferences from the menubar via SwiftUI openWindow (<a href="https://github.com/chenasraf/OpenUpdater/commit/764adde840a3e367cffd6c5939f8c7305ecf49c9">764adde</a>)</li>
+<li><strong>updating:</strong> re-read installed version during full scan so updated apps clear (<a href="https://github.com/chenasraf/OpenUpdater/commit/3e8bf7bb6c2093896a31f252d1189181b47a45df">3e8bf7b</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.11.0/OpenUpdater-0.11.0.dmg" sparkle:edSignature="iP+aNKm9Zmbw+uOzgeTAGSPiu8rPyPl5OAAK9OgLnEepPh3PFBHE/CmHoJyenIO1wXPaif0MN5x7ZEdp+spEDw==" length="3282488" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.10.0</title>
     <pubDate>Fri, 26 Jun 2026 17:45:31 +0000</pubDate>
     <sparkle:version>49</sparkle:version>
