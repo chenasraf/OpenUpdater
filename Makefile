@@ -7,7 +7,7 @@ ICONSET     := OpenUpdater/Assets.xcassets/AppIcon.appiconset
 MENUBAR_SVG := Design/MenuBarIcon.svg
 MENUBARSET  := OpenUpdater/Assets.xcassets/MenuBarIcon.imageset
 
-.PHONY: build run format clean install-hooks icon manifest
+.PHONY: build run format clean install-hooks icon manifest recipe-check recipe-download
 
 ## build: compile the app (into Xcode's shared DerivedData, so make & Xcode agree)
 build:
@@ -24,6 +24,18 @@ format:
 ## manifest: regenerate OpenUpdater/RecipeManifest.json from the recipes (for runtime sync)
 manifest:
 	python3 scripts/gen_recipe_manifest.py
+
+## recipe-check: resolve a recipe's latest version using the app's real source logic — ID=<bundle-id> [ARGS='--prereleases']
+recipe-check:
+	@test -n "$(ID)" || { echo "usage: make recipe-check ID=<bundle-id> [ARGS='--channel esr']"; exit 2; }
+	@log=$$(mktemp); swift build --product recipe-check >"$$log" 2>&1 || { cat "$$log"; rm -f "$$log"; exit 1; }; rm -f "$$log"
+	@.build/debug/recipe-check $(ID) $(ARGS)
+
+## recipe-download: recipe-check + actually download, extract, and verify the build — ID=<bundle-id>
+recipe-download:
+	@test -n "$(ID)" || { echo "usage: make recipe-download ID=<bundle-id> [ARGS='--channel esr']"; exit 2; }
+	@log=$$(mktemp); swift build --product recipe-check >"$$log" 2>&1 || { cat "$$log"; rm -f "$$log"; exit 1; }; rm -f "$$log"
+	@.build/debug/recipe-check $(ID) --download $(ARGS)
 
 ## install-hooks: install git hooks via lefthook
 install-hooks:
