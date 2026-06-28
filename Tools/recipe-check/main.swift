@@ -235,7 +235,13 @@ func run() async -> Int32 {
   result.build.map { out("build:     \($0)") }
   out("download:  \(result.downloadURL?.absoluteString ?? "—  (check-only)")")
   result.format.map { out("format:    \($0)") }
-  result.changelogURL.map { out("changelog: \($0.absoluteString)") }
+  // Mirror UpdateManager.resolveLatest: the source's own changelog wins, otherwise
+  // fall back to the recipe's expanded changelog template (github/sparkle/appstore
+  // sources don't set one themselves).
+  let changelog =
+    result.changelogURL?.absoluteString
+    ?? recipe.changelogTemplate.map { recipe.expand($0, tag: result.tag, version: result.version) }
+  changelog.map { out("changelog: \($0)") }
   result.appStoreURL.map { out("appstore:  \($0.absoluteString)") }
 
   if options.download {
