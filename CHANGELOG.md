@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.11.0](https://github.com/chenasraf/OpenUpdater/compare/v0.10.0...v0.11.0) (2026-06-28)
+
+
+### Features
+
+* **recipe:** Zen Browser (`app.zen-browser.zen`) - add changelog ([b90972b](https://github.com/chenasraf/OpenUpdater/commit/b90972b5236cd4ef14b909a748d438e69e5eadd6))
+
+
+### Bug Fixes
+
+* **recipe:** 1Password (`com.1password.1password`) - add channels ([0c9ee5d](https://github.com/chenasraf/OpenUpdater/commit/0c9ee5d6de89153863ddd78de110e3a219551e7b))
+* **recipe:** 1Password (`com.1password.1password`) - improve version detection ([ea9cc2f](https://github.com/chenasraf/OpenUpdater/commit/ea9cc2f9357a47efae537d5e4929708a8b93ec71))
+* **ui:** open Preferences from the menubar via SwiftUI openWindow ([764adde](https://github.com/chenasraf/OpenUpdater/commit/764adde840a3e367cffd6c5939f8c7305ecf49c9))
+* **updating:** re-read installed version during full scan so updated apps clear ([3e8bf7b](https://github.com/chenasraf/OpenUpdater/commit/3e8bf7bb6c2093896a31f252d1189181b47a45df))
+
 ## [0.10.0](https://github.com/chenasraf/OpenUpdater/compare/v0.9.0...v0.10.0) (2026-06-26)
 
 
