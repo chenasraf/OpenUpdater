@@ -1117,7 +1117,12 @@ final class UpdateManager: ObservableObject {
       } else if await PrivilegedHelper.shared.needsReinstall() {
         throw HelperError.needsReinstall
       } else {
-        throw InstallError.notWritable(destination)
+        // No root helper (e.g. a managed standard user who can't approve the daemon):
+        // fall back to an admin authorization prompt, which endpoint privilege-management
+        // tools can elevate per policy without a local-admin password.
+        try await Task.detached(priority: .userInitiated) {
+          try Installer.replaceAppWithAuthorization(at: destination, with: newApp)
+        }.value
       }
     }
   }

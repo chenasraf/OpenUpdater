@@ -192,6 +192,57 @@ nonisolated enum Installer {
     }
   }
 
+  /// Replace the app at `destination` with `newApp` using an admin authorization
+  /// prompt — the fallback when the location isn't user-writable and the root helper
+  /// isn't installed. The `do shell script … with administrator privileges` prompt
+  /// routes through macOS Authorization Services, which is exactly what endpoint
+  /// privilege-management tools (e.g. BeyondTrust) can intercept and elevate per
+  /// policy — so a managed standard user can update apps without local admin, and
+  /// without approving the system daemon.
+  ///
+  /// Staged via `ditto` to a sibling `.incoming` path, then swapped with `mv`, so a
+  /// failed copy can't leave the destination half-written. Paths are single-quoted
+  /// with embedded quotes escaped, since this string is executed as root.
+  static func replaceAppWithAuthorization(at destination: URL, with newApp: URL) throws {
+    let directory = destination.deletingLastPathComponent()
+    let staged = directory.appendingPathComponent(".\(destination.lastPathComponent).incoming")
+    let dest = shellQuote(destination.path)
+    let src = shellQuote(newApp.path)
+    let tmp = shellQuote(staged.path)
+    // ditto into a staging copy, drop the old bundle, move the staging copy into place.
+    let command =
+      "/bin/rm -rf \(tmp); "
+      + "/usr/bin/ditto \(src) \(tmp) && /bin/rm -rf \(dest) && /bin/mv \(tmp) \(dest)"
+    let appleScript =
+      "do shell script \"\(escapeForAppleScript(command))\" with administrator privileges"
+    do {
+      try run("/usr/bin/osascript", ["-e", appleScript])
+    } catch InstallError.toolFailed(_, let output) {
+      let lower = output.lowercased()
+      // User dismissed the auth prompt (or EPM denied it) — surface as not-writable so
+      // the caller treats it as "couldn't install" rather than a hard tool crash.
+      if lower.contains("-128") || lower.contains("cancel") || lower.contains("not allowed") {
+        throw InstallError.notWritable(destination)
+      }
+      throw InstallError.installerFailed(output)
+    }
+  }
+
+  /// Wrap a path in single quotes for POSIX `sh`, escaping any embedded single quotes
+  /// (`'\''`). Safe to splice into a shell command even for app names with spaces or
+  /// apostrophes.
+  private static func shellQuote(_ path: String) -> String {
+    "'" + path.replacingOccurrences(of: "'", with: "'\\''") + "'"
+  }
+
+  /// Escape a shell command for embedding inside an AppleScript double-quoted string
+  /// (`do shell script "…"`): backslashes first, then double quotes.
+  private static func escapeForAppleScript(_ command: String) -> String {
+    command
+      .replacingOccurrences(of: "\\", with: "\\\\")
+      .replacingOccurrences(of: "\"", with: "\\\"")
+  }
+
   /// Squirrel.Mac apps (Discord, Slack, and most Electron apps) self-update through a
   /// `ShipIt` helper: the app stages a copy of an update and writes a pending request
   /// that, on its next launch, copies that staged bundle over the app in `/Applications`.
