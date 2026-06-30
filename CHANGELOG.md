@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.13.0](https://github.com/chenasraf/OpenUpdater/compare/v0.12.1...v0.13.0) (2026-06-30)
+
+
+### Features
+
+* **menu:** add Launch App, Open Homepage, Show in Finder to app context menu ([a411c9c](https://github.com/chenasraf/OpenUpdater/commit/a411c9ca0804a50f83a923c5cb39f0a2adb2194c))
+* **recipe:** 1Password (`com.1password.1password`) - add download/install ([f688c64](https://github.com/chenasraf/OpenUpdater/commit/f688c6419e201add5f3a508af15fcdb0f16cb181))
+
+
+### Bug Fixes
+
+* **sparkle:** resolve relative enclosure URLs against the feed URL ([bef39c5](https://github.com/chenasraf/OpenUpdater/commit/bef39c51b9d9cd9fe09ded9a63d9f1bb3ca93e6b))
+
 ## [0.12.1](https://github.com/chenasraf/OpenUpdater/compare/v0.12.0...v0.12.1) (2026-06-30)
 
 
