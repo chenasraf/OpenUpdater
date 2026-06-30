@@ -414,6 +414,16 @@ struct AppContextMenuItems: View {
   }
 
   @ViewBuilder private func single(_ app: AppInfo) -> some View {
+    Button("Launch App") { NSWorkspace.shared.open(app.url) }
+    if let homepage = app.homepageURL {
+      Button("Open Homepage") { NSWorkspace.shared.open(homepage) }
+    }
+    Button("Show in Finder") {
+      NSWorkspace.shared.activateFileViewerSelecting([app.url])
+    }
+
+    Divider()
+
     Button("Re-scan App") {
       Task { await updateManager.rescan(app) }
     }
