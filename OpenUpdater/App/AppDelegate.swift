@@ -58,7 +58,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     if let button = statusItem.button {
       // The app's own glyph as a template image, so it tints for light/dark menubars.
-      let icon = NSImage(named: "MenuBarIcon")
+      // Fall back to an SF Symbol if the asset can't be loaded — otherwise the button
+      // would have no image and (at zero updates) no title, collapsing to a zero-width,
+      // effectively invisible status item.
+      let icon =
+        NSImage(named: "MenuBarIcon")
+        ?? NSImage(
+          systemSymbolName: "arrow.down.app", accessibilityDescription: AppBranding.title)
       icon?.isTemplate = true
       icon?.size = NSSize(width: 18, height: 18)
       button.image = icon
