@@ -73,6 +73,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       button.target = self
     }
 
+    // Force the item visible. `isVisible` is persisted across launches, so an item
+    // that was ⌘-dragged off the menu bar (or dropped when the bar was full) stays
+    // hidden forever otherwise — and the status item is this menubar app's primary
+    // entry point, so a stuck-hidden state would lock the user out.
+    statusItem.isVisible = true
+
     // Show the number of available updates next to the menubar glyph, kept in sync
     // with the model. `objectWillChange` fires before the value updates, so receive
     // on the main run loop to read the settled count.
