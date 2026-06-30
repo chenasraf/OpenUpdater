@@ -136,7 +136,10 @@ enum SparkleSource {
       throw UpdateCheckError.noReleases
     }
 
-    let downloadURL = best.downloadURL.flatMap(URL.init(string:))
+    // Enclosure URLs may be relative to the feed (e.g. Tailscale's appcast lists a
+    // bare "Tailscale-x.y.z-macos.zip"); resolve them against the feed URL. Absolute
+    // URLs are unaffected, since `relativeTo:` is ignored when the string has a scheme.
+    let downloadURL = best.downloadURL.flatMap { URL(string: $0, relativeTo: feedURL)?.absoluteURL }
     return ReleaseResult(
       tag: best.displayVersion ?? best.sortKey!,
       version: best.displayVersion ?? best.sortKey!,
