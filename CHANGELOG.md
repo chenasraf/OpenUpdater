@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.12.0](https://github.com/chenasraf/OpenUpdater/compare/v0.11.0...v0.12.0) (2026-06-30)
+
+
+### Features
+
+* **installer:** fall back to admin authorization when replacing apps without the helper ([61d8756](https://github.com/chenasraf/OpenUpdater/commit/61d87564c8a49abad0f0e29f91303efe3763f2ba))
+
+
+### Bug Fixes
+
+* **menubar:** fall back to SF Symbol when status icon asset fails to load ([386d54c](https://github.com/chenasraf/OpenUpdater/commit/386d54c2ea7327dee859e168f12e96b3e20b63a0))
+* **menubar:** force the status item visible to recover a stuck-hidden state ([a2753bb](https://github.com/chenasraf/OpenUpdater/commit/a2753bb0064264ba244c1217f83c7388642b8cf0))
+* **settings:** make GitHub token field visible in grouped form ([734eeb4](https://github.com/chenasraf/OpenUpdater/commit/734eeb43ca3c02ac5364baa430eb4d622a562358))
+
 ## [0.11.0](https://github.com/chenasraf/OpenUpdater/compare/v0.10.0...v0.11.0) (2026-06-28)
 
 
