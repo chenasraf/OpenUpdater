@@ -201,7 +201,7 @@ jobs:
               <pubDate>${PUBDATE}</pubDate>
               <sparkle:version>${{ github.run_number }}</sparkle:version>
               <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
-              <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+              <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
               __NOTES__
               <enclosure url="${DMG_URL}" ${SIG} type="application/octet-stream"/>
             </item>
