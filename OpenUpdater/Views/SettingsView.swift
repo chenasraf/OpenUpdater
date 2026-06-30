@@ -433,6 +433,7 @@ struct UpdatingSettingsView: View {
         CaptionedField {
           VStack(alignment: .leading, spacing: 8) {
             SecureField("Personal access token", text: $token)
+              .textFieldStyle(.roundedBorder)
 
             HStack {
               Button("Save") {
