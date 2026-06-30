@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/chenasraf/OpenUpdater/compare/v0.12.0...v0.12.1) (2026-06-30)
+
+
+### Bug Fixes
+
+* **sparkle:** set appcast minimumSystemVersion to 13.0 to match deployment target ([be75709](https://github.com/chenasraf/OpenUpdater/commit/be75709817d48c00726550c27afe0a135f5e1afc))
+
 ## [0.12.0](https://github.com/chenasraf/OpenUpdater/compare/v0.11.0...v0.12.0) (2026-06-30)
 
 
