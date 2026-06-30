@@ -6,6 +6,25 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.12.0</title>
+    <pubDate>Tue, 30 Jun 2026 14:00:21 +0000</pubDate>
+    <sparkle:version>62</sparkle:version>
+    <sparkle:shortVersionString>0.12.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.11.0...v0.12.0">0.12.0</a> (2026-06-30)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>installer:</strong> fall back to admin authorization when replacing apps without the helper (<a href="https://github.com/chenasraf/OpenUpdater/commit/61d87564c8a49abad0f0e29f91303efe3763f2ba">61d8756</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>menubar:</strong> fall back to SF Symbol when status icon asset fails to load (<a href="https://github.com/chenasraf/OpenUpdater/commit/386d54c2ea7327dee859e168f12e96b3e20b63a0">386d54c</a>)</li>
+<li><strong>menubar:</strong> force the status item visible to recover a stuck-hidden state (<a href="https://github.com/chenasraf/OpenUpdater/commit/a2753bb0064264ba244c1217f83c7388642b8cf0">a2753bb</a>)</li>
+<li><strong>settings:</strong> make GitHub token field visible in grouped form (<a href="https://github.com/chenasraf/OpenUpdater/commit/734eeb43ca3c02ac5364baa430eb4d622a562358">734eeb4</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.12.0/OpenUpdater-0.12.0.dmg" sparkle:edSignature="Z/OuxgC/lmTn+/g46pnYgSsQqDxYFbPT7bBWz2AhG5zAQ55Slw/H1kRyNQfKFOMyS7gOz03s0y4fhCtOg3kFDg==" length="3288938" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.11.0</title>
     <pubDate>Sun, 28 Jun 2026 17:22:52 +0000</pubDate>
     <sparkle:version>59</sparkle:version>
