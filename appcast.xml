@@ -6,6 +6,24 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.13.0</title>
+    <pubDate>Wed, 01 Jul 2026 19:41:50 +0000</pubDate>
+    <sparkle:version>68</sparkle:version>
+    <sparkle:shortVersionString>0.13.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.12.1...v0.13.0">0.13.0</a> (2026-06-30)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>menu:</strong> add Launch App, Open Homepage, Show in Finder to app context menu (<a href="https://github.com/chenasraf/OpenUpdater/commit/a411c9ca0804a50f83a923c5cb39f0a2adb2194c">a411c9c</a>)</li>
+<li><strong>recipe:</strong> 1Password (<code class="notranslate">com.1password.1password</code>) - add download/install (<a href="https://github.com/chenasraf/OpenUpdater/commit/f688c6419e201add5f3a508af15fcdb0f16cb181">f688c64</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>sparkle:</strong> resolve relative enclosure URLs against the feed URL (<a href="https://github.com/chenasraf/OpenUpdater/commit/bef39c51b9d9cd9fe09ded9a63d9f1bb3ca93e6b">bef39c5</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.13.0/OpenUpdater-0.13.0.dmg" sparkle:edSignature="2p+sNjSQ36Eu5SKmInI+wpMb6iWAYONsmPSlXf3ekoQGebdkrSCk66goyjDIpAaWXHYB0HclPah+K0EabLuuDA==" length="3291975" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.12.1</title>
     <pubDate>Tue, 30 Jun 2026 14:13:39 +0000</pubDate>
     <sparkle:version>64</sparkle:version>
