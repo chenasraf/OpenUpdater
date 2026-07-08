@@ -1,5 +1,5 @@
 {
-  "hash": "85ab25505332799c8e38d55bb823675d4215fbc2cd7ffc6c8e1b3bed2bb3dc9e",
+  "hash": "6bcfa74fdba8b7602063bcb528bbb768d50da99707f8a9b6addd1775f30ca102",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -249,7 +249,7 @@
     {
       "file": "us.zoom.xos.yml",
       "minApp": "0.0.0",
-      "sha": "b0b2aa8a2bcf1bda436aba6ef0be4b5d2236cef67d56f9e08914bdd7e6cd2519"
+      "sha": "55b0354f5b396df7c12de8de22f46f2f0689ab067469759fc29e92bbe5fa0edf"
     }
   ],
   "schema": 1

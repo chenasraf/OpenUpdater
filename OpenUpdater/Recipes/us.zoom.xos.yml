@@ -11,5 +11,5 @@ installed_version:
   key: CFBundleVersion
 
 download:
-  url: https://zoom.us/client/{version}/zoomusInstallerFull.pkg?archType=arm64
+  url: https://zoom.us/client/{version}/zoomusInstallerFull.pkg?archType={arch}
   format: pkg
