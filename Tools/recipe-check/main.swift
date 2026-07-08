@@ -100,7 +100,10 @@ func parseOptions() -> Options {
 func resolve(_ recipe: UpdateRecipe, prereleases: Bool) async throws -> ReleaseResult {
   switch recipe.check.kind {
   case .githubReleases:
-    return try await GitHubReleaseSource.latest(for: recipe, includePrereleases: prereleases)
+    // Mirror the app: the recipe's own `prereleases: true` counts, so a beta-only
+    // project resolves without the flag (the flag just forces it on otherwise).
+    return try await GitHubReleaseSource.latest(
+      for: recipe, includePrereleases: prereleases || recipe.check.prereleases)
   case .sparkle:
     guard let feed = recipe.check.feed, let feedURL = URL(string: recipe.resolveArch(feed)) else {
       throw UpdateCheckError.missingFeed
@@ -219,7 +222,11 @@ func run() async -> Int32 {
   default: recipe.check.url.map { out("url:      \($0)") }
   }
   if GitHubToken.load() != nil { out("token:    using $GITHUB_TOKEN") }
-  if options.prereleases { out("prerel:   included") }
+  if options.prereleases {
+    out("prerel:   included (--prereleases)")
+  } else if recipe.check.prereleases {
+    out("prerel:   included (recipe prereleases: true)")
+  }
 
   let result: ReleaseResult
   do {
