@@ -1,5 +1,5 @@
 {
-  "hash": "7e82085c1ce68f33201636305bf09035574a23ea48f3ed4b4cf296d988409090",
+  "hash": "85ab25505332799c8e38d55bb823675d4215fbc2cd7ffc6c8e1b3bed2bb3dc9e",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -19,7 +19,7 @@
     {
       "file": "com.1password.1password.yml",
       "minApp": "0.0.0",
-      "sha": "e7d5ee180c4f437230fa86761060c13960b9fe458477ea9e9cdbcded70c87a5a"
+      "sha": "6127b22e64188b69028a22bfc327322d75fa14edae5c0a573d23972f797ce5cb"
     },
     {
       "file": "com.canva.affinity.yml",
