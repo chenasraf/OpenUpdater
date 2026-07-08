@@ -33,6 +33,22 @@ FEATURES = [
 ]
 BASELINE = "0.0.0"
 
+# A download URL that hardcodes one CPU architecture installs the wrong build on the
+# other kind of Mac — e.g. an Intel asset on Apple Silicon (runs slowly under Rosetta)
+# or an arm64 asset on Intel (won't run at all). Recipes select the right build with the
+# `{arch}` placeholder + `arch:` map instead. Flag any download URL that names an arch
+# literally but lacks `{arch}`. `\b` won't do — `_` is a word char, so `x86_64` needs an
+# explicit non-alphanumeric boundary.
+ARCH_TOKEN = re.compile(
+    r"(?<![A-Za-z0-9])(x86_64|amd64|aarch64|arm64|intel64|intel|x64)(?![A-Za-z0-9])",
+    re.IGNORECASE,
+)
+# Bundle IDs where a literal single-arch download is intentional because upstream ships
+# only that architecture, so there is no `{arch}` alternative to select.
+ARCH_LINT_ALLOWLIST = {
+    "com.yourcompany.converseen",  # upstream ships a macOS x86_64 build only
+}
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RECIPES_DIR = REPO_ROOT / "OpenUpdater" / "Recipes"
 MANIFEST_PATH = REPO_ROOT / "OpenUpdater" / "RecipeManifest.json"
@@ -47,16 +63,66 @@ def min_app(text):
     return max(versions, key=version_tuple) if versions else BASELINE
 
 
+def download_urls(text):
+    """Yield (line_number, url) for every `url:` under a `download:` block — including
+    the per-channel `download:` blocks nested under `channels:`. Scoped to download
+    blocks so an arch literal in a `check:` URL or the `arch:` map isn't mistaken for a
+    hardcoded download."""
+    block_indent = None  # indent of the active download: block, or None when outside one
+    for lineno, line in enumerate(text.splitlines(), 1):
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        header = re.match(r"(\s*)download:\s*$", line)
+        if header:
+            block_indent = len(header.group(1))
+            continue
+        if block_indent is not None:
+            if indent <= block_indent:
+                block_indent = None  # dedented out of the download block
+            else:
+                field = re.match(r"\s*url:\s*(.+?)\s*$", line)
+                if field:
+                    yield lineno, field.group(1).strip("'\"")
+
+
+def arch_violations(text, bundle_id):
+    """Download URLs that name a CPU arch literally without a `{arch}` placeholder."""
+    if bundle_id in ARCH_LINT_ALLOWLIST:
+        return []
+    hits = []
+    for lineno, url in download_urls(text):
+        if "{arch}" in url:
+            continue
+        match = ARCH_TOKEN.search(url)
+        if match:
+            hits.append((lineno, match.group(0), url))
+    return hits
+
+
 def main():
     recipes = []
     digest_lines = []
+    violations = []
     for path in sorted(RECIPES_DIR.glob("*.yml")):
         content = path.read_bytes()
+        text = content.decode("utf-8")
+        for lineno, token, url in arch_violations(text, path.stem):
+            violations.append(f"{path.name}:{lineno}: '{token}' in download URL: {url}")
         sha = hashlib.sha256(content).hexdigest()
-        recipes.append(
-            {"file": path.name, "minApp": min_app(content.decode("utf-8")), "sha": sha}
-        )
+        recipes.append({"file": path.name, "minApp": min_app(text), "sha": sha})
         digest_lines.append(f"{path.name}:{sha}")
+
+    if violations:
+        print(
+            "Recipe download URL hardcodes a CPU architecture (use the {arch} "
+            "placeholder + an arch: map, or add the bundle id to ARCH_LINT_ALLOWLIST "
+            "if upstream ships only one arch):",
+            file=sys.stderr,
+        )
+        for violation in violations:
+            print(f"  {violation}", file=sys.stderr)
+        return 1
 
     manifest = {
         "schema": 1,
