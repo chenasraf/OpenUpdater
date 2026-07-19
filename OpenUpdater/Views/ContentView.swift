@@ -103,7 +103,7 @@ struct ContentView: View {
       Button {
         updateManager.updateAll()
       } label: {
-        if updateManager.isUpdatingAll {
+        if updateManager.isInstalling {
           HStack(spacing: 4) {
             ProgressView().controlSize(.small)
             Text("Updating…")
@@ -114,7 +114,7 @@ struct ContentView: View {
       }
       .controlSize(.small)
       .buttonStyle(.borderedProminent)
-      .disabled(updateManager.isUpdatingAll || updateManager.installableUpdates.isEmpty)
+      .disabled(updateManager.isInstalling || updateManager.installableUpdates.isEmpty)
     }
     .padding(.horizontal, 12).padding(.vertical, 8)
   }
@@ -150,7 +150,7 @@ struct ContentView: View {
       .buttonStyle(.plain).foregroundStyle(.secondary)
       .focusable(false)
       .help("Quit \(AppBranding.title)")
-      if updateManager.isChecking || updateManager.isUpdatingAll {
+      if updateManager.isChecking || updateManager.isInstalling {
         ProgressView().controlSize(.small).scaleEffect(0.7)
       }
       Text(updateManager.statusLine)

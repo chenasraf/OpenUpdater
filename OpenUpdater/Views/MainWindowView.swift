@@ -76,7 +76,7 @@ struct StatusBar: View {
 
   var body: some View {
     HStack(spacing: 6) {
-      if updateManager.isChecking || updateManager.isUpdatingAll {
+      if updateManager.isChecking || updateManager.isInstalling {
         ProgressView().controlSize(.small)
       }
       Text(updateManager.statusLine)
@@ -146,7 +146,7 @@ struct UpdatesView: View {
         Button {
           updateManager.updateAll()
         } label: {
-          if updateManager.isUpdatingAll {
+          if updateManager.isInstalling {
             HStack(spacing: 6) {
               ProgressView().controlSize(.small)
               Text("Updating…")
@@ -156,8 +156,8 @@ struct UpdatesView: View {
           }
         }
         .buttonStyle(.borderedProminent)
-        .disabled(updateManager.isUpdatingAll || updateManager.installableUpdates.isEmpty)
-        if updateManager.isUpdatingAll {
+        .disabled(updateManager.isInstalling || updateManager.installableUpdates.isEmpty)
+        if updateManager.isInstalling {
           Button(role: .destructive) {
             updateManager.stopBatch()
           } label: {

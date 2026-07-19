@@ -839,7 +839,7 @@ final class UpdateManager: ObservableObject {
   func installPhase(for id: String) -> InstallPhase { installPhases[id] ?? .idle }
 
   /// True while anything is in the install queue (installing or waiting).
-  var isUpdatingAll: Bool { !installQueue.isEmpty }
+  var isInstalling: Bool { !installQueue.isEmpty }
 
   /// Whether `id` is currently installing or waiting in the queue.
   func isQueued(_ id: String) -> Bool { installQueue.contains { $0.id == id } }
