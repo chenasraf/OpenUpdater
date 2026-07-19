@@ -6,6 +6,27 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.14.0</title>
+    <pubDate>Sun, 19 Jul 2026 22:42:54 +0000</pubDate>
+    <sparkle:version>74</sparkle:version>
+    <sparkle:shortVersionString>0.14.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.13.0...v0.14.0">0.14.0</a> (2026-07-19)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>menubar:</strong> right-click context menu on the status item (<a href="https://github.com/chenasraf/OpenUpdater/commit/9563090c106444cf44348f1738c3976c2d6e0b94">9563090</a>)</li>
+<li><strong>menubar:</strong> stop button in the popover while installing (<a href="https://github.com/chenasraf/OpenUpdater/commit/ef18b37baf4020a20674752cea2f5504eb970c54">ef18b37</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>menubar:</strong> keep scene windows alive so the menubar can always reopen them (<a href="https://github.com/chenasraf/OpenUpdater/commit/989cac9fffe78e2a505be2caa7e6c4299a9a7aab">989cac9</a>)</li>
+<li><strong>recipe-check:</strong> honor recipe prereleases setting (<a href="https://github.com/chenasraf/OpenUpdater/commit/6e42b0a5815d6948d5300faab7995652bfd5fb49">6e42b0a</a>)</li>
+<li><strong>recipe:</strong> 1Password (<code class="notranslate">com.1password.1password</code>) - download native arch build (<a href="https://github.com/chenasraf/OpenUpdater/commit/26eb1842d0b5f177c7dfbad4d6758adc39873d52">26eb184</a>)</li>
+<li><strong>recipe:</strong> Zoom (<code class="notranslate">us.zoom.xos</code>) - download native arch build (<a href="https://github.com/chenasraf/OpenUpdater/commit/2a0061fd2343bd681c28a373659618811a26d3d0">2a0061f</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.14.0/OpenUpdater-0.14.0.dmg" sparkle:edSignature="UijywwqmZhAmlD8fiAXN+dxd3c9qF12X9gVjf3S9oWoyP28cTZhaGc/G1FExwwIXjHqx4lVragSHj1/zd3spDQ==" length="3283264" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.13.0</title>
     <pubDate>Wed, 01 Jul 2026 19:41:50 +0000</pubDate>
     <sparkle:version>68</sparkle:version>
