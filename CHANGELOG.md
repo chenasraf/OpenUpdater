@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.14.0](https://github.com/chenasraf/OpenUpdater/compare/v0.13.0...v0.14.0) (2026-07-19)
+
+
+### Features
+
+* **menubar:** right-click context menu on the status item ([9563090](https://github.com/chenasraf/OpenUpdater/commit/9563090c106444cf44348f1738c3976c2d6e0b94))
+* **menubar:** stop button in the popover while installing ([ef18b37](https://github.com/chenasraf/OpenUpdater/commit/ef18b37baf4020a20674752cea2f5504eb970c54))
+
+
+### Bug Fixes
+
+* **menubar:** keep scene windows alive so the menubar can always reopen them ([989cac9](https://github.com/chenasraf/OpenUpdater/commit/989cac9fffe78e2a505be2caa7e6c4299a9a7aab))
+* **recipe-check:** honor recipe prereleases setting ([6e42b0a](https://github.com/chenasraf/OpenUpdater/commit/6e42b0a5815d6948d5300faab7995652bfd5fb49))
+* **recipe:** 1Password (`com.1password.1password`) - download native arch build ([26eb184](https://github.com/chenasraf/OpenUpdater/commit/26eb1842d0b5f177c7dfbad4d6758adc39873d52))
+* **recipe:** Zoom (`us.zoom.xos`) - download native arch build ([2a0061f](https://github.com/chenasraf/OpenUpdater/commit/2a0061fd2343bd681c28a373659618811a26d3d0))
+
 ## [0.13.0](https://github.com/chenasraf/OpenUpdater/compare/v0.12.1...v0.13.0) (2026-06-30)
 
 
