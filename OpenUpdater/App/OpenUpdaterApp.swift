@@ -22,7 +22,7 @@ struct OpenUpdaterApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
   var body: some Scene {
-    Window(AppBranding.title, id: "main") {
+    Window(AppBranding.title, id: MainWindow.id) {
       MainWindowRoot(appDelegate: appDelegate)
     }
     .windowStyle(.titleBar)
@@ -48,6 +48,10 @@ struct OpenUpdaterApp: App {
     .windowResizability(.contentMinSize)
     .defaultSize(width: 820, height: 560)
   }
+}
+
+enum MainWindow {
+  static let id = "main"
 }
 
 enum PreferencesWindow {

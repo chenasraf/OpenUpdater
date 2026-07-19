@@ -7,16 +7,23 @@
 
 import AppKit
 import Combine
+import OSLog
 import SwiftUI
 
 @MainActor
 class AppDelegate: NSObject, NSApplicationDelegate {
+  private static let log = Logger(subsystem: "dev.casraf.OpenUpdater", category: "windows")
+
   var statusItem: NSStatusItem!
   var popover: NSPopover!
 
-  /// The SwiftUI main window. Retained (kept out of the release-on-close path) so
-  /// Cmd-W only hides it and the menubar can bring it back later.
-  private weak var mainWindow: NSWindow?
+  /// The app's real scene windows (main + Preferences), retained *strongly* and kept
+  /// by id. A menubar app spends most of its life with these closed; SwiftUI/AppKit
+  /// will otherwise deallocate a closed scene window after long idle or under memory
+  /// pressure, and once it's gone `NSApp.windows` no longer finds it and re-opening
+  /// silently no-ops. Holding our own reference guarantees the menubar can always
+  /// bring the window back.
+  private var appWindows: [String: NSWindow] = [:]
 
   /// Keeps the menubar badge in sync with the model's update count.
   private var cancellables: Set<AnyCancellable> = []
@@ -145,13 +152,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   }
 
   @objc private func windowDidBecomeMain(_ note: Notification) {
-    guard let window = note.object as? NSWindow, isAppWindow(window) else { return }
-    if window.title == AppBranding.title {
-      // Keep it alive across Cmd-W so the menubar can reopen the same window.
-      window.isReleasedWhenClosed = false
-      mainWindow = window
-    }
+    guard let window = note.object as? NSWindow, isAppWindow(window),
+      let id = sceneID(for: window)
+    else { return }
+    // Keep it alive across Cmd-W and long idle so the menubar can reopen the same
+    // window instead of finding it deallocated and silently no-opping.
+    window.isReleasedWhenClosed = false
+    appWindows[id] = window
     syncActivationPolicy()
+  }
+
+  /// Which scene a window belongs to. SwiftUI usually stamps the scene id onto the
+  /// `NSWindow.identifier`, but the main `Window` doesn't always carry it, so fall
+  /// back to matching its title.
+  private func sceneID(for window: NSWindow) -> String? {
+    if let id = window.identifier?.rawValue, id == MainWindow.id || id == PreferencesWindow.id {
+      return id
+    }
+    if window.title == AppBranding.title { return MainWindow.id }
+    return nil
   }
 
   @objc private func windowWillClose(_ note: Notification) {
@@ -296,26 +315,44 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   }
 
   func openMainWindow() {
-    popover.performClose(nil)
-    NSApp.setActivationPolicy(.regular)
-    NSApp.activate(ignoringOtherApps: true)
     // Re-enable opening the launch window if it was suppressed earlier.
     suppressLaunchWindow = false
-    let window = mainWindow ?? NSApp.windows.first(where: isAppWindow)
-    window?.makeKeyAndOrderFront(nil)
+    showAppWindow(id: MainWindow.id)
   }
 
-  /// Open the SwiftUI Preferences window from the menubar popover. It's scene-managed,
-  /// so bring an existing one forward, otherwise trigger its menu command (⌘,) to create it.
+  /// Open the SwiftUI Preferences window from the menubar popover.
   func openPreferences() {
+    showAppWindow(id: PreferencesWindow.id)
+  }
+
+  /// Bring one of the app's scene windows to the front, reopening it if its `NSWindow`
+  /// was released after long idle. Prefer a window we already hold (or one still in
+  /// `NSApp.windows`); only recreate via SwiftUI's `openWindow` as a last resort —
+  /// that path is unreliable once a singleton `Window` scene's window has been torn down.
+  private func showAppWindow(id: String) {
     popover.performClose(nil)
     NSApp.setActivationPolicy(.regular)
     NSApp.activate(ignoringOtherApps: true)
-    if let window = NSApp.windows.first(where: { $0.identifier?.rawValue == PreferencesWindow.id })
+    if let window = appWindows[id]
+      ?? NSApp.windows.first(where: { isAppWindow($0) && sceneID(for: $0) == id })
     {
-      window.makeKeyAndOrderFront(nil)
-      return
+      appWindows[id] = window
+      bringToFront(window)
+    } else if let openWindowByID {
+      Self.log.notice("Scene window \(id, privacy: .public) gone; recreating via openWindow")
+      openWindowByID(id)
+    } else {
+      Self.log.error(
+        "Cannot open window \(id, privacy: .public): no window and openWindow unavailable")
     }
-    openWindowByID?(PreferencesWindow.id)
+  }
+
+  /// Order a window to the front, first nudging it back on-screen if it was restored
+  /// onto a display that's no longer connected — otherwise it "opens" out of sight.
+  private func bringToFront(_ window: NSWindow) {
+    if !NSScreen.screens.contains(where: { $0.visibleFrame.intersects(window.frame) }) {
+      window.center()
+    }
+    window.makeKeyAndOrderFront(nil)
   }
 }
