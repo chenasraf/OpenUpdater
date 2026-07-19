@@ -46,7 +46,8 @@ jobs:
   build:
     needs: release-please
     if: ${{ always() && (needs.release-please.outputs.release_created == 'true' || github.event_name == 'workflow_dispatch') }}
-    runs-on: macos-15
+    # Tahoe runner ships the macOS 26 SDK, which Liquid Glass compiles against.
+    runs-on: macos-26
     permissions:
       contents: write
     env:
