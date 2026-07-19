@@ -115,6 +115,15 @@ struct ContentView: View {
       .controlSize(.small)
       .buttonStyle(.borderedProminent)
       .disabled(updateManager.isInstalling || updateManager.installableUpdates.isEmpty)
+      if updateManager.isInstalling {
+        Button(role: .destructive) {
+          updateManager.stopBatch()
+        } label: {
+          Image(systemName: "stop.fill")
+        }
+        .controlSize(.small)
+        .help("Stop the current update and don't continue with the rest")
+      }
     }
     .padding(.horizontal, 12).padding(.vertical, 8)
   }
