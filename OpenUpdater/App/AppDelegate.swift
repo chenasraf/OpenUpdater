@@ -69,8 +69,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       icon?.size = NSSize(width: 18, height: 18)
       button.image = icon
       button.image?.accessibilityDescription = AppBranding.title
-      button.action = #selector(togglePopover)
+      button.action = #selector(statusItemClicked)
       button.target = self
+      // Left-click toggles the popover; right- or control-click opens the menu.
+      button.sendAction(on: [.leftMouseUp, .rightMouseUp])
     }
 
     // Force the item visible. `isVisible` is persisted across launches, so an item
@@ -201,6 +203,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
   }
 
+  /// Single action for both mouse buttons: left-click toggles the popover, while a
+  /// right- or control-click opens the context menu.
+  @objc private func statusItemClicked() {
+    let event = NSApp.currentEvent
+    let isSecondary =
+      event?.type == .rightMouseUp || event?.modifierFlags.contains(.control) == true
+    if isSecondary {
+      showContextMenu()
+    } else {
+      togglePopover()
+    }
+  }
+
   @objc func togglePopover() {
     guard let button = statusItem.button else { return }
     if popover.isShown {
@@ -209,6 +224,75 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
       popover.contentViewController?.view.window?.makeKey()
     }
+  }
+
+  // MARK: - Right-click menu
+
+  /// Pop the context menu under the status item. Assign the menu just for this click
+  /// and clear it immediately after, so a plain left-click keeps toggling the popover
+  /// (a permanently-assigned `statusItem.menu` would hijack the left button too).
+  private func showContextMenu() {
+    if popover.isShown { popover.performClose(nil) }
+    statusItem.menu = buildStatusMenu()
+    statusItem.button?.performClick(nil)
+    statusItem.menu = nil
+  }
+
+  private func buildStatusMenu() -> NSMenu {
+    let menu = NSMenu()
+    menu.autoenablesItems = false
+
+    // Non-actionable status line: a glance at the update state without the popover.
+    let status: String
+    if updateManager.isChecking {
+      status = "Checking for app updates…"
+    } else {
+      let count = updateManager.updates.count
+      status =
+        count > 0 ? "\(count) update\(count == 1 ? "" : "s") available" : "No updates available"
+    }
+    let header = NSMenuItem(title: status, action: nil, keyEquivalent: "")
+    header.isEnabled = false
+    menu.addItem(header)
+    menu.addItem(.separator())
+
+    addItem(to: menu, title: "Open \(AppBranding.title)", action: #selector(menuOpenMainWindow))
+    addItem(
+      to: menu, title: "Rescan for Updates", action: #selector(menuRescan),
+      enabled: !updateManager.isChecking)
+    addItem(
+      to: menu, title: "Settings…", action: #selector(menuOpenPreferences), keyEquivalent: ",")
+
+    menu.addItem(.separator())
+    addItem(
+      to: menu, title: "Check for \(AppBranding.title) Updates…",
+      action: #selector(menuCheckSelfUpdate))
+
+    menu.addItem(.separator())
+    addItem(
+      to: menu, title: "Quit \(AppBranding.title)", action: #selector(menuQuit), keyEquivalent: "q")
+    return menu
+  }
+
+  @discardableResult
+  private func addItem(
+    to menu: NSMenu, title: String, action: Selector, keyEquivalent: String = "",
+    enabled: Bool = true
+  ) -> NSMenuItem {
+    let item = NSMenuItem(title: title, action: action, keyEquivalent: keyEquivalent)
+    item.target = self
+    item.isEnabled = enabled
+    menu.addItem(item)
+    return item
+  }
+
+  @objc private func menuOpenMainWindow() { openMainWindow() }
+  @objc private func menuOpenPreferences() { openPreferences() }
+  @objc private func menuRescan() { Task { await updateManager.checkForUpdates() } }
+  @objc private func menuQuit() { NSApp.terminate(nil) }
+  @objc private func menuCheckSelfUpdate() {
+    NSApp.activate(ignoringOtherApps: true)
+    updater.checkForUpdates()
   }
 
   func openMainWindow() {
