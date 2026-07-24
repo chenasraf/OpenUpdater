@@ -7,7 +7,7 @@ ICONSET     := OpenUpdater/Assets.xcassets/AppIcon.appiconset
 MENUBAR_SVG := Design/MenuBarIcon.svg
 MENUBARSET  := OpenUpdater/Assets.xcassets/MenuBarIcon.imageset
 
-.PHONY: build run format clean install-hooks icon manifest recipe-check recipe-download
+.PHONY: build run format clean install-hooks icon manifest recipe-check recipe-download recipe-add
 
 ## build: compile the app (into Xcode's shared DerivedData, so make & Xcode agree)
 build:
@@ -36,6 +36,10 @@ recipe-download:
 	@test -n "$(ID)" || { echo "usage: make recipe-download ID=<bundle-id> [ARGS='--channel esr']"; exit 2; }
 	@log=$$(mktemp); swift build --product recipe-check >"$$log" 2>&1 || { cat "$$log"; rm -f "$$log"; exit 1; }; rm -f "$$log"
 	@.build/debug/recipe-check $(ID) --download $(ARGS)
+
+## recipe-add: import a recipe contribution (issue or PR) → preview, verify, commit, close — interactive
+recipe-add:
+	@bash scripts/add-recipe.sh $(SRC)
 
 ## install-hooks: install git hooks via lefthook
 install-hooks:
