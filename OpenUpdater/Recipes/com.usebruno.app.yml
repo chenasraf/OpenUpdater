@@ -1,0 +1,21 @@
+id: com.usebruno.app
+name: Bruno
+homepage: https://www.usebruno.com/
+
+arch:
+  arm64: arm64
+  x86_64: x64
+
+check:
+  type: github_releases
+  repo: usebruno/bruno
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/usebruno/bruno/releases/download/{tag}/bruno_{version}_{arch}_mac.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/usebruno/bruno/releases/tag/{tag}

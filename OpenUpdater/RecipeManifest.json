@@ -1,5 +1,5 @@
 {
-  "hash": "6bcfa74fdba8b7602063bcb528bbb768d50da99707f8a9b6addd1775f30ca102",
+  "hash": "a01ce6bc998236d71153a2481310461290a8bdaacdb3a3acf6eb667e24f98e2c",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -125,6 +125,11 @@
       "file": "com.tinyspeck.slackmacgap.yml",
       "minApp": "0.9.0",
       "sha": "9d8617a2b2fd519c8b6bfb96bc4b930d0dc13a931a18f59de953bce5639c26f6"
+    },
+    {
+      "file": "com.usebruno.app.yml",
+      "minApp": "0.0.0",
+      "sha": "4efa2c89b63671b62fae08488f9799a823178bb6501f93f42ddde0349803793c"
     },
     {
       "file": "com.utmapp.UTM.yml",
