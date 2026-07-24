@@ -258,9 +258,15 @@ struct UnsupportedAppsView: View {
               }
               Spacer()
               Menu {
-                Button("Create Custom Recipe") { onCreateRecipe(app) }
-                Button("Request on GitHub…") {
+                Button {
+                  onCreateRecipe(app)
+                } label: {
+                  Label("Create Custom Recipe", systemImage: "doc.badge.plus")
+                }
+                Button {
                   updateManager.openRecipeIssue(name: app.name, bundleID: app.id)
+                } label: {
+                  Label("Request on GitHub…", systemImage: "arrow.up.forward.square")
                 }
               } label: {
                 Image(systemName: "ellipsis.circle")

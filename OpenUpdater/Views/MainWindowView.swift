@@ -414,25 +414,36 @@ struct AppContextMenuItems: View {
   }
 
   @ViewBuilder private func single(_ app: AppInfo) -> some View {
-    Button("Launch App") { NSWorkspace.shared.open(app.url) }
-    if let homepage = app.homepageURL {
-      Button("Open Homepage") { NSWorkspace.shared.open(homepage) }
+    Button {
+      NSWorkspace.shared.open(app.url)
+    } label: {
+      Label("Launch App", systemImage: "arrow.up.forward.app")
     }
-    Button("Show in Finder") {
+    if let homepage = app.homepageURL {
+      Button {
+        NSWorkspace.shared.open(homepage)
+      } label: {
+        Label("Open Homepage", systemImage: "safari")
+      }
+    }
+    Button {
       NSWorkspace.shared.activateFileViewerSelecting([app.url])
+    } label: {
+      Label("Show in Finder", systemImage: "folder")
     }
 
     Divider()
 
-    Button("Re-scan App") {
+    Button {
       Task { await updateManager.rescan(app) }
+    } label: {
+      Label("Re-scan App", systemImage: "arrow.clockwise")
     }
     .disabled(updateManager.isRescanning(app.id))
 
     if updateManager.supportsChannels(app) {
       Divider()
       Picker(
-        "Release Channel",
         selection: Binding(
           get: { updateManager.selectedChannel(for: app) },
           set: { id in Task { await updateManager.setChannel(id, for: app) } }
@@ -441,42 +452,66 @@ struct AppContextMenuItems: View {
         ForEach(updateManager.channels(for: app), id: \.id) { channel in
           Text(channel.displayName).tag(channel.id)
         }
+      } label: {
+        Label("Release Channel", systemImage: "arrow.triangle.branch")
       }
     }
 
     if updateManager.supportsPrereleases(app) {
       Divider()
       Toggle(
-        "Check for pre-releases",
         isOn: Binding(
           get: { updateManager.includePrereleases(for: app) },
           set: { value in Task { await updateManager.setPrereleases(value, for: app) } }
-        ))
+        )
+      ) {
+        Label("Check for pre-releases", systemImage: "hammer")
+      }
     }
 
     if app.builtInIgnoreReason == nil {
       Divider()
-      Menu("Ignore…") {
-        Button("Ignore this app") { updateManager.ignoreApp(app) }
-        if app.updateAvailable {
-          Button("Ignore this version") { updateManager.ignoreCurrentVersion(app) }
+      Menu {
+        Button {
+          updateManager.ignoreApp(app)
+        } label: {
+          Label("Ignore this app", systemImage: "eye.slash")
         }
+        if app.updateAvailable {
+          Button {
+            updateManager.ignoreCurrentVersion(app)
+          } label: {
+            Label("Ignore this version", systemImage: "tag.slash")
+          }
+        }
+      } label: {
+        Label("Ignore…", systemImage: "eye.slash")
       }
     }
   }
 
   @ViewBuilder private func multiple(_ apps: [AppInfo]) -> some View {
-    Button("Re-scan \(apps.count) Apps") {
+    Button {
       Task { await updateManager.rescanApps(apps) }
+    } label: {
+      Label("Re-scan \(apps.count) Apps", systemImage: "arrow.clockwise")
     }
 
     let ignorable = apps.filter { $0.builtInIgnoreReason == nil }
     if !ignorable.isEmpty {
       Divider()
-      Button("Ignore These Apps") { updateManager.ignoreApps(ignorable) }
+      Button {
+        updateManager.ignoreApps(ignorable)
+      } label: {
+        Label("Ignore These Apps", systemImage: "eye.slash")
+      }
       let withUpdates = ignorable.filter(\.updateAvailable)
       if !withUpdates.isEmpty {
-        Button("Ignore These Versions") { updateManager.ignoreCurrentVersions(withUpdates) }
+        Button {
+          updateManager.ignoreCurrentVersions(withUpdates)
+        } label: {
+          Label("Ignore These Versions", systemImage: "tag.slash")
+        }
       }
     }
   }

@@ -294,32 +294,39 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     menu.addItem(header)
     menu.addItem(.separator())
 
-    addItem(to: menu, title: "Open \(AppBranding.title)", action: #selector(menuOpenMainWindow))
+    addItem(
+      to: menu, title: "Open \(AppBranding.title)", action: #selector(menuOpenMainWindow),
+      systemImage: "macwindow")
     addItem(
       to: menu, title: "Rescan for Updates", action: #selector(menuRescan),
-      enabled: !updateManager.isChecking)
+      systemImage: "arrow.clockwise", enabled: !updateManager.isChecking)
     addItem(
-      to: menu, title: "Settings…", action: #selector(menuOpenPreferences), keyEquivalent: ",")
+      to: menu, title: "Settings…", action: #selector(menuOpenPreferences), keyEquivalent: ",",
+      systemImage: "gearshape")
 
     menu.addItem(.separator())
     addItem(
       to: menu, title: "Check for \(AppBranding.title) Updates…",
-      action: #selector(menuCheckSelfUpdate))
+      action: #selector(menuCheckSelfUpdate), systemImage: "arrow.down.circle")
 
     menu.addItem(.separator())
     addItem(
-      to: menu, title: "Quit \(AppBranding.title)", action: #selector(menuQuit), keyEquivalent: "q")
+      to: menu, title: "Quit \(AppBranding.title)", action: #selector(menuQuit), keyEquivalent: "q",
+      systemImage: "power")
     return menu
   }
 
   @discardableResult
   private func addItem(
     to menu: NSMenu, title: String, action: Selector, keyEquivalent: String = "",
-    enabled: Bool = true
+    systemImage: String? = nil, enabled: Bool = true
   ) -> NSMenuItem {
     let item = NSMenuItem(title: title, action: action, keyEquivalent: keyEquivalent)
     item.target = self
     item.isEnabled = enabled
+    if let systemImage {
+      item.image = NSImage(systemSymbolName: systemImage, accessibilityDescription: nil)
+    }
     menu.addItem(item)
     return item
   }
