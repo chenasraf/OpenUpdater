@@ -6,6 +6,23 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.15.0</title>
+    <pubDate>Fri, 24 Jul 2026 22:00:59 +0000</pubDate>
+    <sparkle:version>81</sparkle:version>
+    <sparkle:shortVersionString>0.15.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.14.0...v0.15.0">0.15.0</a> (2026-07-24)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>menubar:</strong> animate icon with per-state overlays (<a href="https://github.com/chenasraf/OpenUpdater/commit/86eff3f1ed54a0e67e7e7e26ff23a0f2020887d0">86eff3f</a>)</li>
+<li><strong>menus:</strong> add SF Symbol icons to context menu items (<a href="https://github.com/chenasraf/OpenUpdater/commit/e9b7a3eb1ed7a31295717a624a971d071cc4b35f">e9b7a3e</a>)</li>
+<li><strong>menus:</strong> put Re-scan App first in the app context menu (<a href="https://github.com/chenasraf/OpenUpdater/commit/92eabba0efbe187e81d2504b34cc53dd49cd1fed">92eabba</a>)</li>
+<li><strong>recipe:</strong> Bruno (<code class="notranslate">com.usebruno.app</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/6b01fe5e0c19526176a2dc0034d427fc5292e8c9">6b01fe5</a>)</li>
+<li><strong>recipe:</strong> draw.io (<code class="notranslate">com.jgraph.drawio.desktop</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/06b9a47ad2261cc11c4db789e333abbb01f46f01">06b9a47</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.15.0/OpenUpdater-0.15.0.dmg" sparkle:edSignature="sZbqHWBUm7+LM5p4xKxOhPVcl3L5gdUr/0m99V0n8viDjRRgT+xuvCwIqlBtyvQgXlxImo71U8QPJnXZxltWAQ==" length="3294106" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.14.0</title>
     <pubDate>Sun, 19 Jul 2026 22:42:54 +0000</pubDate>
     <sparkle:version>74</sparkle:version>
