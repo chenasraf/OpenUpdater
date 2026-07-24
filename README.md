@@ -25,6 +25,8 @@ people add recipes, so OpenUpdater can keep up with apps that have no built-in u
   all at once.
 - 🧩 **Works with many sources** — GitHub Releases, Sparkle appcasts (auto-detected), and direct
   HTTP/JSON/XML/YAML version feeds.
+- 🌐 **Always-fresh recipes** — new and updated recipes are fetched automatically from GitHub, so
+  coverage grows without waiting for a full app update.
 - 🪶 **Lives in your menubar** — a quick popover for a glance, plus a full window for the details.
 - 🔔 **Release notes** — jump straight to an app's changelog before you update.
 - 🙈 **Ignore lists** — silence an app entirely, or skip just one version you don't want.
@@ -63,3 +65,8 @@ Coverage grows through community-maintained **update recipes** — request an ap
 app, or open a pull request. Most ways need no fork.
 
 See **[docs/contributing.md](docs/contributing.md)** for the recipe format and all the ways to help.
+
+> [!NOTE]  
+> Recipes are synced from GitHub before each check, so an app you're running can pick up recipes
+> that shipped after it — including brand-new ones — without needing an app update. Recipes that
+> rely on engine features your version doesn't have yet are skipped until you update.
