@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.15.0](https://github.com/chenasraf/OpenUpdater/compare/v0.14.0...v0.15.0) (2026-07-24)
+
+
+### Features
+
+* **menubar:** animate icon with per-state overlays ([86eff3f](https://github.com/chenasraf/OpenUpdater/commit/86eff3f1ed54a0e67e7e7e26ff23a0f2020887d0))
+* **menus:** add SF Symbol icons to context menu items ([e9b7a3e](https://github.com/chenasraf/OpenUpdater/commit/e9b7a3eb1ed7a31295717a624a971d071cc4b35f))
+* **menus:** put Re-scan App first in the app context menu ([92eabba](https://github.com/chenasraf/OpenUpdater/commit/92eabba0efbe187e81d2504b34cc53dd49cd1fed))
+* **recipe:** Bruno (`com.usebruno.app`) ([6b01fe5](https://github.com/chenasraf/OpenUpdater/commit/6b01fe5e0c19526176a2dc0034d427fc5292e8c9))
+* **recipe:** draw.io (`com.jgraph.drawio.desktop`) ([06b9a47](https://github.com/chenasraf/OpenUpdater/commit/06b9a47ad2261cc11c4db789e333abbb01f46f01))
+
 ## [0.14.0](https://github.com/chenasraf/OpenUpdater/compare/v0.13.0...v0.14.0) (2026-07-19)
 
 
