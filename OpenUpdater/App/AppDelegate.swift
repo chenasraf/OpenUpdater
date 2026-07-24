@@ -17,6 +17,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   var statusItem: NSStatusItem!
   var popover: NSPopover!
 
+  /// Draws and animates the menubar glyph (spins while working, badges the corner at
+  /// rest). Created once the status button exists.
+  private var iconController: MenuBarIconController?
+
   /// The app's real scene windows (main + Preferences), retained *strongly* and kept
   /// by id. A menubar app spends most of its life with these closed; SwiftUI/AppKit
   /// will otherwise deallocate a closed scene window after long idle or under memory
@@ -74,8 +78,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
           systemSymbolName: "arrow.down.app", accessibilityDescription: AppBranding.title)
       icon?.isTemplate = true
       icon?.size = NSSize(width: 18, height: 18)
-      button.image = icon
-      button.image?.accessibilityDescription = AppBranding.title
+      if let icon {
+        iconController = MenuBarIconController(button: button, baseImage: icon)
+      }
       button.action = #selector(statusItemClicked)
       button.target = self
       // Left-click toggles the popover; right- or control-click opens the menu.
@@ -209,10 +214,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
   // MARK: - Status item / window
 
-  /// Append the available-update count to the status-bar glyph (hidden when zero).
+  /// Sync the menubar glyph with the engine: spin while working, badge the corner at
+  /// rest, and append the available-update count (hidden when zero).
   private func updateMenuBarBadge() {
     guard let button = statusItem?.button else { return }
     let count = updateManager.updates.count
+
+    let iconState: MenuBarIconController.State
+    if updateManager.isChecking {
+      iconState = .checking
+    } else if updateManager.isInstalling {
+      iconState = .installing
+    } else if count > 0 {
+      iconState = .updatesAvailable
+    } else {
+      iconState = .upToDate
+    }
+    iconController?.update(iconState)
+
     if count > 0 {
       button.title = " \(count)"
       button.imagePosition = .imageLeft
