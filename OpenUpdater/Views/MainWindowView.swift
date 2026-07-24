@@ -415,6 +415,15 @@ struct AppContextMenuItems: View {
 
   @ViewBuilder private func single(_ app: AppInfo) -> some View {
     Button {
+      Task { await updateManager.rescan(app) }
+    } label: {
+      Label("Re-scan App", systemImage: "arrow.clockwise")
+    }
+    .disabled(updateManager.isRescanning(app.id))
+
+    Divider()
+
+    Button {
       NSWorkspace.shared.open(app.url)
     } label: {
       Label("Launch App", systemImage: "arrow.up.forward.app")
@@ -431,15 +440,6 @@ struct AppContextMenuItems: View {
     } label: {
       Label("Show in Finder", systemImage: "folder")
     }
-
-    Divider()
-
-    Button {
-      Task { await updateManager.rescan(app) }
-    } label: {
-      Label("Re-scan App", systemImage: "arrow.clockwise")
-    }
-    .disabled(updateManager.isRescanning(app.id))
 
     if updateManager.supportsChannels(app) {
       Divider()
