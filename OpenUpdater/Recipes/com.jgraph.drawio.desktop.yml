@@ -1,0 +1,17 @@
+id: com.jgraph.drawio.desktop
+name: draw.io
+homepage: https://www.diagrams.net
+
+check:
+  type: github_releases
+  repo: jgraph/drawio-desktop
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/jgraph/drawio-desktop/releases/download/{tag}/draw.io-universal-{version}.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/jgraph/drawio-desktop/releases/tag/{tag}

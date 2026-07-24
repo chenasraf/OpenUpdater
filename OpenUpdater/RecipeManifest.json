@@ -1,5 +1,5 @@
 {
-  "hash": "a01ce6bc998236d71153a2481310461290a8bdaacdb3a3acf6eb667e24f98e2c",
+  "hash": "135127b305a0d9fa73b7875133cd799ac68b9c1d6686b70d0e077c0254567d3d",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -85,6 +85,11 @@
       "file": "com.install4j.0526-4458-1435-8154.837.yml",
       "minApp": "0.0.0",
       "sha": "33395c63c8b0dc76db8482ac4704e770f7d437eb0cef26b1e2ad49706cc23fcf"
+    },
+    {
+      "file": "com.jgraph.drawio.desktop.yml",
+      "minApp": "0.0.0",
+      "sha": "38373e03d13171077b168af6d730655a75eae650e811372bfb28107d54412d0a"
     },
     {
       "file": "com.microsoft.VSCode.yml",
