@@ -2,6 +2,9 @@ id: com.macitbetter.betterzip
 name: BetterZip
 homepage: https://macitbetter.com
 
+manual_major_upgrades: true
+manual_major_upgrades_reason: paid_license
+
 check:
   type: redirect
   url: https://macitbetter.com/BetterZip.zip

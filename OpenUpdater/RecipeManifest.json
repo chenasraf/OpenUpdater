@@ -1,5 +1,5 @@
 {
-  "hash": "582d54bbf0f1ce425c8ec4fc1585e69740bc4f9b4ea5342c2c6e6424ad998f0f",
+  "hash": "7cfe6ae22c0da7659adf645226c7f20c6b8fa9094bbf5c43a5a14940ce2f2577",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -94,7 +94,7 @@
     {
       "file": "com.macitbetter.betterzip.yml",
       "minApp": "0.9.0",
-      "sha": "ab287631fa2b686c0aec5ba355d97d286dfbd8e019a9c9af8f6166bd7bac5dce"
+      "sha": "39b89fcdf8ea6e4faed5923a91603ba7d303d9ed56c37fb2e595d476f8a2af33"
     },
     {
       "file": "com.microsoft.VSCode.yml",
