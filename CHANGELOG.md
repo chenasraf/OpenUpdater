@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.16.0](https://github.com/chenasraf/OpenUpdater/compare/v0.15.0...v0.16.0) (2026-07-28)
+
+
+### Features
+
+* **recipe:** BetterZip (com.macitbetter.betterzip) ([f19d411](https://github.com/chenasraf/OpenUpdater/commit/f19d41175af4010b6783285c9db253ae4bed24c8))
+* **recipe:** BetterZip (com.macitbetter.betterzip) - flag major upgrades as manual ([04a3c44](https://github.com/chenasraf/OpenUpdater/commit/04a3c4499fde2d68e783cefd0bcce197a085b622))
+* **updates:** hold major-version upgrades for opt-in manual install ([39ddcb9](https://github.com/chenasraf/OpenUpdater/commit/39ddcb9f534c1f00ccd41219663d855ec1fc3920))
+
 ## [0.15.0](https://github.com/chenasraf/OpenUpdater/compare/v0.14.0...v0.15.0) (2026-07-24)
 
 
