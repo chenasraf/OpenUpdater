@@ -44,6 +44,25 @@ homepage: https://example.com
 #   arm64: arm64
 #   x86_64: x64
 
+# Optional. Set true when major-version upgrades should install manually rather than
+# automatically — because a major release may bring big changes or need a new license
+# (e.g. BetterZip 5 → 6). OpenUpdater then holds a major-version update back by default:
+# it still shows the new version, but offers a Manual Update with a warning instead of
+# one-click, so the jump isn't installed by surprise. The user can opt in per app
+# (right-click → Allow major version upgrades). Only meaningful when the recipe's source
+# spans majors (a redirect/HTTP feed that tracks the newest release) — a major-pinned
+# Sparkle feed never offers a cross-major upgrade, so it needs no flag. Default: false.
+# manual_major_upgrades: true
+
+# Optional. The reason shown in that major-upgrade warning. Either a preset key that
+# expands to a built-in message, or free text used verbatim. Only relevant alongside
+# `manual_major_upgrades: true`. Preset keys:
+#   paid_license      — a new major version usually requires buying a new license
+#   subscription      — a new major version may need a new/upgraded subscription
+#   breaking_changes  — a new major version may include breaking changes to review
+# manual_major_upgrades_reason: paid_license
+# manual_major_upgrades_reason: "Version 6 moves your library to a new format."
+
 # REQUIRED. How to discover the latest version.
 check:
   # REQUIRED. One of:

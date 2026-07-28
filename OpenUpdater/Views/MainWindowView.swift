@@ -246,6 +246,17 @@ struct UpdateRow: View {
         Button("App Store") { updateManager.openInAppStore(app) }
           .buttonStyle(.bordered)
           .help("Update this app in the App Store")
+      } else if app.majorUpgradeBlocked {
+        // A new major version the user is holding back (often a paid-license upgrade):
+        // warn, and offer a manual update rather than installing it one-click.
+        HStack(spacing: 6) {
+          MajorUpgradeWarningButton(app: app)
+          Button("Manual Update…") { updateManager.manualUpdate(app) }
+            .buttonStyle(.bordered)
+            .help(
+              "This is a major version upgrade — \(AppBranding.title) won't install it automatically."
+            )
+        }
       } else if app.downloadURL == nil {
         Button("Manual Update…") { updateManager.manualUpdate(app) }
           .buttonStyle(.bordered)
@@ -330,6 +341,59 @@ struct IgnoreReasonButton: View {
         .padding(12)
     }
     .help("Why is this app ignored?")
+  }
+}
+
+/// Warning icon for an update that's a held-back major-version upgrade. Tapping it
+/// explains why it isn't installing automatically (often a paid-license upgrade) and
+/// offers to allow it, in a popover anchored below the icon.
+struct MajorUpgradeWarningButton: View {
+  let app: AppInfo
+  @EnvironmentObject private var updateManager: UpdateManager
+  @State private var showing = false
+
+  var body: some View {
+    Button {
+      showing.toggle()
+    } label: {
+      Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+    }
+    .buttonStyle(.plain)
+    .popover(isPresented: $showing, arrowEdge: .bottom) {
+      VStack(alignment: .leading, spacing: 10) {
+        Label("Major version upgrade", systemImage: "exclamationmark.triangle.fill")
+          .font(.headline)
+          .foregroundStyle(.orange)
+        Text(message)
+          .font(.callout)
+          .fixedSize(horizontal: false, vertical: true)
+        Button("Allow Major Upgrade") {
+          updateManager.setAllowMajorUpgrades(true, for: app)
+          showing = false
+        }
+      }
+      .frame(width: 300, alignment: .leading)
+      .padding(14)
+    }
+    .help("Why isn't this updating automatically?")
+  }
+
+  private var message: String {
+    let from = app.installedVersion
+    let to = app.latestVersion ?? "?"
+    let reason: String
+    if let raw = app.majorUpgradeReason {
+      reason = MajorUpgradeReason.message(for: raw)
+    } else if app.majorUpgradesAreManual {
+      reason =
+        "Major upgrades for \(app.name) install manually — they can bring big changes, and "
+        + "for some apps a new license."
+    } else {
+      reason = "You've set major upgrades for \(app.name) to install manually."
+    }
+    return
+      "\(AppBranding.title) held back the upgrade from \(from) to \(to) because it's a new "
+      + "major version. \(reason) Allow it here, or from the right-click menu, once you're ready."
   }
 }
 
@@ -466,6 +530,18 @@ struct AppContextMenuItems: View {
         )
       ) {
         Label("Check for pre-releases", systemImage: "hammer")
+      }
+    }
+
+    if updateManager.canControlMajorUpgrades(app) {
+      Divider()
+      Toggle(
+        isOn: Binding(
+          get: { updateManager.allowsMajorUpgrades(app) },
+          set: { updateManager.setAllowMajorUpgrades($0, for: app) }
+        )
+      ) {
+        Label("Allow major version upgrades", systemImage: "arrow.up.circle")
       }
     }
 

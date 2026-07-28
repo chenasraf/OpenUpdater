@@ -20,6 +20,10 @@ struct AppPreferences: Codable {
   var ignored: Bool?
   /// Don't offer this specific version (reappears when a newer one ships).
   var ignoredVersion: String?
+  /// Whether to auto-install major-version upgrades for this app. `nil` → the default,
+  /// which is "no" for apps whose recipe sets `manual_major_upgrades` and "yes" for
+  /// everything else.
+  var allowMajorUpgrades: Bool?
 
   // MARK: Persistence
 

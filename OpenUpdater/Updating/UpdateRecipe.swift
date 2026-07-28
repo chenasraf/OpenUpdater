@@ -29,6 +29,17 @@ struct UpdateRecipe: Decodable {
   /// Maps the host arch (`arm64` / `x86_64`) to this app's arch string for the
   /// `{arch}` placeholder. Omit when the app uses `arm64`/`x86_64` verbatim.
   let arch: [String: String]?
+  /// Install major-version upgrades manually rather than automatically. When true,
+  /// OpenUpdater holds a major-version update back by default (offers it as a Manual
+  /// Update, with a warning), so a jump that may bring big changes or need a new license
+  /// isn't installed by surprise; the user can opt in per app. Absent → false.
+  let manualMajorUpgrades: Bool?
+  /// Whether this app's major-version upgrades are manual by default (`manual_major_upgrades`).
+  var majorUpgradesAreManual: Bool { manualMajorUpgrades ?? false }
+  /// Optional reason shown in the major-upgrade warning — a preset key (see
+  /// `MajorUpgradeReason.presets`, e.g. `paid_license`) that expands to a built-in
+  /// message, or free text used verbatim. Only relevant with `manual_major_upgrades`.
+  let manualMajorUpgradesReason: String?
 
   private let version: VersionRule?
   private let changelog: Changelog?
@@ -42,6 +53,8 @@ struct UpdateRecipe: Decodable {
   enum CodingKeys: String, CodingKey {
     case id, name, homepage, check, download, channels, enabled, arch, version, changelog
     case installedVersion = "installed_version"
+    case manualMajorUpgrades = "manual_major_upgrades"
+    case manualMajorUpgradesReason = "manual_major_upgrades_reason"
   }
 
   /// How to read an app's installed version. The raw value comes from a bundled
@@ -375,6 +388,10 @@ nonisolated enum VersionCompare {
     }
     return false
   }
+
+  /// The major component — the leading run of digits — of a version string, or 0 when
+  /// it has none. Used to tell a major-version upgrade (5.4 → 6.0) from a minor one.
+  static func majorComponent(_ version: String) -> Int { numericComponents(version).first ?? 0 }
 
   /// The highest of several version-ish strings, comparing every run of digits in
   /// turn (so `4-5` > `4-2`, `4.5.10` > `4.5.9`). Ties keep the earlier value.

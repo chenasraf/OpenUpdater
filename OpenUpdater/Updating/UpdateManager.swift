@@ -91,6 +91,15 @@ struct AppInfo: Identifiable, Hashable {
   /// Set when OpenUpdater ignores this app by default (preset list or a Steam game).
   /// Not user-removable; carries the reason shown in the ignore list.
   var builtInIgnoreReason: String?
+  /// This app's recipe marks major-version upgrades as manual, so a major upgrade is
+  /// held back by default. Set during scan; derived from the app's active recipe.
+  var majorUpgradesAreManual = false
+  /// Raw `manual_major_upgrades_reason` from the recipe (a preset key or free text),
+  /// resolved to a sentence via `MajorUpgradeReason` when the warning is shown.
+  var majorUpgradeReason: String?
+  /// User override for auto-installing major-version upgrades, mirrored from
+  /// `AppPreferences`. `nil` → the default (see `majorUpgradesAllowed`).
+  var allowMajorUpgrades: Bool?
 
   /// True when this app's update is hidden — either OpenUpdater ignores it by
   /// default, or the user hid the whole app or just the currently-latest version
@@ -112,6 +121,24 @@ struct AppInfo: Identifiable, Hashable {
     guard let latestVersion else { return false }
     return VersionCompare.isNewer(latestVersion, than: installedVersion)
   }
+
+  /// True when the available update crosses into a new major version (5.4.2 → 6.0.2).
+  /// Compared on the marketing version, since that's what a "major upgrade" means to a
+  /// user — even for Sparkle apps, whose `updateAvailable` keys off the build number.
+  var isMajorUpgrade: Bool {
+    guard updateAvailable, let latestVersion else { return false }
+    return VersionCompare.majorComponent(latestVersion)
+      > VersionCompare.majorComponent(installedVersion)
+  }
+
+  /// Whether major-version upgrades install automatically for this app: the user's
+  /// override if set, otherwise held back for apps whose recipe marks them manual.
+  var majorUpgradesAllowed: Bool { allowMajorUpgrades ?? !majorUpgradesAreManual }
+
+  /// True when an available update is a major upgrade the user hasn't allowed — it's
+  /// still shown, but offered as a Manual Update with a warning rather than one-click,
+  /// so a license-gated jump (e.g. BetterZip 5 → 6) isn't installed by surprise.
+  var majorUpgradeBlocked: Bool { isMajorUpgrade && !majorUpgradesAllowed }
 }
 
 /// Shared model layer backing both the menubar popover and the main window.
@@ -346,6 +373,8 @@ final class UpdateManager: ObservableObject {
     // adding one re-enables an otherwise-ignored app.
     appInfo.builtInIgnoreReason =
       recipes[id] == nil ? SystemIgnoreList.reason(bundleID: id, url: url) : nil
+    appInfo.majorUpgradesAreManual = recipes[id]?.majorUpgradesAreManual ?? false
+    appInfo.majorUpgradeReason = recipes[id]?.manualMajorUpgradesReason
     // App Store install markers: `_MASReceipt` for Mac apps, or `iTunesMetadata.plist`
     // in the wrapper of an iOS/iPad app running on Apple Silicon.
     appInfo.isAppStoreApp =
@@ -356,11 +385,12 @@ final class UpdateManager: ObservableObject {
     return appInfo
   }
 
-  /// Mirror the stored ignore prefs onto the in-memory `AppInfo`.
+  /// Mirror the stored per-app prefs onto the in-memory `AppInfo`.
   private func applyIgnore(toAppAt index: Int) {
     let prefs = AppPreferences.load(for: apps[index].id)
     apps[index].ignored = prefs.ignored ?? false
     apps[index].ignoredVersion = prefs.ignoredVersion
+    apps[index].allowMajorUpgrades = prefs.allowMajorUpgrades
   }
 
   /// Look up the latest version for every installed app we can check — those
@@ -565,6 +595,26 @@ final class UpdateManager: ObservableObject {
     saveCache()
   }
 
+  // MARK: - Major-version upgrades
+
+  /// Whether major-version upgrades install automatically for this app.
+  func allowsMajorUpgrades(_ app: AppInfo) -> Bool { app.majorUpgradesAllowed }
+
+  /// Whether to offer the "Allow major version upgrades" control for this app: always
+  /// for apps whose recipe marks major upgrades manual (so the user can decide ahead of
+  /// time), and for any app that currently has a major upgrade waiting.
+  func canControlMajorUpgrades(_ app: AppInfo) -> Bool {
+    app.majorUpgradesAreManual || app.isMajorUpgrade
+  }
+
+  /// Set the per-app "allow major upgrades" preference. No re-check needed — the latest
+  /// version is already known; only whether it's offered as a one-click update changes.
+  func setAllowMajorUpgrades(_ allow: Bool, for app: AppInfo) {
+    AppPreferences.update(app.id) { $0.allowMajorUpgrades = allow }
+    guard let index = apps.firstIndex(where: { $0.id == app.id }) else { return }
+    apps[index].allowMajorUpgrades = allow
+  }
+
   // MARK: - Ignore rules
 
   /// Never show this app as updatable.
@@ -738,10 +788,13 @@ final class UpdateManager: ObservableObject {
   /// app is no longer checkable (e.g. a custom recipe was removed or disabled).
   private func recheck(bundleID: String) async {
     guard let index = apps.firstIndex(where: { $0.id == bundleID }) else { return }
-    // Adding/removing a recipe flips whether a default ignore applies.
+    // Adding/removing a recipe flips whether a default ignore applies, and whether the
+    // app's major upgrades are marked manual.
     apps[index].builtInIgnoreReason =
       recipes[bundleID] == nil
       ? SystemIgnoreList.reason(bundleID: bundleID, url: apps[index].url) : nil
+    apps[index].majorUpgradesAreManual = recipes[bundleID]?.majorUpgradesAreManual ?? false
+    apps[index].majorUpgradeReason = recipes[bundleID]?.manualMajorUpgradesReason
     if isCheckable(apps[index]) {
       _ = await resolveLatest(forAppAt: index)
     } else {
@@ -987,8 +1040,11 @@ final class UpdateManager: ObservableObject {
     if let url = components?.url { NSWorkspace.shared.open(url) }
   }
 
-  /// Apps that have an update AND something we can actually download/install.
-  var installableUpdates: [AppInfo] { updates.filter { $0.downloadURL != nil } }
+  /// Apps that have an update AND something we can actually download/install — minus
+  /// major upgrades the user is holding back (offered as a Manual Update instead).
+  var installableUpdates: [AppInfo] {
+    updates.filter { $0.downloadURL != nil && !$0.majorUpgradeBlocked }
+  }
 
   /// Queue every available update for install, one at a time.
   func updateAll() {
