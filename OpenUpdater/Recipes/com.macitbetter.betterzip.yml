@@ -1,0 +1,11 @@
+id: com.macitbetter.betterzip
+name: BetterZip
+homepage: https://macitbetter.com
+
+check:
+  type: redirect
+  url: https://macitbetter.com/BetterZip.zip
+  pattern: '/BetterZip-([0-9.]+)\.zip'
+
+changelog:
+  url: https://macitbetter.com/library/betterzip/articles/whats-new-in-betterzip-6/

@@ -1,5 +1,5 @@
 {
-  "hash": "135127b305a0d9fa73b7875133cd799ac68b9c1d6686b70d0e077c0254567d3d",
+  "hash": "582d54bbf0f1ce425c8ec4fc1585e69740bc4f9b4ea5342c2c6e6424ad998f0f",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -90,6 +90,11 @@
       "file": "com.jgraph.drawio.desktop.yml",
       "minApp": "0.0.0",
       "sha": "38373e03d13171077b168af6d730655a75eae650e811372bfb28107d54412d0a"
+    },
+    {
+      "file": "com.macitbetter.betterzip.yml",
+      "minApp": "0.9.0",
+      "sha": "ab287631fa2b686c0aec5ba355d97d286dfbd8e019a9c9af8f6166bd7bac5dce"
     },
     {
       "file": "com.microsoft.VSCode.yml",
