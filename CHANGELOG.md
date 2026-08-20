@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.0](https://github.com/chenasraf/OpenUpdater/compare/v0.17.0...v0.18.0) (2026-08-20)
+
+
+### Features
+
+* **settings:** add option to skip the quit confirmation ([5ed1c31](https://github.com/chenasraf/OpenUpdater/commit/5ed1c314ec81fc61b8f86a557119dfe884ac517a))
+
+
+### Bug Fixes
+
+* **app:** skip quit confirmation when Sparkle relaunches to self-update ([456c086](https://github.com/chenasraf/OpenUpdater/commit/456c086f3c895e9855da3d31853366db24643a51))
+
 ## [0.17.0](https://github.com/chenasraf/OpenUpdater/compare/v0.16.0...v0.17.0) (2026-08-20)
 
 
