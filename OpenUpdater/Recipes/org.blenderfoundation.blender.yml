@@ -9,7 +9,8 @@ arch:
 check:
   type: html
   url: https://www.blender.org/download/
-  pattern: 'Blender (\d+\.\d+\.\d+)'
+  pattern: 'blender-(\d+\.\d+\.\d+)-macos'
+  select: latest
 
 download:
   url: https://download.blender.org/release/Blender{major}.{minor}/blender-{version}-macos-{arch}.dmg
@@ -23,7 +24,7 @@ channels:
     check:
       type: html
       url: https://www.blender.org/download/lts/{series}/
-      pattern: 'Blender (\d+\.\d+\.\d+)'
+      pattern: 'blender-(\d+\.\d+\.\d+)-macos'
       select: latest
       resolve:
         series:

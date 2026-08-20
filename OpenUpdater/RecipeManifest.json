@@ -1,5 +1,5 @@
 {
-  "hash": "7cfe6ae22c0da7659adf645226c7f20c6b8fa9094bbf5c43a5a14940ce2f2577",
+  "hash": "8aeef785ee6cf02f751b21878e0d6979cc8aab2668abb77d582e5fe279c2a189",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -214,7 +214,7 @@
     {
       "file": "org.blenderfoundation.blender.yml",
       "minApp": "0.0.0",
-      "sha": "f672086889288da0d9c7a34d559c731fc4e819f1e09d477719cb53932995616c"
+      "sha": "b16f8044f6b11cd9cbf4f85ee2c6b95ba21628fc73ddbd9f1429746b4d07a86a"
     },
     {
       "file": "org.freecad.FreeCAD.yml",
