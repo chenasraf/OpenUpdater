@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.17.0](https://github.com/chenasraf/OpenUpdater/compare/v0.16.0...v0.17.0) (2026-08-20)
+
+
+### Features
+
+* **updates:** show a per-source log behind check failures ([a1d31f0](https://github.com/chenasraf/OpenUpdater/commit/a1d31f0d84ecd51c630a19c04a38f98084359911))
+
+
+### Bug Fixes
+
+* **recipe:** Blender (`org.blenderfoundation.blender`) - match version from macOS dmg filename ([5b158c6](https://github.com/chenasraf/OpenUpdater/commit/5b158c6c41aa559ac2baaaad6eff79b0b4cb99b7))
+
 ## [0.16.0](https://github.com/chenasraf/OpenUpdater/compare/v0.15.0...v0.16.0) (2026-07-28)
 
 
