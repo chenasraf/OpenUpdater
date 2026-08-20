@@ -95,6 +95,8 @@ struct GeneralSettingsView: View {
 
   /// Open the main window automatically on launch (default on). Read by `AppDelegate`.
   @AppStorage("openMainWindowOnLaunch") private var openMainWindowOnLaunch = true
+  /// Confirm before quitting the app itself (default on). Read by `AppDelegate`.
+  @AppStorage("confirmBeforeQuit") private var confirmBeforeQuit = true
   /// Ask before quitting a running app to update it (default on). Read by `UpdateManager`.
   @AppStorage("confirmQuitRunningApps") private var confirmQuitRunningApps = true
   /// Mirrors the macOS login-item state for the app (default off).
@@ -106,6 +108,14 @@ struct GeneralSettingsView: View {
         Toggle("Launch \(AppBranding.title) at login", isOn: $launchAtLogin)
           .onChange(of: launchAtLogin) { enabled in setLaunchAtLogin(enabled) }
         Toggle("Open the main window on launch", isOn: $openMainWindowOnLaunch)
+        CaptionedField {
+          Toggle("Confirm before quitting \(AppBranding.title)", isOn: $confirmBeforeQuit)
+        } caption: {
+          Text(
+            "\(AppBranding.title) asks to confirm when you quit it, since quitting stops "
+              + "background update checks. Turn this off to quit without prompting."
+          )
+        }
         CaptionedField {
           Toggle("Ask before quitting open apps to update them", isOn: $confirmQuitRunningApps)
         } caption: {

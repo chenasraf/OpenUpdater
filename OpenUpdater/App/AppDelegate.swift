@@ -205,7 +205,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   }
 
   /// Confirm before quitting — quitting stops background update checks entirely.
+  /// The confirmation can be turned off in Preferences ("Confirm before quitting").
   func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+    let confirmBeforeQuit =
+      UserDefaults.standard.object(forKey: "confirmBeforeQuit") as? Bool ?? true
+    guard confirmBeforeQuit else { return .terminateNow }
     NSApp.activate(ignoringOtherApps: true)
     let alert = NSAlert()
     alert.messageText = "Quit \(AppBranding.title)?"
