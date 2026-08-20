@@ -207,6 +207,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   /// Confirm before quitting — quitting stops background update checks entirely.
   /// The confirmation can be turned off in Preferences ("Confirm before quitting").
   func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+    // Sparkle relaunches the app to install a self-update by terminating it — never
+    // block that with the confirmation, regardless of the setting.
+    if Updater.isRelaunchingForUpdate { return .terminateNow }
     let confirmBeforeQuit =
       UserDefaults.standard.object(forKey: "confirmBeforeQuit") as? Bool ?? true
     guard confirmBeforeQuit else { return .terminateNow }

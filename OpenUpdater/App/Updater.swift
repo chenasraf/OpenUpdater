@@ -17,9 +17,24 @@ import SwiftUI
 #if canImport(Sparkle)
   import Sparkle
 
+  /// Bridges Sparkle's "about to relaunch to install" callback to a flag. A separate
+  /// object (not `Updater`) so it can be the updater delegate without a self-reference
+  /// during `Updater.init`; Sparkle holds the delegate weakly, so `Updater` retains it.
+  private final class RelaunchObserver: NSObject, SPUUpdaterDelegate {
+    nonisolated func updaterWillRelaunchApplication(_ updater: SPUUpdater) {
+      Updater.isRelaunchingForUpdate = true
+    }
+  }
+
   /// SwiftUI-facing wrapper around Sparkle's standard updater.
   @MainActor
   final class Updater: ObservableObject {
+    /// Set by Sparkle immediately before it relaunches the app to install a
+    /// self-update. The app checks this to skip its quit confirmation for that
+    /// (intentional) termination. Only touched on the main thread.
+    nonisolated(unsafe) static var isRelaunchingForUpdate = false
+
+    private let relaunchObserver = RelaunchObserver()
     private let controller: SPUStandardUpdaterController
     /// True once the updater is idle and ready to check (drives the menu/button state).
     @Published var canCheckForUpdates = false
@@ -30,7 +45,7 @@ import SwiftUI
 
     init() {
       controller = SPUStandardUpdaterController(
-        startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+        startingUpdater: true, updaterDelegate: relaunchObserver, userDriverDelegate: nil)
       automaticallyChecksForUpdates = controller.updater.automaticallyChecksForUpdates
       let updater = controller.updater
       Self.log.notice(
@@ -56,6 +71,8 @@ import SwiftUI
   /// Stub used until the Sparkle package is added, so the app keeps building.
   @MainActor
   final class Updater: ObservableObject {
+    /// No self-update without Sparkle; always false so the quit confirmation applies.
+    nonisolated(unsafe) static var isRelaunchingForUpdate = false
     @Published var canCheckForUpdates = false
     @Published var automaticallyChecksForUpdates = false
     func checkForUpdates() {}
