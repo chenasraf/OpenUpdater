@@ -107,9 +107,11 @@ enum SparkleSource {
     var request = URLRequest(url: feedURL)
     request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
 
-    let (data, response) = try await URLSession.shared.data(for: request)
-    guard let http = response as? HTTPURLResponse else { throw UpdateCheckError.badResponse(-1) }
-    guard http.statusCode == 200 else { throw UpdateCheckError.badResponse(http.statusCode) }
+    let (data, http) = try await HTTPClient.send(request)
+    guard http.statusCode == 200 else {
+      throw UpdateCheckError.badResponse(
+        http.statusCode, CheckContext(url: feedURL, statusCode: http.statusCode))
+    }
 
     let osVersion = ProcessInfo.processInfo.operatingSystemVersion
     let osString = "\(osVersion.majorVersion).\(osVersion.minorVersion).\(osVersion.patchVersion)"

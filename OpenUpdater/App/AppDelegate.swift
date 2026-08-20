@@ -60,8 +60,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     popover.contentSize = NSSize(
       width: savedWidth > 0 ? savedWidth : 460, height: savedHeight > 0 ? savedHeight : 560)
     let hosting = NSHostingController(
-      rootView: ContentView(openMainWindow: openMainWindow, openPreferences: openPreferences)
-        .environmentObject(updateManager))
+      rootView: ContentView(
+        openMainWindow: openMainWindow, openPreferences: openPreferences,
+        openCheckLog: openCheckLog
+      )
+      .environmentObject(updateManager))
     hosting.sizingOptions = [.preferredContentSize]
     popover.contentViewController = hosting
 
@@ -171,7 +174,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   /// `NSWindow.identifier`, but the main `Window` doesn't always carry it, so fall
   /// back to matching its title.
   private func sceneID(for window: NSWindow) -> String? {
-    if let id = window.identifier?.rawValue, id == MainWindow.id || id == PreferencesWindow.id {
+    if let id = window.identifier?.rawValue,
+      id == MainWindow.id || id == PreferencesWindow.id || id == CheckLogWindow.id
+    {
       return id
     }
     if window.title == AppBranding.title { return MainWindow.id }
@@ -349,6 +354,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   /// Open the SwiftUI Preferences window from the menubar popover.
   func openPreferences() {
     showAppWindow(id: PreferencesWindow.id)
+  }
+
+  /// Open the Check Log window (per-app detail behind the last check's failures).
+  func openCheckLog() {
+    showAppWindow(id: CheckLogWindow.id)
   }
 
   /// Bring one of the app's scene windows to the front, reopening it if its `NSWindow`

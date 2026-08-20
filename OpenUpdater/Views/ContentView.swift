@@ -12,6 +12,7 @@ import SwiftUI
 struct ContentView: View {
   let openMainWindow: () -> Void
   let openPreferences: () -> Void
+  var openCheckLog: () -> Void = {}
   @EnvironmentObject private var updateManager: UpdateManager
   @State private var selection: Set<AppInfo.ID> = []
   // Persisted popover size; the resize grip writes these and the popover follows.
@@ -139,6 +140,7 @@ struct ContentView: View {
           .font(.system(size: 32)).foregroundStyle(.orange)
         Text(error).font(.caption).foregroundStyle(.secondary)
           .multilineTextAlignment(.center).padding(.horizontal)
+        CheckLogButton(action: openCheckLog).font(.caption)
       } else {
         Image(systemName: "checkmark.seal.fill")
           .font(.system(size: 36)).foregroundStyle(.green)

@@ -36,9 +36,11 @@ enum AppStoreSource {
 
     var request = URLRequest(url: url)
     request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
-    let (data, response) = try await URLSession.shared.data(for: request)
-    guard let http = response as? HTTPURLResponse else { throw UpdateCheckError.badResponse(-1) }
-    guard http.statusCode == 200 else { throw UpdateCheckError.badResponse(http.statusCode) }
+    let (data, http) = try await HTTPClient.send(request)
+    guard http.statusCode == 200 else {
+      throw UpdateCheckError.badResponse(
+        http.statusCode, CheckContext(url: url, statusCode: http.statusCode))
+    }
 
     guard let root = try JSONSerialization.jsonObject(with: data) as? [String: Any],
       let results = root["results"] as? [[String: Any]],

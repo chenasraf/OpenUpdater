@@ -95,6 +95,7 @@ struct StatusBar: View {
 
 struct UpdatesView: View {
   @EnvironmentObject private var updateManager: UpdateManager
+  @Environment(\.openWindow) private var openWindow
   @State private var selection: Set<AppInfo.ID> = []
 
   var body: some View {
@@ -110,12 +111,19 @@ struct UpdatesView: View {
           message: "Look for newer versions of your installed apps."
         )
       } else if let error = updateManager.lastError {
-        CenteredStatus(
-          systemImage: "exclamationmark.triangle.fill",
-          title: "Couldn't Check for Updates",
-          message: error,
-          tint: .orange
-        )
+        VStack(spacing: 16) {
+          Image(systemName: "exclamationmark.triangle.fill")
+            .font(.system(size: 56))
+            .foregroundStyle(.orange)
+          Text("Couldn't Check for Updates")
+            .font(.title2)
+            .fontWeight(.medium)
+          Text(error)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
+          CheckLogButton { openWindow(id: CheckLogWindow.id) }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
       } else {
         CenteredStatus(
           systemImage: "checkmark.seal.fill",
@@ -620,6 +628,98 @@ struct CheckForUpdatesButton: View {
       }
     }
     .disabled(updateManager.isChecking)
+  }
+}
+
+/// A link-style button that opens the check-log window. Shows nothing when the
+/// last check had no failures. The caller supplies how to open the window, since
+/// the menubar popover and the main window reach `openWindow` differently.
+struct CheckLogButton: View {
+  @EnvironmentObject private var updateManager: UpdateManager
+  let action: () -> Void
+
+  var body: some View {
+    if !updateManager.lastCheckFailures.isEmpty {
+      Button("Show Details", action: action)
+        .buttonStyle(.link)
+    }
+  }
+}
+
+/// Lists each app whose lookup failed in the last check, with the source queried
+/// and the reason, so the user can see exactly what went wrong.
+struct CheckLogView: View {
+  @EnvironmentObject private var updateManager: UpdateManager
+
+  var body: some View {
+    Group {
+      if updateManager.lastCheckFailures.isEmpty {
+        CenteredStatus(
+          systemImage: "checkmark.seal.fill",
+          title: "Nothing to Report",
+          message: "The last check reached every update source.",
+          tint: .green
+        )
+      } else {
+        List(updateManager.lastCheckFailures) { failure in
+          CheckFailureRow(failure: failure)
+        }
+      }
+    }
+    .frame(minWidth: 420, minHeight: 280)
+  }
+}
+
+/// One failure in the check log: the app and source, the reason, and the request
+/// details (URL, method, status) plus what we tried to read — all selectable so
+/// they're easy to drop into a bug report.
+private struct CheckFailureRow: View {
+  let failure: CheckFailure
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 3) {
+      HStack(spacing: 6) {
+        Text(failure.appName).fontWeight(.medium)
+        Text(failure.source)
+          .font(.caption)
+          .foregroundStyle(.secondary)
+      }
+      Text(failure.note.map { "\(failure.reason) — \($0)" } ?? failure.reason)
+        .font(.callout)
+        .foregroundStyle(.orange)
+        .textSelection(.enabled)
+        .fixedSize(horizontal: false, vertical: true)
+
+      if let url = failure.requestURL {
+        detail("Request", "\(failure.method ?? "GET") \(url)")
+      }
+      if let status = failure.statusCode {
+        detail("Status", "HTTP \(status)")
+      }
+      if let extracting = failure.extracting {
+        detail("Reading", extracting)
+      }
+      if let selector = failure.selector {
+        detail("Pattern/path", selector)
+      }
+      detail("Bundle ID", failure.id)
+    }
+    .padding(.vertical, 4)
+  }
+
+  private func detail(_ label: String, _ value: String) -> some View {
+    HStack(alignment: .firstTextBaseline, spacing: 6) {
+      Text(label)
+        .font(.caption2)
+        .foregroundStyle(.tertiary)
+        .frame(width: 66, alignment: .leading)
+      Text(value)
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .textSelection(.enabled)
+        .lineLimit(3)
+        .fixedSize(horizontal: false, vertical: true)
+    }
   }
 }
 

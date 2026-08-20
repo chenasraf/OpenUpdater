@@ -38,26 +38,40 @@ enum HTTPVersionSource {
       return try await latestByRedirect(for: recipe, checkURL: url, resolved: resolved)
     }
 
-    let data = try await fetch(url)
+    let (data, http) = try await fetch(url)
 
     let rawVersion: String
     let extractedDownload: String?
 
-    switch recipe.check.kind {
+    let kind = recipe.check.kind
+    func failed(_ note: String, selector: String?) -> UpdateCheckError {
+      .extractionFailed(
+        "version",
+        CheckContext(
+          url: url, statusCode: http.statusCode, extracting: "version", selector: selector,
+          note: note))
+    }
+
+    switch kind {
     case .json, .yaml:
+      guard let path = recipe.check.path.map(recipe.resolveArch) else {
+        throw failed("the recipe has no `check.path` to read the version from", selector: nil)
+      }
       let root: Any
-      if recipe.check.kind == .yaml {
+      if kind == .yaml {
         guard let parsed = try Yams.load(yaml: String(data: data, encoding: .utf8) ?? "") else {
-          throw UpdateCheckError.extractionFailed("version")
+          throw failed("the response wasn't valid YAML", selector: path)
         }
         root = parsed
       } else {
-        root = try JSONSerialization.jsonObject(with: data)
+        do {
+          root = try JSONSerialization.jsonObject(with: data)
+        } catch {
+          throw failed("the response wasn't valid JSON", selector: path)
+        }
       }
-      guard let path = recipe.check.path,
-        let value = Self.keyPathValue(at: recipe.resolveArch(path), in: root)
-      else {
-        throw UpdateCheckError.extractionFailed("version")
+      guard let value = Self.keyPathValue(at: path, in: root) else {
+        throw failed("no value found at that key path in the response", selector: path)
       }
       rawVersion = value
       extractedDownload = recipe.check.downloadPath.flatMap {
@@ -65,11 +79,12 @@ enum HTTPVersionSource {
       }
 
     case .html, .xml:
+      guard let pattern = recipe.check.pattern else {
+        throw failed("the recipe has no `check.pattern` to match the version", selector: nil)
+      }
       let body = String(data: data, encoding: .utf8) ?? ""
-      guard let pattern = recipe.check.pattern,
-        let value = Self.selectCapture(pattern, in: body, select: recipe.check.select)
-      else {
-        throw UpdateCheckError.extractionFailed("version")
+      guard let value = Self.selectCapture(pattern, in: body, select: recipe.check.select) else {
+        throw failed("the pattern matched nothing in the response", selector: pattern)
       }
       rawVersion = value
       extractedDownload = recipe.check.downloadPattern.flatMap {
@@ -120,10 +135,19 @@ enum HTTPVersionSource {
     for recipe: UpdateRecipe, checkURL url: URL, resolved: [String: String]
   ) async throws -> ReleaseResult {
     let finalURL = try await finalRedirectURL(url)
-    guard let pattern = recipe.check.pattern,
-      let rawVersion = firstCapture(recipe.resolveArch(pattern), in: finalURL.absoluteString)
-    else {
-      throw UpdateCheckError.extractionFailed("version")
+    guard let pattern = recipe.check.pattern.map(recipe.resolveArch) else {
+      throw UpdateCheckError.extractionFailed(
+        "version",
+        CheckContext(
+          url: finalURL, method: "HEAD", extracting: "version from redirect URL",
+          note: "the recipe has no `check.pattern` to match the version"))
+    }
+    guard let rawVersion = firstCapture(pattern, in: finalURL.absoluteString) else {
+      throw UpdateCheckError.extractionFailed(
+        "version",
+        CheckContext(
+          url: finalURL, method: "HEAD", extracting: "version from redirect URL",
+          selector: pattern, note: "the pattern didn't match the resolved download URL"))
     }
     let version = recipe.normalizeVersion(fromTag: rawVersion)
 
@@ -158,23 +182,25 @@ enum HTTPVersionSource {
     var request = URLRequest(url: url)
     request.httpMethod = "HEAD"
     request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
-    let (_, response) = try await URLSession.shared.data(for: request)
-    guard let http = response as? HTTPURLResponse else { throw UpdateCheckError.badResponse(-1) }
+    let (_, http) = try await HTTPClient.send(request)
     guard http.statusCode == 200, let finalURL = http.url else {
-      throw UpdateCheckError.badResponse(http.statusCode)
+      throw UpdateCheckError.badResponse(
+        http.statusCode, CheckContext(url: url, method: "HEAD", statusCode: http.statusCode))
     }
     return finalURL
   }
 
-  /// GET a URL with the app's User-Agent, returning its body or throwing on a
-  /// non-200 response.
-  private static func fetch(_ url: URL) async throws -> Data {
+  /// GET a URL with the app's User-Agent, returning its body and HTTP response, or
+  /// throwing on a non-200 response.
+  private static func fetch(_ url: URL) async throws -> (Data, HTTPURLResponse) {
     var request = URLRequest(url: url)
     request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
-    let (data, response) = try await URLSession.shared.data(for: request)
-    guard let http = response as? HTTPURLResponse else { throw UpdateCheckError.badResponse(-1) }
-    guard http.statusCode == 200 else { throw UpdateCheckError.badResponse(http.statusCode) }
-    return data
+    let (data, http) = try await HTTPClient.send(request)
+    guard http.statusCode == 200 else {
+      throw UpdateCheckError.badResponse(
+        http.statusCode, CheckContext(url: url, statusCode: http.statusCode))
+    }
+    return (data, http)
   }
 
   /// Run each `resolve` step (fetch its page, extract its capture) into a map of
@@ -186,9 +212,14 @@ enum HTTPVersionSource {
     var values: [String: String] = [:]
     for (name, step) in steps {
       guard let url = URL(string: step.url) else { throw UpdateCheckError.missingURL }
-      let body = String(data: try await fetch(url), encoding: .utf8) ?? ""
+      let (data, http) = try await fetch(url)
+      let body = String(data: data, encoding: .utf8) ?? ""
       guard let value = selectCapture(step.pattern, in: body, select: step.select) else {
-        throw UpdateCheckError.extractionFailed(name)
+        throw UpdateCheckError.extractionFailed(
+          name,
+          CheckContext(
+            url: url, statusCode: http.statusCode, extracting: name, selector: step.pattern,
+            note: "the pattern matched nothing in the response"))
       }
       values[name] = value
     }

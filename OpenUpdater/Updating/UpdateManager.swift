@@ -17,6 +17,57 @@ enum UpdateSource: String, Codable {
   case http
   case appStore
   case unknown
+
+  /// Short human label for the check log.
+  var label: String {
+    switch self {
+    case .githubRelease: return "GitHub Releases"
+    case .sparkle: return "Sparkle feed"
+    case .http: return "HTTP feed"
+    case .appStore: return "Mac App Store"
+    case .unknown: return "Unknown source"
+    }
+  }
+}
+
+/// One app's failed lookup during a check, kept so the UI can show a "what went
+/// wrong" log next to the summary error.
+struct CheckFailure: Identifiable {
+  /// Bundle id of the app whose lookup failed.
+  let id: String
+  let appName: String
+  /// The source that was queried (e.g. "GitHub Releases").
+  let source: String
+  /// Human-readable reason (e.g. "HTTP 404", "GitHub rate limit reached").
+  let reason: String
+  /// The URL that was requested, when known.
+  var requestURL: String?
+  /// HTTP method used for the request.
+  var method: String?
+  /// HTTP status code of the response, when there was one.
+  var statusCode: Int?
+  /// What we tried to read out of the response (e.g. "version").
+  var extracting: String?
+  /// The regex pattern or JSON/YAML key path used to read it.
+  var selector: String?
+  /// The precise cause, phrased for the user (e.g. a regex that matched nothing).
+  var note: String?
+
+  init(id: String, appName: String, source: String, error: Error) {
+    self.id = id
+    self.appName = appName
+    self.source = source
+    self.reason =
+      (error as? UpdateCheckError)?.description ?? (error as NSError).localizedDescription
+    if let context = (error as? UpdateCheckError)?.context {
+      self.requestURL = context.url?.absoluteString
+      self.method = context.method
+      self.statusCode = context.statusCode
+      self.extracting = context.extracting
+      self.selector = context.selector
+      self.note = context.note
+    }
+  }
 }
 
 /// How often OpenUpdater automatically re-checks installed apps for new versions.
@@ -152,6 +203,9 @@ final class UpdateManager: ObservableObject {
   @Published private(set) var lastChecked: Date?
   /// A user-facing summary of the last check's failures, or `nil` if it was clean.
   @Published private(set) var lastError: String?
+  /// Per-app details behind `lastError`, for the "what went wrong" log. Empty on a
+  /// clean check.
+  @Published private(set) var lastCheckFailures: [CheckFailure] = []
   /// Bundle ids currently being re-scanned individually, for per-row feedback.
   @Published private(set) var rescanningIDs: Set<String> = []
   /// What the in-progress check is doing right now (recipe sync, current app), shown
@@ -421,7 +475,7 @@ final class UpdateManager: ObservableObject {
     for app in apps where isCheckable(app) { checkable += 1 }
     Self.log.notice("Checking \(checkable, privacy: .public) checkable app(s)")
 
-    var failures = 0
+    var failures: [CheckFailure] = []
     var rateLimited = false
     var done = 0
     for index in apps.indices {
@@ -433,17 +487,21 @@ final class UpdateManager: ObservableObject {
       // installed and drops off the updates list — matching a single-app re-scan.
       refreshInstalledVersion(id: apps[index].id)
       if let error = await resolveLatest(forAppAt: index) {
-        failures += 1
+        let app = apps[index]
+        failures.append(
+          CheckFailure(
+            id: app.id, appName: app.name, source: intendedSource(for: app).label, error: error))
         if case UpdateCheckError.rateLimited = error { rateLimited = true }
       }
     }
 
     lastChecked = Date()
     hasCheckedThisSession = true
-    lastError = Self.errorSummary(failures: failures, rateLimited: rateLimited)
+    lastCheckFailures = failures
+    lastError = Self.errorSummary(failures: failures.count, rateLimited: rateLimited)
     saveCache()
     Self.log.notice(
-      "Check done: \(self.updates.count, privacy: .public) update(s), \(failures, privacy: .public) failure(s)"
+      "Check done: \(self.updates.count, privacy: .public) update(s), \(failures.count, privacy: .public) failure(s)"
     )
   }
 
@@ -451,6 +509,22 @@ final class UpdateManager: ObservableObject {
   /// or an App Store receipt.
   private func isCheckable(_ app: AppInfo) -> Bool {
     recipes[app.id] != nil || app.feedURL != nil || app.isAppStoreApp
+  }
+
+  /// Which source `resolveLatest` would query for this app, mirroring its precedence.
+  /// Used to label failures in the check log (the source isn't recorded on the app
+  /// when the lookup fails).
+  private func intendedSource(for app: AppInfo) -> UpdateSource {
+    if app.isAppStoreApp { return .appStore }
+    if let recipe = effectiveRecipe(for: app) {
+      switch recipe.check.kind {
+      case .githubReleases: return .githubRelease
+      case .sparkle: return .sparkle
+      case .html, .xml, .json, .yaml, .redirect: return .http
+      }
+    }
+    if app.feedURL != nil { return .sparkle }
+    return .appStore
   }
 
   /// Resolve the latest version for the app at `index` and update its fields.

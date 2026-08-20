@@ -47,6 +47,13 @@ struct OpenUpdaterApp: App {
     }
     .windowResizability(.contentMinSize)
     .defaultSize(width: 820, height: 560)
+
+    Window("Check Log", id: CheckLogWindow.id) {
+      CheckLogView()
+        .environmentObject(appDelegate.updateManager)
+    }
+    .windowResizability(.contentMinSize)
+    .defaultSize(width: 440, height: 340)
   }
 }
 
@@ -56,6 +63,10 @@ enum MainWindow {
 
 enum PreferencesWindow {
   static let id = "preferences"
+}
+
+enum CheckLogWindow {
+  static let id = "check-log"
 }
 
 /// The main window's content, wrapped so it can capture SwiftUI's `openWindow` into
