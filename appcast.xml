@@ -6,6 +6,23 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.18.0</title>
+    <pubDate>Thu, 20 Aug 2026 20:41:03 +0000</pubDate>
+    <sparkle:version>87</sparkle:version>
+    <sparkle:shortVersionString>0.18.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.17.0...v0.18.0">0.18.0</a> (2026-08-20)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>settings:</strong> add option to skip the quit confirmation (<a href="https://github.com/chenasraf/OpenUpdater/commit/5ed1c314ec81fc61b8f86a557119dfe884ac517a">5ed1c31</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>app:</strong> skip quit confirmation when Sparkle relaunches to self-update (<a href="https://github.com/chenasraf/OpenUpdater/commit/456c086f3c895e9855da3d31853366db24643a51">456c086</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.18.0/OpenUpdater-0.18.0.dmg" sparkle:edSignature="hCYys0z55W7A0HQZSpRR5zcgAqcTEibwovcn+7M+IV+c/dlsd87KRchTg8TZhDqk9Ci4Zjl5R9I7orrXB3y+AQ==" length="3368294" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.17.0</title>
     <pubDate>Thu, 20 Aug 2026 18:25:27 +0000</pubDate>
     <sparkle:version>85</sparkle:version>
