@@ -6,6 +6,7 @@ check:
   type: github_releases
   repo: obsidianmd/obsidian-releases
   prereleases: false
+  asset_pattern: '\.dmg$'
 
 version:
   strip_prefix: v

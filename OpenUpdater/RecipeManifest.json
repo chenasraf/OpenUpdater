@@ -1,5 +1,5 @@
 {
-  "hash": "8aeef785ee6cf02f751b21878e0d6979cc8aab2668abb77d582e5fe279c2a189",
+  "hash": "66d198638f8a2b006309c5eae5897507c10a4315bca9a574ba387cbf29457b75",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -178,8 +178,8 @@
     },
     {
       "file": "md.obsidian.yml",
-      "minApp": "0.0.0",
-      "sha": "099fcec4aee3c7a4bfcd13ff253fde4b9eda227b244909bec8ad712f58a65eb0"
+      "minApp": "0.19.0",
+      "sha": "a13f785a92e3b8da357d791fafa3666ba57bfe338731fc96765b0e5287c01c5a"
     },
     {
       "file": "net.kovidgoyal.calibre.yml",
