@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.19.0](https://github.com/chenasraf/OpenUpdater/compare/v0.18.0...v0.19.0) (2026-08-23)
+
+
+### Features
+
+* **recipe:** add asset_pattern filter for github_releases ([24bc8df](https://github.com/chenasraf/OpenUpdater/commit/24bc8dfdc744066e5db93af1c96b409ed4e410b6))
+* **recipe:** Obsidian (md.obsidian) - skip mobile-only releases via asset_pattern ([1a6fd53](https://github.com/chenasraf/OpenUpdater/commit/1a6fd53d1a2511e2f9d7f31113b809ce1eba5a9a))
+
 ## [0.18.0](https://github.com/chenasraf/OpenUpdater/compare/v0.17.0...v0.18.0) (2026-08-20)
 
 
