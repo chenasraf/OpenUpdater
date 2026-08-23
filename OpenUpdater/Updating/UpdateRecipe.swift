@@ -86,6 +86,11 @@ struct UpdateRecipe: Decodable {
     // restrict to versioned ones. Applied before picking the newest release.
     let tagPattern: String?  // only releases whose tag matches this regex are considered
     let tagIgnore: String?  // releases whose tag matches this regex are skipped
+    // github_releases: require the chosen release to carry an asset whose name matches
+    // this regex. Skips releases that lack the build we download — e.g. Obsidian ships
+    // mobile-only point releases (an .apk with no .dmg) into the same repo; without this
+    // the newest tag is picked and the templated .dmg URL 404s.
+    let assetPattern: String?
 
     // Generic html/xml/json sources:
     let url: String?  // page/API to fetch
@@ -107,6 +112,7 @@ struct UpdateRecipe: Decodable {
       case prereleases
       case tagPattern = "tag_pattern"
       case tagIgnore = "tag_ignore"
+      case assetPattern = "asset_pattern"
       case url
       case pattern
       case path
@@ -124,6 +130,7 @@ struct UpdateRecipe: Decodable {
       prereleases = try container.decodeIfPresent(Bool.self, forKey: .prereleases) ?? false
       tagPattern = try container.decodeIfPresent(String.self, forKey: .tagPattern)
       tagIgnore = try container.decodeIfPresent(String.self, forKey: .tagIgnore)
+      assetPattern = try container.decodeIfPresent(String.self, forKey: .assetPattern)
       url = try container.decodeIfPresent(String.self, forKey: .url)
       pattern = try container.decodeIfPresent(String.self, forKey: .pattern)
       path = try container.decodeIfPresent(String.self, forKey: .path)
@@ -139,6 +146,13 @@ struct UpdateRecipe: Decodable {
       if let tagPattern, !Self.regexMatches(tag, tagPattern) { return false }
       if let tagIgnore, Self.regexMatches(tag, tagIgnore) { return false }
       return true
+    }
+
+    /// Whether a release's asset names satisfy this recipe's `asset_pattern`. No
+    /// pattern → always allowed; otherwise at least one asset name must match it.
+    func assetAllowed(_ assetNames: [String]) -> Bool {
+      guard let assetPattern else { return true }
+      return assetNames.contains { Self.regexMatches($0, assetPattern) }
     }
 
     private static func regexMatches(_ string: String, _ pattern: String) -> Bool {

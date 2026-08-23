@@ -130,11 +130,18 @@ enum GitHubReleaseSource {
     let tagName: String
     let draft: Bool
     let prerelease: Bool
+    let assets: [Asset]
+
+    struct Asset: Decodable {
+      let name: String
+    }
 
     enum CodingKeys: String, CodingKey {
       case tagName = "tag_name"
-      case draft, prerelease
+      case draft, prerelease, assets
     }
+
+    var assetNames: [String] { assets.map(\.name) }
   }
 
   static func latest(for recipe: UpdateRecipe, includePrereleases: Bool) async throws
@@ -173,6 +180,7 @@ enum GitHubReleaseSource {
     guard
       let chosen = releases.first(where: {
         !$0.draft && (includePrereleases || !$0.prerelease) && recipe.check.tagAllowed($0.tagName)
+          && recipe.check.assetAllowed($0.assetNames)
       })
     else {
       throw UpdateCheckError.noReleases

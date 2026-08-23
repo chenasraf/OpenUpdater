@@ -92,6 +92,14 @@ check:
   # tag_pattern: '^v\d'
   # tag_ignore: '^(continuous|nightly|latest)$'
 
+  # github_releases ONLY, OPTIONAL. Require the chosen release to carry an asset whose
+  # name matches this regex, skipping releases that don't ship the build we download.
+  # Use it when a repo mixes platforms into one release stream and occasionally cuts a
+  # release without the macOS asset — e.g. Obsidian ships mobile-only point releases
+  # (an .apk with no .dmg); without this the newest tag is picked and the templated
+  # .dmg URL 404s. Matched against each asset's file name.
+  # asset_pattern: '\.dmg$'
+
   # sparkle ONLY. Explicit appcast URL. Use this for apps that bundle Sparkle but
   # set their feed in code (no static SUFeedURL). For sparkle, OpenUpdater compares
   # build numbers (sparkle:version / CFBundleVersion), so `version` below is ignored.
