@@ -28,6 +28,17 @@
 # REQUIRED. Bundle identifier. Must match the filename stem.
 id: com.example.App
 
+# Optional. Other bundle identifiers the same app ships under, for apps that renamed
+# themselves across a major release (Audacity 3's org.audacityteam.audacity became
+# org.audacityteam.audacity4 in 4.0). This recipe then covers an installed app carrying
+# any of these ids, and a download whose bundle id is one of them passes the install-time
+# identity check instead of failing as "downloaded app is X, expected Y" — so the upgrade
+# installs, and the renamed app keeps getting updates afterwards. The filename stem stays
+# the id above. Only list ids that are genuinely the same app; the check is what stops a
+# wrong download URL from replacing an app with something else.
+# bundle_ids:
+#   - com.example.App2
+
 # Optional. Human-readable name (informational only; the app's own name is used
 # in the UI). Helpful for recipe authors.
 name: Example App

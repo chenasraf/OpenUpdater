@@ -11,6 +11,12 @@ import Yams
 /// A single app's update recipe, decoded from its `<bundle-id>.yml` file.
 struct UpdateRecipe: Decodable {
   let id: String
+  /// Other bundle identifiers this app ships under, for apps that renamed themselves
+  /// across a major release (Audacity 3's `org.audacityteam.audacity` → 4's
+  /// `org.audacityteam.audacity4`). The recipe covers an installed app carrying any of
+  /// them, and a download whose bundle id is any of them passes the install-time
+  /// identity check — so the upgrade installs and the upgraded app keeps updating.
+  let bundleIDs: [String]?
   let name: String?
   let homepage: String?
   /// Mutable so `applyingChannel` can overlay a release channel's overrides onto a
@@ -26,6 +32,8 @@ struct UpdateRecipe: Decodable {
   let enabled: Bool?
   /// Whether this recipe is active. `enabled` absent → treated as enabled.
   var isEnabled: Bool { enabled ?? true }
+  /// Every bundle id this recipe covers: its own, then any `bundle_ids` aliases.
+  var allBundleIDs: [String] { [id] + (bundleIDs ?? []).filter { $0 != id } }
   /// Maps the host arch (`arm64` / `x86_64`) to this app's arch string for the
   /// `{arch}` placeholder. Omit when the app uses `arm64`/`x86_64` verbatim.
   let arch: [String: String]?
@@ -52,6 +60,7 @@ struct UpdateRecipe: Decodable {
 
   enum CodingKeys: String, CodingKey {
     case id, name, homepage, check, download, channels, enabled, arch, version, changelog
+    case bundleIDs = "bundle_ids"
     case installedVersion = "installed_version"
     case manualMajorUpgrades = "manual_major_upgrades"
     case manualMajorUpgradesReason = "manual_major_upgrades_reason"

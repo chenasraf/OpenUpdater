@@ -827,7 +827,22 @@ final class UpdateManager: ObservableObject {
     for custom in customRecipes where custom.enabled && custom.parseError == nil {
       if let recipe = CustomRecipeStore.decoded(custom.text) { merged[recipe.id] = recipe }
     }
-    recipes = merged
+    recipes = Self.indexedByBundleID(merged)
+  }
+
+  /// Key recipes by every bundle id they cover, so an app that renamed itself across a
+  /// major release (Audacity 3 → 4) still resolves to its recipe under the new id. A
+  /// `bundle_ids` alias never displaces a recipe that claims the id as its own.
+  private static func indexedByBundleID(_ recipes: [String: UpdateRecipe]) -> [String:
+    UpdateRecipe]
+  {
+    var indexed = recipes
+    for recipe in recipes.values {
+      for alias in recipe.allBundleIDs where indexed[alias] == nil {
+        indexed[alias] = recipe
+      }
+    }
+    return indexed
   }
 
   /// Reload downloaded community recipes from disk and rebuild the active set.
@@ -1181,9 +1196,14 @@ final class UpdateManager: ObservableObject {
         Self.log.notice(
           "install \(id, privacy: .public): extracting \(format.rawValue, privacy: .public)")
         let expectedName = destination.deletingPathExtension().lastPathComponent
+        // An app that renamed its bundle id across a major release ships a download whose
+        // id differs from the installed one; the recipe's `bundle_ids` list the ids that
+        // are still this app.
+        let acceptedIDs = [id] + (recipes[id]?.allBundleIDs.filter { $0 != id } ?? [])
         let newApp = try await Task.detached(priority: .userInitiated) {
           try Installer.extractApp(
-            from: archive, format: format, expectedBundleID: id, expectedName: expectedName)
+            from: archive, format: format, acceptedBundleIDs: acceptedIDs,
+            expectedName: expectedName)
         }.value
         try Task.checkCancellation()
 

@@ -31,6 +31,7 @@ FEATURES = [
     (re.compile(r"(?m)^\s*format:\s*tar\b"), "0.9.0"),  # tar / tar.gz archives
     (re.compile(r"\[[^\]]*~[^\]]*\]"), "0.9.0"),  # [field~value] json path predicate
     (re.compile(r"(?m)^\s*asset_pattern:\s*\S"), "0.19.0"),  # github_releases asset filter
+    (re.compile(r"(?m)^\s*bundle_ids:"), "0.20.0"),  # bundle id aliases
 ]
 BASELINE = "0.0.0"
 

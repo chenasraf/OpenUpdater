@@ -158,10 +158,10 @@ func verifyDownload(recipe: UpdateRecipe, result: ReleaseResult) async -> Int32 
   do {
     let app = try Installer.extractApp(
       from: downloaded, format: format,
-      expectedBundleID: recipe.id, expectedName: recipe.name ?? recipe.id)
+      acceptedBundleIDs: recipe.allBundleIDs, expectedName: recipe.name ?? recipe.id)
     out("app:     \(app.path)")
     if let version = bundleShortVersion(app) { out("bundle:  \(version)") }
-    out("OK — extracted app's bundle id matches \(recipe.id)")
+    out("OK — extracted app's bundle id matches \(recipe.allBundleIDs.joined(separator: " or "))")
   } catch {
     errLine("extract/verify failed: \(error)")
     return 3

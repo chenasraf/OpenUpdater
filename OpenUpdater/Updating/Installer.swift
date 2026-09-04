@@ -37,7 +37,7 @@ enum InstallError: Error, CustomStringConvertible {
   case unsupportedFormat(String)
   case downloadFailed(Int)
   case noAppInArchive
-  case bundleIDMismatch(expected: String, found: String?)
+  case bundleIDMismatch(expected: [String], found: String?)
   case toolFailed(String, String)
   case notWritable(URL)
   case installerFailed(String)
@@ -50,7 +50,8 @@ enum InstallError: Error, CustomStringConvertible {
     case .noAppInArchive: return "No app found in the download"
     case .notAnArchive: return "The download wasn't a valid archive (got a web page?)"
     case .bundleIDMismatch(let expected, let found):
-      return "Downloaded app is \(found ?? "unknown"), expected \(expected)"
+      return
+        "Downloaded app is \(found ?? "unknown"), expected \(expected.joined(separator: " or "))"
     case .toolFailed(let tool, _): return "\(tool) failed"
     case .notWritable(let url): return "No permission to replace \(url.lastPathComponent)"
     case .installerFailed(let message):
@@ -118,12 +119,13 @@ nonisolated enum Installer {
   }
 
   /// Extract `archive` and return the contained `.app`, verifying it's the app we
-  /// expect. Matches on bundle id; if the download has none (some Qt builds, e.g.
-  /// Converseen, ship an empty `CFBundleIdentifier`), falls back to matching the
-  /// app's name (case-insensitive) against the installed one. The returned app
-  /// lives in a fresh temp directory.
+  /// expect. Matches on bundle id — `acceptedBundleIDs` holds the installed app's id
+  /// first, plus any ids its recipe declares as the same app under another name; if the
+  /// download has none (some Qt builds, e.g. Converseen, ship an empty
+  /// `CFBundleIdentifier`), falls back to matching the app's name (case-insensitive)
+  /// against the installed one. The returned app lives in a fresh temp directory.
   static func extractApp(
-    from archive: URL, format: ArchiveFormat, expectedBundleID: String, expectedName: String
+    from archive: URL, format: ArchiveFormat, acceptedBundleIDs: [String], expectedName: String
   ) throws -> URL {
     // A misconfigured recipe can yield an HTML landing page instead of the binary;
     // fail clearly here rather than as a cryptic "hdiutil/ditto failed".
@@ -147,14 +149,14 @@ nonisolated enum Installer {
     }
 
     if let foundID = bundleID(of: app), !foundID.isEmpty {
-      guard foundID == expectedBundleID else {
-        throw InstallError.bundleIDMismatch(expected: expectedBundleID, found: foundID)
+      guard acceptedBundleIDs.contains(foundID) else {
+        throw InstallError.bundleIDMismatch(expected: acceptedBundleIDs, found: foundID)
       }
     } else {
       let foundName = app.deletingPathExtension().lastPathComponent
       guard foundName.compare(expectedName, options: .caseInsensitive) == .orderedSame else {
         throw InstallError.bundleIDMismatch(
-          expected: expectedBundleID, found: "\(foundName) (no bundle id)")
+          expected: acceptedBundleIDs, found: "\(foundName) (no bundle id)")
       }
     }
     return app
