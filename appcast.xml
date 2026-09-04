@@ -6,6 +6,20 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.20.0</title>
+    <pubDate>Fri, 04 Sep 2026 11:41:47 +0000</pubDate>
+    <sparkle:version>92</sparkle:version>
+    <sparkle:shortVersionString>0.20.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.19.0...v0.20.0">0.20.0</a> (2026-09-04)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>recipe:</strong> Audacity (<code class="notranslate">org.audacityteam.audacity</code>) - accept the Audacity 4 bundle id, hold major upgrades (<a href="https://github.com/chenasraf/OpenUpdater/commit/6839defdecf8f907adc30127d5d6288231418a39">6839def</a>)</li>
+<li><strong>recipes:</strong> bundle_ids alias list for apps that rename their bundle id (<a href="https://github.com/chenasraf/OpenUpdater/commit/774f1ef9133178cbdd9c733db314236e34eadead">774f1ef</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.20.0/OpenUpdater-0.20.0.dmg" sparkle:edSignature="Wv+i59NOQIwSLP86d9vr6P2wIVpIIFHxNmu+/ALQzm+QvjnRXeosxyaxw0JDbJiSWxRCfi3uX7u5GIcGNm+3Bw==" length="3374846" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.19.0</title>
     <pubDate>Sun, 23 Aug 2026 08:10:31 +0000</pubDate>
     <sparkle:version>90</sparkle:version>
