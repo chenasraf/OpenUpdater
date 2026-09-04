@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.20.0](https://github.com/chenasraf/OpenUpdater/compare/v0.19.0...v0.20.0) (2026-09-04)
+
+
+### Features
+
+* **recipe:** Audacity (`org.audacityteam.audacity`) - accept the Audacity 4 bundle id, hold major upgrades ([6839def](https://github.com/chenasraf/OpenUpdater/commit/6839defdecf8f907adc30127d5d6288231418a39))
+* **recipes:** bundle_ids alias list for apps that rename their bundle id ([774f1ef](https://github.com/chenasraf/OpenUpdater/commit/774f1ef9133178cbdd9c733db314236e34eadead))
+
 ## [0.19.0](https://github.com/chenasraf/OpenUpdater/compare/v0.18.0...v0.19.0) (2026-08-23)
 
 
