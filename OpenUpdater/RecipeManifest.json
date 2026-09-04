@@ -1,5 +1,5 @@
 {
-  "hash": "66d198638f8a2b006309c5eae5897507c10a4315bca9a574ba387cbf29457b75",
+  "hash": "3b9706df5b2234c955a4d0b77863ed9087719b96a88796497f221d31f9111ac4",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -208,8 +208,8 @@
     },
     {
       "file": "org.audacityteam.audacity.yml",
-      "minApp": "0.0.0",
-      "sha": "1ca8d45259dcf7c69572e1501df7eee2d2a96ba5890beb1d87e519da0d572212"
+      "minApp": "0.20.0",
+      "sha": "caf2e16de2029b7b45abf0773501c65df2d2b842cd4a6b5d06ad7d72e4952826"
     },
     {
       "file": "org.blenderfoundation.blender.yml",

@@ -1,6 +1,11 @@
 id: org.audacityteam.audacity
+bundle_ids:
+  - org.audacityteam.audacity4
 name: Audacity
 homepage: https://www.audacityteam.org
+
+manual_major_upgrades: true
+manual_major_upgrades_reason: breaking_changes
 
 check:
   type: github_releases
