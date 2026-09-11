@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.21.0](https://github.com/chenasraf/OpenUpdater/compare/v0.20.0...v0.21.0) (2026-09-11)
+
+
+### Features
+
+* **recipe:** improve com.hankinsoft.osx.* recipes with improved checker and automated downloader ([1698863](https://github.com/chenasraf/OpenUpdater/commit/1698863b47fdc8f09a5b51b66fe91ab04ba62d23))
+
+
+### Bug Fixes
+
+* **recipes:** sync community recipes at launch after an app version change ([1390be9](https://github.com/chenasraf/OpenUpdater/commit/1390be9ec2f435cfc9d75d1c2c72a7e28de51d45))
+
 ## [0.20.0](https://github.com/chenasraf/OpenUpdater/compare/v0.19.0...v0.20.0) (2026-09-04)
 
 
