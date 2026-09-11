@@ -740,6 +740,7 @@ final class UpdateManager: ObservableObject {
   /// chosen frequency — so a manual-only setting never auto-checks and a fresh
   /// cached result is reused.
   func checkForUpdatesIfNeeded() async {
+    await syncRemoteRecipesIfAppVersionChanged()
     guard !hasCheckedThisSession, !isChecking else { return }
     if Self.checkForUpdatesOnLaunch {
       await checkForUpdates()
@@ -859,6 +860,16 @@ final class UpdateManager: ObservableObject {
     if await RemoteRecipeStore.sync(appVersion: Self.appVersion) {
       loadRemoteRecipes()
     }
+  }
+
+  /// Sync at launch when this build didn't download the recipe set on disk. Downloaded
+  /// recipes override the built-in ones, so a set synced by an earlier version keeps
+  /// shadowing the recipes this build shipped with — for as long as the check interval,
+  /// which is how an app update can appear to change nothing.
+  func syncRemoteRecipesIfAppVersionChanged() async {
+    guard RemoteRecipeStore.syncedAppVersion != Self.appVersion else { return }
+    await syncRemoteRecipes()
+    checkStatusDetail = nil
   }
 
   /// Delete the downloaded community recipes (falling back to built-ins) and fetch a

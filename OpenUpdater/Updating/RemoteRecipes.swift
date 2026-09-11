@@ -167,6 +167,10 @@ nonisolated enum RemoteRecipeStore {
 
   // MARK: - State persistence
 
+  /// The app version that downloaded the current recipe set, or `nil` when nothing has
+  /// been synced yet.
+  static var syncedAppVersion: String? { loadState()?.appVersion }
+
   private static func loadState() -> SyncState? {
     guard let data = try? Data(contentsOf: stateURL) else { return nil }
     return try? JSONDecoder().decode(SyncState.self, from: data)
