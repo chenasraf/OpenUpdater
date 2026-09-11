@@ -6,6 +6,23 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.21.0</title>
+    <pubDate>Fri, 11 Sep 2026 21:57:49 +0000</pubDate>
+    <sparkle:version>94</sparkle:version>
+    <sparkle:shortVersionString>0.21.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.20.0...v0.21.0">0.21.0</a> (2026-09-11)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>recipe:</strong> improve com.hankinsoft.osx.* recipes with improved checker and automated downloader (<a href="https://github.com/chenasraf/OpenUpdater/commit/1698863b47fdc8f09a5b51b66fe91ab04ba62d23">1698863</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>recipes:</strong> sync community recipes at launch after an app version change (<a href="https://github.com/chenasraf/OpenUpdater/commit/1390be9ec2f435cfc9d75d1c2c72a7e28de51d45">1390be9</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.21.0/OpenUpdater-0.21.0.dmg" sparkle:edSignature="R55f9qF+Shpdx9b5ESDz+MY4nxGPmONU28/hjJcPy3LwghC6CQTo2mVIGkn5n/JImMo2QCAu0p+mRgA5SY2hBw==" length="3376480" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.20.0</title>
     <pubDate>Fri, 04 Sep 2026 11:41:47 +0000</pubDate>
     <sparkle:version>92</sparkle:version>
