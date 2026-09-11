@@ -1,5 +1,5 @@
 {
-  "hash": "3b9706df5b2234c955a4d0b77863ed9087719b96a88796497f221d31f9111ac4",
+  "hash": "9c49c5029e740d3dd677423e59d0f6de07b27f024d5902f00ed89a66fc64443e",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -63,18 +63,18 @@
     },
     {
       "file": "com.hankinsoft.osx.SQLProPostgres.yml",
-      "minApp": "0.0.0",
-      "sha": "f3193034a0aab5e30e83349db25297e1e230450a93de2f1d5c541424509ae67e"
+      "minApp": "0.9.0",
+      "sha": "c596f34e83f6e868656f374b8ab651c31ce8f788eb9440b85a8e977752b25d1a"
     },
     {
       "file": "com.hankinsoft.osx.mysql.yml",
-      "minApp": "0.0.0",
-      "sha": "94b7c49655846dd1bd7205da7cdb7d96ab1351ae00b29532949605909d1add04"
+      "minApp": "0.9.0",
+      "sha": "048d50c450a25b3f313bee019556108db8ca74f4fcf96ae196badf520dea06d0"
     },
     {
       "file": "com.hankinsoft.osx.sqliteprofessional.yml",
-      "minApp": "0.0.0",
-      "sha": "e701e8b5c4f0a7e2bd56f22227bd7293002b7727636dcb27bec62b3ae5d7d170"
+      "minApp": "0.9.0",
+      "sha": "7f2e653b49b7ad6728994cad3c64d458ca645f7b680f883f39c914e231539951"
     },
     {
       "file": "com.hnc.Discord.yml",

@@ -1,11 +1,11 @@
 id: com.hankinsoft.osx.SQLProPostgres
 name: SQLPro for Postgres
-homepage: https://www.sqlprostudio.com
+homepage: https://www.macpostgresclient.com
 
 check:
-  type: html
-  url: https://www.sqlprostudio.com/releasenotes/
-  pattern: '>(20\d\d\.\d+)<'
+  type: redirect
+  url: https://www.macpostgresclient.com/download.php
+  pattern: 'SQLProPostgres\.([0-9.]+)\.app\.zip'
 
 changelog:
   url: https://www.sqlprostudio.com/releasenotes/

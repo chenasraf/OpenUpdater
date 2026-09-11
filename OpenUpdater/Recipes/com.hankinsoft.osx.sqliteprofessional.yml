@@ -1,11 +1,11 @@
 id: com.hankinsoft.osx.sqliteprofessional
 name: SQLPro for SQLite
-homepage: https://www.sqlprostudio.com
+homepage: https://www.sqlitepro.com
 
 check:
-  type: html
-  url: https://www.sqlprostudio.com/releasenotes/
-  pattern: '>(20\d\d\.\d+)<'
+  type: redirect
+  url: https://www.sqlitepro.com/download.php
+  pattern: 'SQLProSQLite\.([0-9.]+)\.app\.zip'
 
 changelog:
   url: https://www.sqlprostudio.com/releasenotes/
