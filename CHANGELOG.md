@@ -6,6 +6,7 @@
 ### Features
 
 * **recipe:** Proton Mail Bridge (`com.protonmail.bridge`) - automated downloader ([65efd22](https://github.com/chenasraf/OpenUpdater/commit/65efd22e1760edf61cf8c99dca8e1314d3f8afff))
+* **recipes:** sync community recipes on a single-app re-scan ([6fce0b2](https://github.com/chenasraf/OpenUpdater/commit/6fce0b29a2289ed0f27430137f70cd655c06e2c8))
 
 ## [0.21.0](https://github.com/chenasraf/OpenUpdater/compare/v0.20.0...v0.21.0) (2026-09-11)
 

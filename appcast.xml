@@ -15,6 +15,7 @@
 <h3>Features</h3>
 <ul>
 <li><strong>recipe:</strong> Proton Mail Bridge (<code class="notranslate">com.protonmail.bridge</code>) - automated downloader (<a href="https://github.com/chenasraf/OpenUpdater/commit/65efd22e1760edf61cf8c99dca8e1314d3f8afff">65efd22</a>)</li>
+<li><strong>recipes:</strong> sync community recipes on a single-app re-scan (<a href="https://github.com/chenasraf/OpenUpdater/commit/6fce0b29a2289ed0f27430137f70cd655c06e2c8">6fce0b2</a>)</li>
 </ul>]]></description>
     <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.22.0/OpenUpdater-0.22.0.dmg" sparkle:edSignature="OU5MzRSEMJvsbyPsQHUPfF/3l+OWTE5w/BJaLLqhhW0RZeAQ4s9mAILth8FBJ3Kas5eJEP1Tl8LNlFAva4L2Ag==" length="3376622" type="application/octet-stream"/>
   </item>
