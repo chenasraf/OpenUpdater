@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.22.0](https://github.com/chenasraf/OpenUpdater/compare/v0.21.0...v0.22.0) (2026-09-22)
+
+
+### Features
+
+* **recipe:** Proton Mail Bridge (`com.protonmail.bridge`) - automated downloader ([65efd22](https://github.com/chenasraf/OpenUpdater/commit/65efd22e1760edf61cf8c99dca8e1314d3f8afff))
+
 ## [0.21.0](https://github.com/chenasraf/OpenUpdater/compare/v0.20.0...v0.21.0) (2026-09-11)
 
 
