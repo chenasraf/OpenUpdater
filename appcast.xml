@@ -6,6 +6,19 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.22.0</title>
+    <pubDate>Tue, 22 Sep 2026 12:33:37 +0000</pubDate>
+    <sparkle:version>96</sparkle:version>
+    <sparkle:shortVersionString>0.22.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.21.0...v0.22.0">0.22.0</a> (2026-09-22)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>recipe:</strong> Proton Mail Bridge (<code class="notranslate">com.protonmail.bridge</code>) - automated downloader (<a href="https://github.com/chenasraf/OpenUpdater/commit/65efd22e1760edf61cf8c99dca8e1314d3f8afff">65efd22</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.22.0/OpenUpdater-0.22.0.dmg" sparkle:edSignature="OU5MzRSEMJvsbyPsQHUPfF/3l+OWTE5w/BJaLLqhhW0RZeAQ4s9mAILth8FBJ3Kas5eJEP1Tl8LNlFAva4L2Ag==" length="3376622" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.21.0</title>
     <pubDate>Fri, 11 Sep 2026 21:57:49 +0000</pubDate>
     <sparkle:version>94</sparkle:version>
