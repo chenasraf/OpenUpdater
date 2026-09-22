@@ -321,6 +321,12 @@ final class UpdateManager: ObservableObject {
   private var heartbeat: Timer?
   private static let heartbeatInterval: TimeInterval = 30 * 60
 
+  /// When the community recipes were last synced, so a burst of single-app re-scans
+  /// doesn't re-request the manifest for every app.
+  private var lastRecipeSync: Date?
+  /// How stale the recipe set may be before a single-app re-scan re-syncs it.
+  private static let rescanRecipeSyncInterval: TimeInterval = 60
+
   static let log = Logger(subsystem: "dev.casraf.OpenUpdater", category: "updates")
 
   init() {
@@ -597,17 +603,24 @@ final class UpdateManager: ObservableObject {
 
   // MARK: - Re-scan a single app
 
-  /// Re-scan one app: re-read its installed version from disk (to pick up an update
-  /// applied outside OpenUpdater) and re-check its source for the latest version.
-  /// Apps with no checkable source still get their installed version refreshed.
+  /// Re-scan one app: sync the community recipes, re-read its installed version from
+  /// disk (to pick up an update applied outside OpenUpdater) and re-check its source
+  /// for the latest version. Apps with no checkable source still get their installed
+  /// version refreshed.
+  ///
+  /// Re-scanning one app is how a user reaches for a recipe that landed upstream since
+  /// the last full check, so the sync runs here too — throttled, because re-scanning a
+  /// multi-selection would otherwise re-fetch the manifest once per app.
   func rescan(_ app: AppInfo) async {
-    guard let index = apps.firstIndex(where: { $0.id == app.id }) else { return }
+    guard apps.contains(where: { $0.id == app.id }) else { return }
     Self.log.notice("Re-scan \(app.id, privacy: .public)")
     rescanningIDs.insert(app.id)
     defer { rescanningIDs.remove(app.id) }
+    await syncRemoteRecipes(notSyncedWithin: Self.rescanRecipeSyncInterval)
+    // The sync's status line belongs to a check; drop it unless one is running and owns it.
+    if !isChecking { checkStatusDetail = nil }
     refreshInstalledVersion(id: app.id)
-    _ = await resolveLatest(forAppAt: index)
-    saveCache()
+    await recheck(bundleID: app.id)
   }
 
   /// Re-scan several apps (e.g. a multi-selection), one after another.
@@ -854,9 +867,16 @@ final class UpdateManager: ObservableObject {
 
   /// Sync community recipes from GitHub (best-effort) and reload them if anything
   /// changed. Gated by the "Automatically update recipes" setting.
-  func syncRemoteRecipes() async {
+  ///
+  /// `notSyncedWithin` skips the sync when one finished that recently. The store already
+  /// compares the manifest hash and downloads only changed recipes, so a repeat sync
+  /// costs one small manifest request — this keeps a burst of re-scans from making even
+  /// that request per app. Pass 0 (the default) for a sync the user asked for.
+  func syncRemoteRecipes(notSyncedWithin minInterval: TimeInterval = 0) async {
     guard Self.autoUpdateRecipes else { return }
+    if let last = lastRecipeSync, Date().timeIntervalSince(last) < minInterval { return }
     checkStatusDetail = "Syncing community recipes…"
+    lastRecipeSync = Date()
     if await RemoteRecipeStore.sync(appVersion: Self.appVersion) {
       loadRemoteRecipes()
     }
@@ -878,6 +898,7 @@ final class UpdateManager: ObservableObject {
   func resetRemoteRecipes() async {
     RemoteRecipeStore.clear()
     loadRemoteRecipes()
+    lastRecipeSync = Date()
     if await RemoteRecipeStore.sync(appVersion: Self.appVersion) {
       loadRemoteRecipes()
     }
