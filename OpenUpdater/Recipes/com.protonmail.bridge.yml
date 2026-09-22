@@ -5,9 +5,14 @@ homepage: https://proton.me/mail/bridge
 check:
   type: github_releases
   repo: ProtonMail/proton-bridge
+  asset_pattern: '^Bridge-Installer\.dmg$'
 
 version:
   strip_prefix: v
+
+download:
+  url: https://github.com/ProtonMail/proton-bridge/releases/download/{tag}/Bridge-Installer.dmg
+  format: dmg
 
 changelog:
   url: https://github.com/ProtonMail/proton-bridge/releases/tag/{tag}

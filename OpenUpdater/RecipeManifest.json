@@ -1,5 +1,5 @@
 {
-  "hash": "9c49c5029e740d3dd677423e59d0f6de07b27f024d5902f00ed89a66fc64443e",
+  "hash": "98d5a5cee90ee6400391a8053532505fb4a90d54b16bd9dd73d26fd525c87652",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -118,8 +118,8 @@
     },
     {
       "file": "com.protonmail.bridge.yml",
-      "minApp": "0.0.0",
-      "sha": "aef3bf46ae8b8a37a4a207b73489eb2b6e02134fae097a80f25cda8c08cace7b"
+      "minApp": "0.19.0",
+      "sha": "06bb906496363fb11cc1cbaef28288aae45954e638df1dca871297a702afe23f"
     },
     {
       "file": "com.raspberrypi.rpi-imager.yml",
