@@ -6,6 +6,19 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.23.0</title>
+    <pubDate>Thu, 24 Sep 2026 06:42:48 +0000</pubDate>
+    <sparkle:version>100</sparkle:version>
+    <sparkle:shortVersionString>0.23.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.22.0...v0.23.0">0.23.0</a> (2026-09-24)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>updating:</strong> add 3/6/12-hour check intervals (<a href="https://github.com/chenasraf/OpenUpdater/commit/0e121a3c0c4138d2704f33bfd92bf078d444814f">0e121a3</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.23.0/OpenUpdater-0.23.0.dmg" sparkle:edSignature="EWaXWIFeC3Oxik/agbukycMk/jM+BvnSdPgwfjMh/KuMIDk9Y6yQQxBGwJN9W9tKCmtNpm0Q4n/dysqQGW2ECA==" length="3383804" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.22.0</title>
     <pubDate>Tue, 22 Sep 2026 12:33:37 +0000</pubDate>
     <sparkle:version>96</sparkle:version>
