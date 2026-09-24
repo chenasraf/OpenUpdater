@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.23.0](https://github.com/chenasraf/OpenUpdater/compare/v0.22.0...v0.23.0) (2026-09-24)
+
+
+### Features
+
+* **updating:** add 3/6/12-hour check intervals ([0e121a3](https://github.com/chenasraf/OpenUpdater/commit/0e121a3c0c4138d2704f33bfd92bf078d444814f))
+
 ## [0.22.0](https://github.com/chenasraf/OpenUpdater/compare/v0.21.0...v0.22.0) (2026-09-22)
 
 
