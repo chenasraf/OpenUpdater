@@ -391,6 +391,19 @@ struct UpdatingSettingsView: View {
     _hasStoredToken = State(initialValue: !existing.isEmpty)
   }
 
+  /// Warning shown under the frequency picker when checking several times a day would
+  /// draw on GitHub's unauthenticated request budget. One request per GitHub-tracked
+  /// app, per check, against 60 an hour shared with manual re-scans.
+  private var budgetNote: String? {
+    guard !hasStoredToken, updateManager.checkFrequency.isSubDaily else { return nil }
+    let count = updateManager.gitHubBackedAppCount
+    guard count > 0 else { return nil }
+    let apps = count == 1 ? "1 of your apps is" : "\(count) of your apps are"
+    return
+      "\(apps) checked through GitHub, which allows 60 requests an hour without a token — "
+      + "one request per app, each check. Add a token below to raise that to 5,000."
+  }
+
   var body: some View {
     Form {
       Section {
@@ -401,10 +414,15 @@ struct UpdatingSettingsView: View {
             }
           }
         } caption: {
-          Text(
-            "How often \(AppBranding.title) checks your installed apps for new versions in "
-              + "the background. You can always check now from the main window."
-          )
+          VStack(alignment: .leading, spacing: 6) {
+            Text(
+              "How often \(AppBranding.title) checks your installed apps for new versions in "
+                + "the background. You can always check now from the main window."
+            )
+            if let budgetNote {
+              Text(budgetNote).foregroundStyle(Color.orange)
+            }
+          }
         }
         CaptionedField {
           Toggle("Check for updates at launch", isOn: $checkForUpdatesOnLaunch)

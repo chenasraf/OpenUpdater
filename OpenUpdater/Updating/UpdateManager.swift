@@ -73,6 +73,9 @@ struct CheckFailure: Identifiable {
 /// How often OpenUpdater automatically re-checks installed apps for new versions.
 enum CheckFrequency: String, CaseIterable, Identifiable {
   case manual
+  case everyThreeHours
+  case everySixHours
+  case everyTwelveHours
   case daily
   case everyTwoDays
   case weekly
@@ -84,6 +87,9 @@ enum CheckFrequency: String, CaseIterable, Identifiable {
   var title: String {
     switch self {
     case .manual: return "Manual only"
+    case .everyThreeHours: return "Every 3 hours"
+    case .everySixHours: return "Every 6 hours"
+    case .everyTwelveHours: return "Every 12 hours"
     case .daily: return "Once a day"
     case .everyTwoDays: return "Once every 2 days"
     case .weekly: return "Once a week"
@@ -94,15 +100,27 @@ enum CheckFrequency: String, CaseIterable, Identifiable {
 
   /// The minimum time between automatic checks, or `nil` for manual-only.
   var interval: TimeInterval? {
-    let day: TimeInterval = 24 * 60 * 60
+    let hour: TimeInterval = 60 * 60
+    let day: TimeInterval = 24 * hour
     switch self {
     case .manual: return nil
+    case .everyThreeHours: return 3 * hour
+    case .everySixHours: return 6 * hour
+    case .everyTwelveHours: return 12 * hour
     case .daily: return day
     case .everyTwoDays: return 2 * day
     case .weekly: return 7 * day
     case .everyTwoWeeks: return 14 * day
     case .monthly: return 30 * day
     }
+  }
+
+  /// Whether this frequency checks more than once a day. Each check spends one GitHub
+  /// API request per app tracked through releases, so repeating it within a day makes
+  /// a tokenless request budget worth pointing out.
+  var isSubDaily: Bool {
+    guard let interval else { return false }
+    return interval < 24 * 60 * 60
   }
 }
 
@@ -515,6 +533,12 @@ final class UpdateManager: ObservableObject {
   /// or an App Store receipt.
   private func isCheckable(_ app: AppInfo) -> Bool {
     recipes[app.id] != nil || app.feedURL != nil || app.isAppStoreApp
+  }
+
+  /// How many installed apps a check resolves through GitHub's API. Each one costs a
+  /// request against the 60/hour cap that applies without a personal access token.
+  var gitHubBackedAppCount: Int {
+    apps.filter { isCheckable($0) && intendedSource(for: $0) == .githubRelease }.count
   }
 
   /// Which source `resolveLatest` would query for this app, mirroring its precedence.
