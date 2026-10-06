@@ -1,5 +1,5 @@
 {
-  "hash": "98d5a5cee90ee6400391a8053532505fb4a90d54b16bd9dd73d26fd525c87652",
+  "hash": "d4a4f5b0f3343ae2b0debe299a54f9c51c3371dda4ba68ec6cbc766a2d57418c",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -25,6 +25,11 @@
       "file": "com.canva.affinity.yml",
       "minApp": "0.0.0",
       "sha": "dea22fa01d54bc909afcbaa3ca3c7fc791498e105350f780191c1353a239e6e2"
+    },
+    {
+      "file": "com.dbx.app.yml",
+      "minApp": "0.0.0",
+      "sha": "18a8b3fd4e050e4f579d1bfd38ea572b42819ca4d5fdae17c1ece4a606d5f332"
     },
     {
       "file": "com.docker.docker.yml",

@@ -1,0 +1,22 @@
+id: com.dbx.app
+name: DBX
+homepage: https://github.com/t8y2/dbx
+
+arch:
+  arm64: arm64
+  x86_64: x64
+
+check:
+  type: github_releases
+  repo: t8y2/dbx
+  tag_pattern: '^v\d'
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/t8y2/dbx/releases/download/{tag}/DBX_{version}_{arch}.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/t8y2/dbx/releases/tag/{tag}
