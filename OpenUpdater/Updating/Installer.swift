@@ -82,7 +82,7 @@ nonisolated enum Installer {
     let delegate = DownloadDelegate(onProgress: onProgress)
     let session = URLSession(configuration: .default, delegate: delegate, delegateQueue: nil)
     delegate.session = session
-    let task = session.downloadTask(with: url)
+    let task = session.downloadTask(with: secureURL(url))
     // Cancelling the install Task aborts the download (resumes with URLError.cancelled).
     return try await withTaskCancellationHandler {
       try await withCheckedThrowingContinuation { continuation in
@@ -92,6 +92,17 @@ nonisolated enum Installer {
     } onCancel: {
       task.cancel()
     }
+  }
+
+  /// ATS refuses plain-HTTP loads, yet some feeds still advertise `http://`
+  /// download URLs for hosts that serve the same file over HTTPS (e.g. VLC's
+  /// appcast). Upgrading the scheme is the only way those downloads can succeed.
+  static func secureURL(_ url: URL) -> URL {
+    guard url.scheme?.lowercased() == "http",
+      var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+    else { return url }
+    components.scheme = "https"
+    return components.url ?? url
   }
 
   /// Run a downloaded `.pkg` through the system installer. This needs admin
