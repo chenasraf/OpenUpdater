@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.24.0](https://github.com/chenasraf/OpenUpdater/compare/v0.23.0...v0.24.0) (2026-10-09)
+
+
+### Features
+
+* **recipe:** DBX (`com.dbx.app`) ([4ae6cbe](https://github.com/chenasraf/OpenUpdater/commit/4ae6cbe5e836fc4b7f787649426d64291233763f))
+
+
+### Bug Fixes
+
+* **installer:** upgrade http download URLs to https ([0443f69](https://github.com/chenasraf/OpenUpdater/commit/0443f69490843998ed237ab2f75938f17dedb194))
+
 ## [0.23.0](https://github.com/chenasraf/OpenUpdater/compare/v0.22.0...v0.23.0) (2026-09-24)
 
 
