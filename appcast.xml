@@ -6,6 +6,23 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.24.0</title>
+    <pubDate>Fri, 09 Oct 2026 21:05:15 +0000</pubDate>
+    <sparkle:version>103</sparkle:version>
+    <sparkle:shortVersionString>0.24.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.23.0...v0.24.0">0.24.0</a> (2026-10-09)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>recipe:</strong> DBX (<code class="notranslate">com.dbx.app</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/4ae6cbe5e836fc4b7f787649426d64291233763f">4ae6cbe</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>installer:</strong> upgrade http download URLs to https (<a href="https://github.com/chenasraf/OpenUpdater/commit/0443f69490843998ed237ab2f75938f17dedb194">0443f69</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.24.0/OpenUpdater-0.24.0.dmg" sparkle:edSignature="B6nn98qegX4H9LzX4laDHGb/6zGT0y56/Uzlt2Khcg4RCfOCfCdSjOahdQiGl4igpgk5DS0kmFe61EcEOAopDg==" length="3385432" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.23.0</title>
     <pubDate>Thu, 24 Sep 2026 06:42:48 +0000</pubDate>
     <sparkle:version>100</sparkle:version>
