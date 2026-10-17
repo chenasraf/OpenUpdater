@@ -1,0 +1,10 @@
+id: org.openlogi.openlogi
+name: OpenLogi
+homepage: https://github.com/AprilNEA/OpenLogi
+
+check:
+  type: sparkle
+  feed: https://updates.openlogi.org/channels/stable/appcast-{arch}.xml
+
+changelog:
+  url: https://github.com/AprilNEA/OpenLogi/releases/tag/v{version}

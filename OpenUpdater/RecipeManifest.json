@@ -1,5 +1,5 @@
 {
-  "hash": "3c0ae2e1788b2238ff499517c469658c6e88bc06f5d729a14b55a1bce6a6aae5",
+  "hash": "a9670b1bf5266dd5dbcee279325add3554d04223627ef84f40d9d42c88fe8063",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -325,6 +325,11 @@
       "file": "org.mozilla.thunderbird.yml",
       "minApp": "0.0.0",
       "sha": "fec30a7705a25397a4d44916df1530e9e78c6405743e109c57284b340ce13ae3"
+    },
+    {
+      "file": "org.openlogi.openlogi.yml",
+      "minApp": "0.0.0",
+      "sha": "cf99bfc6824b8d0836673226f02c7ec9f1b066ab1eeca23216048f6ef64e5112"
     },
     {
       "file": "org.sithlord48.blackchocobo.yml",
