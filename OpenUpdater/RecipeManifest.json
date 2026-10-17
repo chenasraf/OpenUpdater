@@ -1,5 +1,5 @@
 {
-  "hash": "48230f5994eb440751441aed2cfc517cd0701d12d2f29b454a5cada1b64c2bf2",
+  "hash": "7ac2469714e7a17c0cf702680bb754fd3f0d51505af6a927a37fa67e41e89bf3",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -140,6 +140,11 @@
       "file": "com.raspberrypi.rpi-imager.yml",
       "minApp": "0.0.0",
       "sha": "b65928a77f4aefd0ec5c259285f7e7c223cb681eae8cf5069ebd3bffad4679be"
+    },
+    {
+      "file": "com.rogueamoeba.soundsource.yml",
+      "minApp": "0.0.0",
+      "sha": "1c63cca6160620891accf841d60bfc4cdf6973179b7eee7a818b6d2145bb34d3"
     },
     {
       "file": "com.runningwithcrayons.Alfred.yml",

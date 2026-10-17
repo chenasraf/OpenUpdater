@@ -1,0 +1,18 @@
+id: com.rogueamoeba.soundsource
+name: SoundSource
+homepage: https://rogueamoeba.com/soundsource/
+
+manual_major_upgrades: true
+manual_major_upgrades_reason: paid_license
+
+check:
+  type: xml
+  url: https://rogueamoeba.net/ping/versionCheck.cgi?format=sparkle&system=2600&bundleid=com.rogueamoeba.soundsource&platform=osx&version=99000000
+  pattern: '<sparkle:version>([^<]+)</sparkle:version>'
+
+download:
+  url: https://cdn.rogueamoeba.com/soundsource/download/SoundSource.zip
+  format: zip
+
+changelog:
+  url: https://rogueamoeba.com/support/releasenotes/?product=SoundSource
