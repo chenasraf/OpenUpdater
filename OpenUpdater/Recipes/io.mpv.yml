@@ -1,0 +1,18 @@
+id: io.mpv
+name: mpv
+homepage: https://mpv.io
+
+check:
+  type: github_releases
+  repo: mpv-player/mpv
+  tag_pattern: '^v\d'
+
+installed_version:
+  key: CFBundleShortVersionString
+  pattern: '^(\d+(?:\.\d+)+)'
+
+version:
+  strip_prefix: v
+
+changelog:
+  url: https://github.com/mpv-player/mpv/releases/tag/{tag}

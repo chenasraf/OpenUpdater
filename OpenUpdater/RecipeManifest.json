@@ -1,5 +1,5 @@
 {
-  "hash": "00c6718a6872cc276bb90418d231d6372446eaf9342e7f50bbd626faee37ed0c",
+  "hash": "52bddb826c91587db906a3911dd25a96b04425dde787de4a63e64ff9f6a367f3",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -210,6 +210,11 @@
       "file": "io.ganeshrvel.openmtp.yml",
       "minApp": "0.0.0",
       "sha": "688cd2df1f244c7545ce7192af4f8e96ec468f56d7af7780f72c745e585e9f75"
+    },
+    {
+      "file": "io.mpv.yml",
+      "minApp": "0.0.0",
+      "sha": "fe94fd83093044aefcef6e905a3c45d6b866d48daaab9ee60fdddfece7dd5282"
     },
     {
       "file": "io.tailscale.ipn.macsys.yml",
