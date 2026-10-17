@@ -49,6 +49,7 @@ ARCH_TOKEN = re.compile(
 # only that architecture, so there is no `{arch}` alternative to select.
 ARCH_LINT_ALLOWLIST = {
     "com.yourcompany.converseen",  # upstream ships a macOS x86_64 build only
+    "com.bluemaxima.flashpoint-launcher",  # upstream ships a macOS arm64 build only
 }
 
 REPO_ROOT = Path(__file__).resolve().parent.parent

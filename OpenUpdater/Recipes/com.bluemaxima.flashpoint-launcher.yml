@@ -1,0 +1,15 @@
+id: com.bluemaxima.flashpoint-launcher
+name: Flashpoint Launcher
+homepage: https://flashpointarchive.org
+
+check:
+  type: github_releases
+  repo: FlashpointProject/launcher
+  asset_pattern: '_mac-arm64\.dmg$'
+
+download:
+  url: https://github.com/FlashpointProject/launcher/releases/download/{tag}/Flashpoint-{version}_mac-arm64.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/FlashpointProject/launcher/releases/tag/{tag}
