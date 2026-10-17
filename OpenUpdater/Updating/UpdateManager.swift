@@ -357,6 +357,7 @@ final class UpdateManager: ObservableObject {
     scanInstalledApps()
     applyCachedResults()
     scheduleHeartbeat()
+    watchInstalledApps()
     Self.log.notice(
       "Loaded \(self.builtInRecipes.count, privacy: .public) built-in + \(self.remoteRecipes.count, privacy: .public) community + \(self.customRecipes.count, privacy: .public) custom recipe(s), scanned \(self.apps.count, privacy: .public) app(s)"
     )
@@ -379,9 +380,43 @@ final class UpdateManager: ObservableObject {
   /// shallow on purpose so we don't traverse huge nested trees (e.g. game archives).
   private static let maxScanDepth = 2
 
+  /// Watches the search paths so apps installed or removed while running show up
+  /// without a relaunch.
+  private var appsWatcher: DirectoryWatcher?
+  /// Set when the search paths changed mid-install. Our own in-place replace briefly
+  /// removes the bundle, so the re-scan waits for the install queue to drain.
+  private var appsChangedDuringInstall = false
+
+  private func watchInstalledApps() {
+    let fileManager = FileManager.default
+    let existing = searchPaths.filter { fileManager.fileExists(atPath: $0.path) }
+    appsWatcher = DirectoryWatcher(paths: existing) { [weak self] in
+      self?.installedAppsChanged()
+    }
+  }
+
+  /// Re-scan after the search paths changed, then look up the latest version of any
+  /// newly found app so it doesn't sit unchecked until the next full check.
+  private func installedAppsChanged() {
+    guard !isInstalling else {
+      appsChangedDuringInstall = true
+      return
+    }
+    let added = scanInstalledApps()
+    guard !added.isEmpty else { return }
+    Self.log.notice("Found \(added.count, privacy: .public) newly installed app(s)")
+    Task {
+      for id in added { _ = await resolveLatest(for: id) }
+      saveCache()
+    }
+  }
+
   /// Walk each search path — including a couple of folder levels down, so apps nested
-  /// in vendor folders are found too — and read every bundle's `Info.plist`.
-  func scanInstalledApps() {
+  /// in vendor folders are found too — and read every bundle's `Info.plist`. Apps
+  /// already in the list keep their resolved latest-version info. Returns the ids of
+  /// apps that weren't in the list before.
+  @discardableResult
+  func scanInstalledApps() -> [String] {
     let fileManager = FileManager.default
     var discovered: [String: AppInfo] = [:]
 
@@ -409,10 +444,29 @@ final class UpdateManager: ObservableObject {
       }
     }
 
+    let previous = Dictionary(apps.map { ($0.id, $0) }) { first, _ in first }
+    var added: [String] = []
+    for (id, var app) in discovered {
+      guard let old = previous[id] else {
+        added.append(id)
+        continue
+      }
+      app.latestVersion = old.latestVersion
+      app.latestBuild = old.latestBuild
+      app.changelogURL = old.changelogURL
+      app.homepageURL = old.homepageURL
+      app.downloadURL = old.downloadURL
+      app.downloadFormat = old.downloadFormat
+      app.appStoreURL = old.appStoreURL
+      app.source = old.source
+      discovered[id] = app
+    }
+
     apps = discovered.values.sorted {
       $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
     }
     for index in apps.indices { applyIgnore(toAppAt: index) }
+    return previous.isEmpty ? [] : added
   }
 
   /// Build an `AppInfo` from an `.app` bundle, or `nil` if its `Info.plist` is unreadable.
@@ -495,26 +549,24 @@ final class UpdateManager: ObservableObject {
     // Pull the latest community recipes first (best-effort) so this check uses them.
     await syncRemoteRecipes()
 
-    var checkable = 0
-    for app in apps where isCheckable(app) { checkable += 1 }
-    Self.log.notice("Checking \(checkable, privacy: .public) checkable app(s)")
+    // Walk a snapshot of ids, not indices: the installed-apps watcher can add or
+    // remove apps while a lookup is awaiting the network.
+    let checkable = apps.filter(isCheckable).map(\.id)
+    Self.log.notice("Checking \(checkable.count, privacy: .public) checkable app(s)")
 
     var failures: [CheckFailure] = []
     var rateLimited = false
-    var done = 0
-    for index in apps.indices {
-      guard isCheckable(apps[index]) else { continue }
-      done += 1
-      checkStatusDetail = "Checking \(apps[index].name) (\(done)/\(checkable))…"
+    for (done, id) in checkable.enumerated() {
+      guard let app = apps.first(where: { $0.id == id }) else { continue }
+      checkStatusDetail = "Checking \(app.name) (\(done + 1)/\(checkable.count))…"
       // Re-read the installed version from disk first, so an app updated since the
       // cached scan (by us or externally) is compared against what's actually
       // installed and drops off the updates list — matching a single-app re-scan.
-      refreshInstalledVersion(id: apps[index].id)
-      if let error = await resolveLatest(forAppAt: index) {
-        let app = apps[index]
+      refreshInstalledVersion(id: id)
+      if let error = await resolveLatest(for: id) {
         failures.append(
           CheckFailure(
-            id: app.id, appName: app.name, source: intendedSource(for: app).label, error: error))
+            id: id, appName: app.name, source: intendedSource(for: app).label, error: error))
         if case UpdateCheckError.rateLimited = error { rateLimited = true }
       }
     }
@@ -557,12 +609,11 @@ final class UpdateManager: ObservableObject {
     return .appStore
   }
 
-  /// Resolve the latest version for the app at `index` and update its fields.
+  /// Resolve the latest version for the app with bundle id `id` and update its fields.
   /// Returns the error when the lookup failed; `nil` on success or "no update".
-  private func resolveLatest(forAppAt index: Int) async -> Error? {
-    let app = apps[index]
+  private func resolveLatest(for id: String) async -> Error? {
+    guard let app = apps.first(where: { $0.id == id }), isCheckable(app) else { return nil }
     let recipe = effectiveRecipe(for: app)
-    guard isCheckable(app) else { return nil }
 
     do {
       let result: ReleaseResult
@@ -597,6 +648,8 @@ final class UpdateManager: ObservableObject {
         source = .appStore
       }
 
+      // Look the app up again: the list may have changed during the lookup.
+      guard let index = apps.firstIndex(where: { $0.id == id }) else { return nil }
       apps[index].latestVersion = result.version
       apps[index].latestBuild = result.build
       apps[index].source = source
@@ -693,16 +746,14 @@ final class UpdateManager: ObservableObject {
   /// Set the per-app release channel and immediately re-check that app.
   func setChannel(_ id: String, for app: AppInfo) async {
     AppPreferences.update(app.id) { $0.channel = id }
-    guard let index = apps.firstIndex(where: { $0.id == app.id }) else { return }
-    _ = await resolveLatest(forAppAt: index)
+    _ = await resolveLatest(for: app.id)
     saveCache()
   }
 
   /// Set the per-app pre-release preference and immediately re-check that app.
   func setPrereleases(_ value: Bool, for app: AppInfo) async {
     AppPreferences.update(app.id) { $0.includePrereleases = value }
-    guard let index = apps.firstIndex(where: { $0.id == app.id }) else { return }
-    _ = await resolveLatest(forAppAt: index)
+    _ = await resolveLatest(for: app.id)
     saveCache()
   }
 
@@ -941,7 +992,7 @@ final class UpdateManager: ObservableObject {
     apps[index].majorUpgradesAreManual = recipes[bundleID]?.majorUpgradesAreManual ?? false
     apps[index].majorUpgradeReason = recipes[bundleID]?.manualMajorUpgradesReason
     if isCheckable(apps[index]) {
-      _ = await resolveLatest(forAppAt: index)
+      _ = await resolveLatest(for: bundleID)
     } else {
       apps[index].latestVersion = nil
       apps[index].latestBuild = nil
@@ -1085,6 +1136,10 @@ final class UpdateManager: ObservableObject {
         self.installQueue.removeAll { $0.id == id }
       }
       self.queueWorker = nil
+      if self.appsChangedDuringInstall {
+        self.appsChangedDuringInstall = false
+        self.installedAppsChanged()
+      }
     }
   }
 
