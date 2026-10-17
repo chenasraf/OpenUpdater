@@ -1,10 +1,15 @@
 {
-  "hash": "ea881e9ea8ae13c809988a9815fa9aad41b28c927a4121fb17b8d4de6724651e",
+  "hash": "48230f5994eb440751441aed2cfc517cd0701d12d2f29b454a5cada1b64c2bf2",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
       "minApp": "0.0.0",
       "sha": "798a94e3ecab169d27e1def19f9071d1398ec9c333d48b6d2c917b3b829eff2f"
+    },
+    {
+      "file": "at.obdev.littlesnitch.yml",
+      "minApp": "0.0.0",
+      "sha": "3a0be8eb37808828898bf8905551441cbe321149378b71e566ae0a66fb6fbe74"
     },
     {
       "file": "bobko.aerospace.yml",

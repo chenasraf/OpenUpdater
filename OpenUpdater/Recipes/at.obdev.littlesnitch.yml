@@ -1,0 +1,18 @@
+id: at.obdev.littlesnitch
+name: Little Snitch
+homepage: https://www.obdev.at/products/littlesnitch/
+
+manual_major_upgrades: true
+manual_major_upgrades_reason: paid_license
+
+check:
+  type: html
+  url: https://www.obdev.at/products/littlesnitch/download.html
+  pattern: 'LittleSnitch-([0-9][0-9.]*)\.dmg'
+  download_pattern: 'href="([^"]*LittleSnitch-[0-9][0-9.]*\.dmg)"'
+
+download:
+  format: dmg
+
+changelog:
+  url: https://www.obdev.at/products/littlesnitch/releasenotes.html
