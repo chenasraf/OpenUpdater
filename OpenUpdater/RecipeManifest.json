@@ -1,5 +1,5 @@
 {
-  "hash": "a7e6b8ee09c079d985a381c92ea3b4d639f75acf4a28afcdee7a7787b91d0bd9",
+  "hash": "1ce64c2d4548225ed7bf09529a4418a8289f93ad37996f2cd1d36e75ae25d4dd",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -20,6 +20,11 @@
       "file": "bobko.aerospace.yml",
       "minApp": "0.0.0",
       "sha": "13a0cb205cee9f1634a7bf5f05a61237428e907c9625d09c1d89ec84b9509add"
+    },
+    {
+      "file": "cc.ffitch.shottr.yml",
+      "minApp": "0.0.0",
+      "sha": "8dfd95be22c40da2a830a8094022c9ae588c8031afda71f2441a2c6a47b2dfbb"
     },
     {
       "file": "ch.protonmail.desktop.yml",

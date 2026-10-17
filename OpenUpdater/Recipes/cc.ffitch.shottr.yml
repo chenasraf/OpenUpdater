@@ -1,0 +1,15 @@
+id: cc.ffitch.shottr
+name: Shottr
+homepage: https://shottr.cc
+
+check:
+  type: html
+  url: https://shottr.cc/
+  pattern: 'href="/dl/Shottr-(\d+(?:\.\d+)+)[a-z]?\.dmg" class="download gaDownload"'
+  download_pattern: 'href="(/dl/Shottr-\d+(?:\.\d+)+[a-z]?\.dmg)" class="download gaDownload"'
+
+download:
+  format: dmg
+
+changelog:
+  url: https://shottr.cc/newversion.html
