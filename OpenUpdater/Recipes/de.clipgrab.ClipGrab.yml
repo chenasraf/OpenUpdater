@@ -1,0 +1,12 @@
+id: de.clipgrab.ClipGrab
+name: ClipGrab
+homepage: https://clipgrab.org
+
+check:
+  type: html
+  url: https://clipgrab.org/
+  pattern: 'download\.clipgrab\.org/ClipGrab-([0-9][^"]*?)\.dmg'
+  download_pattern: 'href="(https://download\.clipgrab\.org/ClipGrab-[^"]+\.dmg)"'
+
+download:
+  format: dmg

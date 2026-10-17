@@ -1,5 +1,5 @@
 {
-  "hash": "7ac2469714e7a17c0cf702680bb754fd3f0d51505af6a927a37fa67e41e89bf3",
+  "hash": "d6c572bc2867f3c974d57f1c6b1af570126af7e4f38917e692c5d755188b2649",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -175,6 +175,11 @@
       "file": "com.yourcompany.converseen.yml",
       "minApp": "0.0.0",
       "sha": "0c84da8be1349fc1a896ff1355ed22dc727ee05b836aae256d5b821f05809d13"
+    },
+    {
+      "file": "de.clipgrab.ClipGrab.yml",
+      "minApp": "0.0.0",
+      "sha": "9f214865796ffd08d4fb22fca5c3b471f3009c6ef60f18008db71a18af181d49"
     },
     {
       "file": "dev.mandre.rquickshare.yml",
