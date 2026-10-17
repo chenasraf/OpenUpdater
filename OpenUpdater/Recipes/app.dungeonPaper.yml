@@ -1,0 +1,18 @@
+id: app.dungeonPaper
+name: Dungeon Paper
+homepage: https://dungeonpaper.app
+
+check:
+  type: json
+  url: https://api.github.com/repos/DungeonPaper/dungeon-paper-app/releases/latest
+  path: tag_name
+  download_path: 'assets.[name~.dmg].browser_download_url'
+
+version:
+  strip_prefix: v
+
+download:
+  format: dmg
+
+changelog:
+  url: https://github.com/DungeonPaper/dungeon-paper-app/releases/tag/v{version}

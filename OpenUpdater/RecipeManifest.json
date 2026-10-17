@@ -1,6 +1,11 @@
 {
-  "hash": "becb38747c9a254b0a57838bf8538ea9c5c9afecad9bbe64f3bcdc0fc8ee7510",
+  "hash": "1d1fe91cb05e55d7b143edee91b3bf7ac150b3386bc0b9f789afeb72e7d35322",
   "recipes": [
+    {
+      "file": "app.dungeonPaper.yml",
+      "minApp": "0.9.0",
+      "sha": "714053034122e1c155165682f3cc65acf025ea16916bce12aa2ed1f7ae434c1b"
+    },
     {
       "file": "app.zen-browser.zen.yml",
       "minApp": "0.0.0",
