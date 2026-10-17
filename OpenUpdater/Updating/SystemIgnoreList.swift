@@ -39,8 +39,13 @@ nonisolated enum SystemIgnoreList {
     "com.corecode.MacUpdater": "Updates itself",
     "com.valvesoftware.steam": "Updates itself",
     "com.amazon.SendToKindle": "Updates itself",
+    // Installed by the python.org package into a per-version `Python 3.x` folder, so a
+    // newer Python lands beside them instead of replacing them.
+    "org.python.IDLE": "Bundled with Python",
+    "org.python.PythonLauncher": "Bundled with Python",
     // No public update source found.
     "Qisda.DDPM": "No update source",
+    "com.intel.PowerGadget": "Discontinued",
   ]
 
   static let appleAppReason = "Apple system app"
