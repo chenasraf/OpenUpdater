@@ -82,7 +82,14 @@ nonisolated enum Installer {
     let delegate = DownloadDelegate(onProgress: onProgress)
     let session = URLSession(configuration: .default, delegate: delegate, delegateQueue: nil)
     delegate.session = session
-    let task = session.downloadTask(with: secureURL(url))
+    var request = URLRequest(url: secureURL(url))
+    // Private-repo release assets only download through the API, authenticated.
+    if GitHubReleaseSource.isAssetAPIURL(url), let token = GitHubToken.load() {
+      request.setValue("application/octet-stream", forHTTPHeaderField: "Accept")
+      request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
+      request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+    }
+    let task = session.downloadTask(with: request)
     // Cancelling the install Task aborts the download (resumes with URLError.cancelled).
     return try await withTaskCancellationHandler {
       try await withCheckedThrowingContinuation { continuation in
@@ -471,6 +478,21 @@ private final class DownloadDelegate: NSObject, URLSessionDownloadDelegate, @unc
 
   init(onProgress: @escaping @Sendable (Double) -> Void) {
     self.onProgress = onProgress
+  }
+
+  /// GitHub answers an authenticated asset request with a redirect to a pre-signed
+  /// storage URL on another host, which rejects a request that also carries a token —
+  /// and the token mustn't leak to a third-party host anyway.
+  func urlSession(
+    _ session: URLSession, task: URLSessionTask,
+    willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest,
+    completionHandler: @escaping (URLRequest?) -> Void
+  ) {
+    var next = request
+    if next.url?.host != task.originalRequest?.url?.host {
+      next.setValue(nil, forHTTPHeaderField: "Authorization")
+    }
+    completionHandler(next)
   }
 
   func urlSession(

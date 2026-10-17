@@ -134,6 +134,14 @@ enum GitHubReleaseSource {
 
     struct Asset: Decodable {
       let name: String
+      /// The asset's API endpoint — the only download route that accepts a token.
+      let url: URL
+      let browserDownloadURL: URL
+
+      enum CodingKeys: String, CodingKey {
+        case name, url
+        case browserDownloadURL = "browser_download_url"
+      }
     }
 
     enum CodingKeys: String, CodingKey {
@@ -191,11 +199,68 @@ enum GitHubReleaseSource {
     if let template = recipe.download?.urlTemplate {
       downloadURL = URL(string: recipe.expand(template, tag: chosen.tagName, version: version))
     }
+    // Read the format off the release-page URL: the API asset URL swapped in below
+    // has no file extension to infer it from.
+    let format =
+      recipe.download?.format ?? downloadURL.flatMap { ArchiveFormat(inferringFrom: $0)?.rawValue }
+    if let browserURL = downloadURL,
+      let asset = chosen.assets.first(where: { $0.browserDownloadURL == browserURL }),
+      await isPrivate(repo: repo)
+    {
+      downloadURL = asset.url
+    }
     return ReleaseResult(
       tag: chosen.tagName,
       version: version,
       downloadURL: downloadURL,
-      format: recipe.download?.format
+      format: format
     )
+  }
+
+  /// Whether `repo` is private, i.e. its release-page download links 404 and assets
+  /// must be fetched through the API with the token. Only answerable with a token
+  /// (a private repo is invisible without one), and cached since it never flips
+  /// between checks in practice.
+  private static func isPrivate(repo: String) async -> Bool {
+    guard let token = GitHubToken.load(),
+      let url = URL(string: "https://api.github.com/repos/\(repo)")
+    else { return false }
+    if let cached = privateRepos.value(for: repo) { return cached }
+
+    var request = URLRequest(url: url)
+    request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
+    request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
+    request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+    struct Repo: Decodable { let `private`: Bool }
+    guard let (data, http) = try? await HTTPClient.send(request), http.statusCode == 200,
+      let info = try? JSONDecoder().decode(Repo.self, from: data)
+    else { return false }
+    privateRepos.set(info.private, for: repo)
+    return info.private
+  }
+
+  private static let privateRepos = RepoPrivacyCache()
+
+  /// Whether a GitHub URL is a release-asset API endpoint, which needs the token and
+  /// `Accept: application/octet-stream` to return the file instead of its metadata.
+  nonisolated static func isAssetAPIURL(_ url: URL) -> Bool {
+    url.host == "api.github.com" && url.path.contains("/releases/assets/")
+  }
+}
+
+private nonisolated final class RepoPrivacyCache: @unchecked Sendable {
+  private let lock = NSLock()
+  private var values: [String: Bool] = [:]
+
+  func value(for repo: String) -> Bool? {
+    lock.lock()
+    defer { lock.unlock() }
+    return values[repo]
+  }
+
+  func set(_ value: Bool, for repo: String) {
+    lock.lock()
+    defer { lock.unlock() }
+    values[repo] = value
   }
 }

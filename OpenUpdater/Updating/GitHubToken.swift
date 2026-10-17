@@ -11,7 +11,7 @@ import Security
 /// Stores the optional GitHub personal access token in the macOS Keychain
 /// (encrypted at rest). The token can't be hashed — it has to be sent verbatim in
 /// the `Authorization` header — so the Keychain is the right secure store.
-enum GitHubToken {
+nonisolated enum GitHubToken {
   private static let service = "dev.casraf.OpenUpdater"
   private static let account = "github-token"
 
