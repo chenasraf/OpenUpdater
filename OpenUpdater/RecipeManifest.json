@@ -1,5 +1,5 @@
 {
-  "hash": "d4a4f5b0f3343ae2b0debe299a54f9c51c3371dda4ba68ec6cbc766a2d57418c",
+  "hash": "ea881e9ea8ae13c809988a9815fa9aad41b28c927a4121fb17b8d4de6724651e",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -45,6 +45,11 @@
       "file": "com.endrift.mgba-qt.yml",
       "minApp": "0.0.0",
       "sha": "8655f9eb74df49604d2f6d02aff264eee9e9536914acc34c99d4b352135f54e9"
+    },
+    {
+      "file": "com.github.GitHubClient.yml",
+      "minApp": "0.19.0",
+      "sha": "f52e0e37135031e43f9512ab27eeca3008ce03754fa6c8fb0e7066d59efdd96e"
     },
     {
       "file": "com.github.wez.wezterm.yml",

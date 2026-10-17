@@ -1,0 +1,24 @@
+id: com.github.GitHubClient
+name: GitHub Desktop
+homepage: https://desktop.github.com
+
+arch:
+  arm64: arm64
+  x86_64: x64
+
+check:
+  type: github_releases
+  repo: desktop/desktop
+  prereleases: false
+  tag_pattern: '^release-\d+\.\d+\.\d+$'
+  asset_pattern: '\.zip$'
+
+version:
+  strip_prefix: release-
+
+download:
+  url: https://github.com/desktop/desktop/releases/download/{tag}/GitHub.Desktop-{arch}.zip
+  format: zip
+
+changelog:
+  url: https://github.com/desktop/desktop/releases/tag/{tag}
