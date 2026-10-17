@@ -1,0 +1,11 @@
+id: com.bresink.system.softwareupdater
+name: Bresink Software Updater
+homepage: https://www.bresink.com/osx/BresinkSoftwareUpdater.html
+
+check:
+  type: xml
+  url: https://www.bresink.com/ProductRepository/BresinkSoftwareUpdater.plist
+  pattern: '<key>MBSVersionNumber</key>\s*<string>([^<]+)</string>'
+
+changelog:
+  url: https://www.bresink.com/osx/0SoftwareUpdater/history.html
