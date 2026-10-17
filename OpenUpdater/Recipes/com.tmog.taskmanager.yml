@@ -1,0 +1,15 @@
+id: com.tmog.taskmanager
+name: Task Manager OG (TMOG)
+homepage: https://www.tmog.org
+
+check:
+  type: json
+  url: https://www.tmog.org/downloads/release.json
+  path: version
+  download_path: artifact
+
+download:
+  format: dmg
+
+changelog:
+  url: https://www.tmog.org/rtm/release-notes.html
