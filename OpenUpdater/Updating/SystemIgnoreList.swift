@@ -16,39 +16,59 @@ nonisolated enum SystemIgnoreList {
   /// Extend this list as new always-ignore apps come up. (Apple's own apps are
   /// covered by `isAppleApp`, so they don't need entries here.)
   static let presetBundleIDs: [String: String] = [
-    "dev.casraf.OpenUpdater": "\(AppBranding.title) itself",
+    "dev.casraf.OpenUpdater": selfReason,
     // Shortcuts / helpers / uninstallers — nothing to update.
-    "com.google.drivefs.shortcuts.docs": "Google Drive shortcut",
-    "com.google.drivefs.shortcuts.sheets": "Google Drive shortcut",
-    "com.google.drivefs.shortcuts.slides": "Google Drive shortcut",
-    "com.anthropic.claude-code-url-handler": "Helper app",
-    "com.amazon.SendToKindleUninstaller": "Uninstaller",
+    "com.google.drivefs.shortcuts.docs": googleDriveShortcutReason,
+    "com.google.drivefs.shortcuts.sheets": googleDriveShortcutReason,
+    "com.google.drivefs.shortcuts.slides": googleDriveShortcutReason,
+    "com.anthropic.claude-code-url-handler": helperAppReason,
+    "com.amazon.SendToKindleUninstaller": uninstallerReason,
+    "com.autodesk.dls.streamer.scriptapp.Remove-Autodesk-Fusion": uninstallerReason,
+    "com.autodesk.dls.streamer.scriptapp.Autodesk-Fusion-Service-Utility": helperAppReason,
+    "com.logi.pluginservice": helperAppReason,
+    "com.amazon.UsbFileManager": helperAppReason,
+    "com.sandisk.softwareInstaller": installerReason,
     // No bundle id of its own — scanned under its app name.
-    "Proton Mail Uninstaller": "Uninstaller",
+    "Proton Mail Uninstaller": uninstallerReason,
     // Apps that ship their own updater — no public source to track, and updating
     // them through OpenUpdater would fight their built-in mechanism.
-    "com.runningwithcrayons.Alfred": "Updates itself",
-    "com.amazon.Lassen": "Updates itself",
-    "com.google.android.studio": "Updates itself",
-    "com.anthropic.claudefordesktop": "Updates itself",
-    "com.epicgames.EpicGamesLauncher": "Updates itself",
-    "com.expressvpn.ExpressVPN": "Updates itself",
-    "com.gog.galaxy": "Updates itself",
-    "com.jagex.launcher": "Updates itself",
-    "com.logi.optionsplus": "Updates itself",
-    "com.corecode.MacUpdater": "Updates itself",
-    "com.valvesoftware.steam": "Updates itself",
-    "com.amazon.SendToKindle": "Updates itself",
+    "com.runningwithcrayons.Alfred": updatesItselfReason,
+    "com.amazon.Lassen": updatesItselfReason,
+    "com.google.android.studio": updatesItselfReason,
+    "com.anthropic.claudefordesktop": updatesItselfReason,
+    "com.epicgames.EpicGamesLauncher": updatesItselfReason,
+    "com.expressvpn.ExpressVPN": updatesItselfReason,
+    "com.gog.galaxy": updatesItselfReason,
+    "com.jagex.launcher": updatesItselfReason,
+    "com.logi.optionsplus": updatesItselfReason,
+    "com.corecode.MacUpdater": updatesItselfReason,
+    "com.valvesoftware.steam": updatesItselfReason,
+    "com.amazon.SendToKindle": updatesItselfReason,
+    "com.autodesk.dls.streamer.scriptapp.Autodesk-Fusion": updatesItselfReason,
     // Installed by the python.org package into a per-version `Python 3.x` folder, so a
     // newer Python lands beside them instead of replacing them.
-    "org.python.IDLE": "Bundled with Python",
-    "org.python.PythonLauncher": "Bundled with Python",
-    // No public update source found.
-    "Qisda.DDPM": "No update source",
-    "com.intel.PowerGadget": "Discontinued",
+    "org.python.IDLE": bundledWithPythonReason,
+    "org.python.PythonLauncher": bundledWithPythonReason,
+    "Qisda.DDPM": noUpdateSourceReason,
+    "com.intel.PowerGadget": discontinuedReason,
+    "com.intelliscapesolutions.caffeine": discontinuedReason,
+    // Ships a placeholder version ("1.0"), so any source would report an update forever.
+    "com.unified.Unified-Remote": noVersionInfoReason,
   ]
 
+  static let selfReason = "\(AppBranding.title) itself"
+  static let googleDriveShortcutReason = "Google Drive shortcut"
+  static let helperAppReason = "Helper app"
+  static let uninstallerReason = "Uninstaller"
+  static let installerReason = "Installer"
+  static let updatesItselfReason = "Updates itself"
+  static let bundledWithPythonReason = "Bundled with Python"
+  static let noUpdateSourceReason = "No update source"
+  static let discontinuedReason = "Discontinued"
+  static let noVersionInfoReason = "No version info"
   static let appleAppReason = "Apple system app"
+  static let crossOverAppReason = "CrossOver app"
+  static let chromeWebAppReason = "Chrome web app"
   static let steamGameReason = "Steam game"
 
   /// The reason OpenUpdater ignores this app by default, or `nil` if it's a normal,
@@ -57,7 +77,9 @@ nonisolated enum SystemIgnoreList {
     if let preset = presetBundleIDs[bundleID] { return preset }
     if isAppleApp(bundleID: bundleID) { return appleAppReason }
     // CrossOver wraps Windows apps in helper bundles — managed by CrossOver, not us.
-    if bundleID.hasPrefix("com.codeweavers.CrossOverHelper") { return "CrossOver app" }
+    if bundleID.hasPrefix("com.codeweavers.CrossOverHelper") { return crossOverAppReason }
+    // Chrome generates these shims for installed web apps and keeps them current itself.
+    if bundleID.hasPrefix("com.google.Chrome.app.") { return chromeWebAppReason }
     if isSteamGame(at: url) { return steamGameReason }
     return nil
   }
