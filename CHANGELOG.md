@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.25.0](https://github.com/chenasraf/OpenUpdater/compare/v0.24.0...v0.25.0) (2026-10-17)
+
+
+### Features
+
+* **updating:** watch for installed and removed apps ([24df322](https://github.com/chenasraf/OpenUpdater/commit/24df322eec0814060ce4e686865fa70344661ffb))
+
 ## [0.24.0](https://github.com/chenasraf/OpenUpdater/compare/v0.23.0...v0.24.0) (2026-10-09)
 
 
