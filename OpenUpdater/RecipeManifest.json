@@ -1,5 +1,5 @@
 {
-  "hash": "52bddb826c91587db906a3911dd25a96b04425dde787de4a63e64ff9f6a367f3",
+  "hash": "a7e6b8ee09c079d985a381c92ea3b4d639f75acf4a28afcdee7a7787b91d0bd9",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -145,6 +145,11 @@
       "file": "com.nextcloud.talk.mac.yml",
       "minApp": "0.0.0",
       "sha": "9df787514bdc1b7c19cbca7a2404a6ddbe7747d346c8f12664ae98d6281dde89"
+    },
+    {
+      "file": "com.pilotmoon.scroll-reverser.yml",
+      "minApp": "0.0.0",
+      "sha": "e7ad3c5abefce978ead9bcba28b0407cab38083990c9395f24f5aaed51dd11d0"
     },
     {
       "file": "com.protonmail.bridge.yml",

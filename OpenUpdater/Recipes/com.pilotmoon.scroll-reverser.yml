@@ -1,0 +1,7 @@
+id: com.pilotmoon.scroll-reverser
+name: Scroll Reverser
+homepage: https://pilotmoon.com/scrollreverser/
+
+check:
+  type: sparkle
+  feed: https://softwareupdate.pilotmoon.com/update/scrollreverser/appcast.xml
