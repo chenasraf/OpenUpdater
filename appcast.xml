@@ -6,6 +6,36 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.26.0</title>
+    <pubDate>Sat, 17 Oct 2026 19:39:39 +0000</pubDate>
+    <sparkle:version>108</sparkle:version>
+    <sparkle:shortVersionString>0.26.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.25.0...v0.26.0">0.26.0</a> (2026-10-17)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>recipe:</strong> Asyar (<code class="notranslate">org.asyar.app</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/a6a399aa1d591f007d9f24215262482f10bb66c1">a6a399a</a>)</li>
+<li><strong>recipe:</strong> Bresink Software Updater (<code class="notranslate">com.bresink.system.softwareupdater</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/8f7d728e1f73064cfaf555a0a65fc820ffbdf43e">8f7d728</a>)</li>
+<li><strong>recipe:</strong> ClipGrab (<code class="notranslate">de.clipgrab.ClipGrab</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/7d1049ee499016c28985d333ecd1d257bd21cec1">7d1049e</a>)</li>
+<li><strong>recipe:</strong> Dungeon Paper (<code class="notranslate">app.dungeonPaper</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/d128072b7af9cb6c9eab50cfdfd2174806f9b9d9">d128072</a>)</li>
+<li><strong>recipe:</strong> Flashpoint Launcher (<code class="notranslate">com.bluemaxima.flashpoint-launcher</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/260cf1a28facb64b520f1bf8981a3605884b7638">260cf1a</a>)</li>
+<li><strong>recipe:</strong> GitHub Desktop (<code class="notranslate">com.github.GitHubClient</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/fa277e7681697fbf07ec5fdc43e383f84f1aac4b">fa277e7</a>)</li>
+<li><strong>recipe:</strong> Little Snitch (<code class="notranslate">at.obdev.littlesnitch</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/0f23f54525dd36a7b1ca72b878dcf273d7829195">0f23f54</a>)</li>
+<li><strong>recipe:</strong> m4Bookmaker (<code class="notranslate">com.sageframe.m4bmaker</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/781286c572a2d775d09e63bbef530b6b749ec94e">781286c</a>)</li>
+<li><strong>recipe:</strong> mpv (<code class="notranslate">io.mpv</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/72b419e2df9ce9b05846ce61229f993f3199a336">72b419e</a>)</li>
+<li><strong>recipe:</strong> Scroll Reverser (<code class="notranslate">com.pilotmoon.scroll-reverser</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/d367518fc6d5622c120709751d21cb242e05e987">d367518</a>)</li>
+<li><strong>recipe:</strong> Shottr (<code class="notranslate">cc.ffitch.shottr</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/a32935a61a9af5ca8f1e2e3931353ebea48debba">a32935a</a>)</li>
+<li><strong>recipe:</strong> SoundSource (<code class="notranslate">com.rogueamoeba.soundsource</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/0cf1d28a72dcd697b3beeef80f0edffdbb817568">0cf1d28</a>)</li>
+<li><strong>recipe:</strong> Task Manager OG (<code class="notranslate">com.tmog.taskmanager</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/02d0293a38b0d75c48ffc485cd0df1e539f81948">02d0293</a>)</li>
+<li><strong>recipe:</strong> TinkerTool (<code class="notranslate">com.bresink.system.tinkertool</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/f559942138718cee53005d85c6b6fcf3ddc7845c">f559942</a>)</li>
+<li><strong>recipe:</strong> volumeHUD (<code class="notranslate">com.dannystewart.volumehud</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/0bc801e54c1d48a353ff954867da61ba8b473071">0bc801e</a>)</li>
+<li><strong>updating:</strong> ignore more helper, installer and discontinued apps (<a href="https://github.com/chenasraf/OpenUpdater/commit/a2ff73f0f67cea5f44ee6c0e43cf069d71ccf662">a2ff73f</a>)</li>
+<li><strong>updating:</strong> ignore Python-bundled apps and Intel Power Gadget (<a href="https://github.com/chenasraf/OpenUpdater/commit/ba9cd67439493ae5d88347ed6f819570250e3d6b">ba9cd67</a>)</li>
+<li><strong>updating:</strong> support downloading assets from private GitHub repos (<a href="https://github.com/chenasraf/OpenUpdater/commit/db1bd8afb9e9524b9cdcf024e0d8285e7c8ff54d">db1bd8a</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.26.0/OpenUpdater-0.26.0.dmg" sparkle:edSignature="JAyjGhBDMDOBYLl+f9jrjJebMXMYTNTro6kyV/ZJac1iO4BHtxHe62FfHysodmXoK59lYQJAt3DLPsPcpYxSAg==" length="3416036" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.25.0</title>
     <pubDate>Sat, 17 Oct 2026 13:33:56 +0000</pubDate>
     <sparkle:version>105</sparkle:version>
