@@ -1,0 +1,14 @@
+id: com.bresink.system.tinkertool
+name: TinkerTool
+homepage: https://www.bresink.com/osx/TinkerTool.html
+
+manual_major_upgrades: true
+manual_major_upgrades_reason: "Each major version of TinkerTool supports only specific macOS releases. Check that this one supports your macOS before upgrading."
+
+check:
+  type: xml
+  url: https://www.bresink.com/ProductRepository/TinkerTool.plist
+  pattern: '<key>MBSVersionNumber</key>\s*<string>([^<]+)</string>'
+
+changelog:
+  url: https://www.bresink.com/osx/0TinkerTool/history.html

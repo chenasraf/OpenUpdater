@@ -1,5 +1,5 @@
 {
-  "hash": "324056f3ffac512235a7607faea2976f3309c554ba6d4ecaae5ac0f607a1f721",
+  "hash": "cd482ec5459a9d63e64c476db78482a6c5abd372bdcab89bdb531aabb69e0334",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -40,6 +40,11 @@
       "file": "com.bluemaxima.flashpoint-launcher.yml",
       "minApp": "0.19.0",
       "sha": "32cd591cc5f830b02173969791cfaa308cbeaf82ae637481ddd5216d895724d9"
+    },
+    {
+      "file": "com.bresink.system.tinkertool.yml",
+      "minApp": "0.0.0",
+      "sha": "ca12ae9d19e15ac109ca700a16a6cb674343f48bad0938c306a632ec491be42e"
     },
     {
       "file": "com.canva.affinity.yml",
