@@ -1,0 +1,18 @@
+id: com.sageframe.m4bmaker
+name: m4Bookmaker
+homepage: https://github.com/sageframe-no-kaji/m4bmaker
+
+check:
+  type: github_releases
+  repo: sageframe-no-kaji/m4bmaker
+  asset_pattern: '\.dmg$'
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/sageframe-no-kaji/m4bmaker/releases/download/{tag}/m4bmaker-{version}.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/sageframe-no-kaji/m4bmaker/releases/tag/{tag}
