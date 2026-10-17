@@ -1,0 +1,17 @@
+id: com.dannystewart.volumehud
+name: volumeHUD
+homepage: https://github.com/dannystewart/volumeHUD
+
+check:
+  type: github_releases
+  repo: dannystewart/volumeHUD
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/dannystewart/volumeHUD/releases/download/{tag}/volumeHUD-{version}.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/dannystewart/volumeHUD/releases/tag/{tag}
