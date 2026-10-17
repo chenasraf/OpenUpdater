@@ -1,5 +1,5 @@
 {
-  "hash": "d6c572bc2867f3c974d57f1c6b1af570126af7e4f38917e692c5d755188b2649",
+  "hash": "becb38747c9a254b0a57838bf8538ea9c5c9afecad9bbe64f3bcdc0fc8ee7510",
   "recipes": [
     {
       "file": "app.zen-browser.zen.yml",
@@ -230,6 +230,11 @@
       "file": "org.aseprite.Aseprite.yml",
       "minApp": "0.0.0",
       "sha": "13b5fd7f3b9ceca412a5ac5018edd879e05d24c16ba7811902f6696fef82d5f7"
+    },
+    {
+      "file": "org.asyar.app.yml",
+      "minApp": "0.19.0",
+      "sha": "9c410f80e0d78af3b2f3d5d8388904f715285b2d9b74842c772bf22f3d95ca46"
     },
     {
       "file": "org.audacityteam.audacity.yml",

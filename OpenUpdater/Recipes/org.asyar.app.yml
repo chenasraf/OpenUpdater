@@ -1,0 +1,24 @@
+id: org.asyar.app
+name: Asyar
+homepage: https://github.com/Xoshbin/asyar
+
+arch:
+  arm64: aarch64
+  x86_64: x64
+
+check:
+  type: github_releases
+  repo: Xoshbin/asyar
+  prereleases: true
+  tag_pattern: '^v\d'
+  asset_pattern: '\.dmg$'
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/Xoshbin/asyar/releases/download/{tag}/asyar_{version}_{arch}.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/Xoshbin/asyar/releases/tag/{tag}
