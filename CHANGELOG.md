@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.26.0](https://github.com/chenasraf/OpenUpdater/compare/v0.25.0...v0.26.0) (2026-10-17)
+
+
+### Features
+
+* **recipe:** Asyar (`org.asyar.app`) ([a6a399a](https://github.com/chenasraf/OpenUpdater/commit/a6a399aa1d591f007d9f24215262482f10bb66c1))
+* **recipe:** Bresink Software Updater (`com.bresink.system.softwareupdater`) ([8f7d728](https://github.com/chenasraf/OpenUpdater/commit/8f7d728e1f73064cfaf555a0a65fc820ffbdf43e))
+* **recipe:** ClipGrab (`de.clipgrab.ClipGrab`) ([7d1049e](https://github.com/chenasraf/OpenUpdater/commit/7d1049ee499016c28985d333ecd1d257bd21cec1))
+* **recipe:** Dungeon Paper (`app.dungeonPaper`) ([d128072](https://github.com/chenasraf/OpenUpdater/commit/d128072b7af9cb6c9eab50cfdfd2174806f9b9d9))
+* **recipe:** Flashpoint Launcher (`com.bluemaxima.flashpoint-launcher`) ([260cf1a](https://github.com/chenasraf/OpenUpdater/commit/260cf1a28facb64b520f1bf8981a3605884b7638))
+* **recipe:** GitHub Desktop (`com.github.GitHubClient`) ([fa277e7](https://github.com/chenasraf/OpenUpdater/commit/fa277e7681697fbf07ec5fdc43e383f84f1aac4b))
+* **recipe:** Little Snitch (`at.obdev.littlesnitch`) ([0f23f54](https://github.com/chenasraf/OpenUpdater/commit/0f23f54525dd36a7b1ca72b878dcf273d7829195))
+* **recipe:** m4Bookmaker (`com.sageframe.m4bmaker`) ([781286c](https://github.com/chenasraf/OpenUpdater/commit/781286c572a2d775d09e63bbef530b6b749ec94e))
+* **recipe:** mpv (`io.mpv`) ([72b419e](https://github.com/chenasraf/OpenUpdater/commit/72b419e2df9ce9b05846ce61229f993f3199a336))
+* **recipe:** Scroll Reverser (`com.pilotmoon.scroll-reverser`) ([d367518](https://github.com/chenasraf/OpenUpdater/commit/d367518fc6d5622c120709751d21cb242e05e987))
+* **recipe:** Shottr (`cc.ffitch.shottr`) ([a32935a](https://github.com/chenasraf/OpenUpdater/commit/a32935a61a9af5ca8f1e2e3931353ebea48debba))
+* **recipe:** SoundSource (`com.rogueamoeba.soundsource`) ([0cf1d28](https://github.com/chenasraf/OpenUpdater/commit/0cf1d28a72dcd697b3beeef80f0edffdbb817568))
+* **recipe:** Task Manager OG (`com.tmog.taskmanager`) ([02d0293](https://github.com/chenasraf/OpenUpdater/commit/02d0293a38b0d75c48ffc485cd0df1e539f81948))
+* **recipe:** TinkerTool (`com.bresink.system.tinkertool`) ([f559942](https://github.com/chenasraf/OpenUpdater/commit/f559942138718cee53005d85c6b6fcf3ddc7845c))
+* **recipe:** volumeHUD (`com.dannystewart.volumehud`) ([0bc801e](https://github.com/chenasraf/OpenUpdater/commit/0bc801e54c1d48a353ff954867da61ba8b473071))
+* **updating:** ignore more helper, installer and discontinued apps ([a2ff73f](https://github.com/chenasraf/OpenUpdater/commit/a2ff73f0f67cea5f44ee6c0e43cf069d71ccf662))
+* **updating:** ignore Python-bundled apps and Intel Power Gadget ([ba9cd67](https://github.com/chenasraf/OpenUpdater/commit/ba9cd67439493ae5d88347ed6f819570250e3d6b))
+* **updating:** support downloading assets from private GitHub repos ([db1bd8a](https://github.com/chenasraf/OpenUpdater/commit/db1bd8afb9e9524b9cdcf024e0d8285e7c8ff54d))
+
 ## [0.25.0](https://github.com/chenasraf/OpenUpdater/compare/v0.24.0...v0.25.0) (2026-10-17)
 
 
