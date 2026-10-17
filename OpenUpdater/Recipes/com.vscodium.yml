@@ -1,0 +1,19 @@
+id: com.vscodium
+name: VSCodium
+homepage: https://vscodium.com
+
+arch:
+  arm64: arm64
+  x86_64: x64
+
+check:
+  type: github_releases
+  repo: VSCodium/vscodium
+  asset_pattern: '^VSCodium\.(arm64|x64)\..*\.dmg$'
+
+download:
+  url: https://github.com/VSCodium/vscodium/releases/download/{tag}/VSCodium.{arch}.{version}.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/VSCodium/vscodium/releases/tag/{tag}
