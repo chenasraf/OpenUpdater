@@ -6,6 +6,24 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.27.0</title>
+    <pubDate>Tue, 20 Oct 2026 13:23:40 +0000</pubDate>
+    <sparkle:version>111</sparkle:version>
+    <sparkle:shortVersionString>0.27.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.26.0...v0.27.0">0.27.0</a> (2026-10-20)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>recipe:</strong> OpenLogi (<code class="notranslate">org.openlogi.openlogi</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/ddecb0dd171625fde4194d704719c9a361b652ab">ddecb0d</a>)</li>
+<li><strong>recipe:</strong> VSCodium (<code class="notranslate">com.vscodium</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/e6de5dd98b81d28e5df9cc5421eed5ca48dfdbc0">e6de5dd</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>updating:</strong> stop updated apps from reappearing in the update list (<a href="https://github.com/chenasraf/OpenUpdater/commit/63918227e9794377f0713c137bdac5d1d5aacc65">6391822</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.27.0/OpenUpdater-0.27.0.dmg" sparkle:edSignature="9ykQWKMP1+BaLZ/f92A6PpRVps/LhBZMzuUDyvqY/1a+9CVuZxqUHJjl68KJjFZXynF3p5eYOhA17RyRjpU9Ag==" length="3416410" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.26.0</title>
     <pubDate>Sat, 17 Oct 2026 19:39:39 +0000</pubDate>
     <sparkle:version>108</sparkle:version>
