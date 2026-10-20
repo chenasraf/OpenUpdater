@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.27.0](https://github.com/chenasraf/OpenUpdater/compare/v0.26.0...v0.27.0) (2026-10-20)
+
+
+### Features
+
+* **recipe:** OpenLogi (`org.openlogi.openlogi`) ([ddecb0d](https://github.com/chenasraf/OpenUpdater/commit/ddecb0dd171625fde4194d704719c9a361b652ab))
+* **recipe:** VSCodium (`com.vscodium`) ([e6de5dd](https://github.com/chenasraf/OpenUpdater/commit/e6de5dd98b81d28e5df9cc5421eed5ca48dfdbc0))
+
+
+### Bug Fixes
+
+* **updating:** stop updated apps from reappearing in the update list ([6391822](https://github.com/chenasraf/OpenUpdater/commit/63918227e9794377f0713c137bdac5d1d5aacc65))
+
 ## [0.26.0](https://github.com/chenasraf/OpenUpdater/compare/v0.25.0...v0.26.0) (2026-10-17)
 
 
