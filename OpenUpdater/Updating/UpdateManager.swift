@@ -471,7 +471,12 @@ final class UpdateManager: ObservableObject {
 
   /// Build an `AppInfo` from an `.app` bundle, or `nil` if its `Info.plist` is unreadable.
   private func appInfo(at url: URL, using fileManager: FileManager) -> AppInfo? {
-    guard let bundle = Bundle(url: url), let info = bundle.infoDictionary else { return nil }
+    // Not `Bundle(url:).infoDictionary`: Foundation caches `Bundle` instances per path for
+    // the life of the process, so after an in-place update the next scan would read the
+    // replaced app's old version and list the update again.
+    guard
+      let info = CFBundleCopyInfoDictionaryInDirectory(url as CFURL) as? [String: Any]
+    else { return nil }
 
     let fallbackName = url.deletingPathExtension().lastPathComponent
     // Treat present-but-empty plist strings as missing — some apps (e.g. Converseen)
