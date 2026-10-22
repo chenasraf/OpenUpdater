@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.28.0](https://github.com/chenasraf/OpenUpdater/compare/v0.27.0...v0.28.0) (2026-10-22)
+
+
+### Features
+
+* **recipe:** NTFS Oficial (`com.danielmanske.ntfsoficial.app`) ([08cec64](https://github.com/chenasraf/OpenUpdater/commit/08cec648687c7cad01ab428674afdc7ab344ccb1))
+
 ## [0.27.0](https://github.com/chenasraf/OpenUpdater/compare/v0.26.0...v0.27.0) (2026-10-20)
 
 
