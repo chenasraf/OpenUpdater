@@ -1,5 +1,5 @@
 {
-  "hash": "a0453d17057ce7ad277f3c2c9f2efa9ab9bf7d2ad62f190fe513937071cd9e5b",
+  "hash": "7adc68cc6291d399ba54622663807e8500fa5d1d33d737e7f30a4d766a4416c1",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -55,6 +55,11 @@
       "file": "com.canva.affinity.yml",
       "minApp": "0.0.0",
       "sha": "dea22fa01d54bc909afcbaa3ca3c7fc791498e105350f780191c1353a239e6e2"
+    },
+    {
+      "file": "com.danielmanske.ntfsoficial.app.yml",
+      "minApp": "0.0.0",
+      "sha": "2dbabb9cda372e227f378e463e02548f7223524d5442025bc84baaf779640de1"
     },
     {
       "file": "com.dannystewart.volumehud.yml",

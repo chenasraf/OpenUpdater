@@ -1,0 +1,17 @@
+id: com.danielmanske.ntfsoficial.app
+name: NTFS Oficial
+homepage: https://github.com/dmanske/ntfs-oficial-publico
+
+check:
+  type: github_releases
+  repo: dmanske/ntfs-oficial-publico
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/dmanske/ntfs-oficial-publico/releases/download/{tag}/NTFS-Oficial-{version}.pkg
+  format: pkg
+
+changelog:
+  url: https://github.com/dmanske/ntfs-oficial-publico/releases/tag/{tag}
