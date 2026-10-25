@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.28.0](https://github.com/chenasraf/OpenUpdater/compare/v0.27.0...v0.28.0) (2026-10-25)
+
+
+### Features
+
+* **recipe:** NTFS Oficial (`com.danielmanske.ntfsoficial.app`) ([08cec64](https://github.com/chenasraf/OpenUpdater/commit/08cec648687c7cad01ab428674afdc7ab344ccb1))
+* **recipe:** Vorssaint (`com.vorssaint.utils`) ([8745035](https://github.com/chenasraf/OpenUpdater/commit/8745035010f409538b957cd3f1019119034e6445))
+
 ## [0.27.0](https://github.com/chenasraf/OpenUpdater/compare/v0.26.0...v0.27.0) (2026-10-20)
 
 
