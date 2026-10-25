@@ -1,5 +1,5 @@
 {
-  "hash": "7adc68cc6291d399ba54622663807e8500fa5d1d33d737e7f30a4d766a4416c1",
+  "hash": "a9654a3c44597a1081b9d4498c039f2506b037da8a730cbc5cc1e401ea4af97d",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -215,6 +215,11 @@
       "file": "com.utmapp.UTM.yml",
       "minApp": "0.0.0",
       "sha": "afdeefe6edafe42a3a9fb50de849428c7d64ab775b3e9f3ebab3ac959bf992ca"
+    },
+    {
+      "file": "com.vorssaint.utils.yml",
+      "minApp": "0.0.0",
+      "sha": "c9375c3341a9096f4860da9663741eb2ecb5fb2e5f1268302669b0ba2da16e96"
     },
     {
       "file": "com.vscodium.yml",

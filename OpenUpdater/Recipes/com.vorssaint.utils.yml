@@ -1,0 +1,17 @@
+id: com.vorssaint.utils
+name: Vorssaint
+homepage: https://github.com/vorssaint/vorssaint-utils
+
+check:
+  type: github_releases
+  repo: vorssaint/vorssaint-utils
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/vorssaint/vorssaint-utils/releases/download/{tag}/Vorssaint-{version}.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/vorssaint/vorssaint-utils/releases/tag/{tag}
