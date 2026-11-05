@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.28.0](https://github.com/chenasraf/OpenUpdater/compare/v0.27.0...v0.28.0) (2026-11-05)
+
+
+### Features
+
+* **recipe:** NTFS Oficial (`com.danielmanske.ntfsoficial.app`) ([08cec64](https://github.com/chenasraf/OpenUpdater/commit/08cec648687c7cad01ab428674afdc7ab344ccb1))
+* **recipe:** Vorssaint (`com.vorssaint.utils`) ([8745035](https://github.com/chenasraf/OpenUpdater/commit/8745035010f409538b957cd3f1019119034e6445))
+
+
+### Bug Fixes
+
+* **recipe:** mpv (`io.mpv`) - download macOS builds ([792a6e2](https://github.com/chenasraf/OpenUpdater/commit/792a6e23612d3175a4d5108f1a87ee8b1ca602ec))
+* **updating:** unpack a tarball nested inside a zip download ([215ac9d](https://github.com/chenasraf/OpenUpdater/commit/215ac9de0a7d7899853c03f0b01a48bd8987c297))
+
 ## [0.27.0](https://github.com/chenasraf/OpenUpdater/compare/v0.26.0...v0.27.0) (2026-10-20)
 
 
