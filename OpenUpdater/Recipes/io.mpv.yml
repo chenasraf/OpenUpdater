@@ -2,10 +2,15 @@ id: io.mpv
 name: mpv
 homepage: https://mpv.io
 
+arch:
+  arm64: arm
+  x86_64: intel
+
 check:
   type: github_releases
   repo: mpv-player/mpv
   tag_pattern: '^v\d'
+  asset_pattern: '^mpv-v[\d.]+-macos-15-(arm|intel)\.zip$'
 
 installed_version:
   key: CFBundleShortVersionString
@@ -13,6 +18,10 @@ installed_version:
 
 version:
   strip_prefix: v
+
+download:
+  url: https://github.com/mpv-player/mpv/releases/download/{tag}/mpv-{tag}-macos-15-{arch}.zip
+  format: zip
 
 changelog:
   url: https://github.com/mpv-player/mpv/releases/tag/{tag}
