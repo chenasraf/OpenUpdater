@@ -154,6 +154,12 @@ nonisolated enum Installer {
     switch format {
     case .zip:
       try run("/usr/bin/ditto", ["-x", "-k", archive.path, work.path])
+      // GitHub Actions artifacts are always zipped, so projects that publish them as
+      // release assets (mpv) wrap a tarball inside — the tar keeps the bundle's
+      // permissions and symlinks intact. Unpack that inner tarball in place.
+      if (try? locateApp(in: work)) == nil, let tarball = try lonelyTarball(in: work) {
+        try run("/usr/bin/tar", ["-xf", tarball.path, "-C", work.path])
+      }
       app = try locateApp(in: work)
     case .tar:
       // bsdtar detects gzip/xz/bzip2 from the content, so `-xf` covers every tarball
@@ -405,6 +411,16 @@ nonisolated enum Installer {
       if let app = nested.first(where: { $0.pathExtension == "app" }) { return app }
     }
     throw InstallError.noAppInArchive
+  }
+
+  /// The archive's only top-level entry, when that entry is a tarball.
+  private static func lonelyTarball(in directory: URL) throws -> URL? {
+    let top = try FileManager.default.contentsOfDirectory(
+      at: directory, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
+    guard top.count == 1, let only = top.first,
+      ArchiveFormat(inferringFrom: only) == .tar
+    else { return nil }
+    return only
   }
 
   private static func bundleID(of app: URL) -> String? {
