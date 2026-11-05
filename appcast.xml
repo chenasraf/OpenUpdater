@@ -6,6 +6,25 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.28.0</title>
+    <pubDate>Thu, 05 Nov 2026 22:38:39 +0000</pubDate>
+    <sparkle:version>115</sparkle:version>
+    <sparkle:shortVersionString>0.28.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.27.0...v0.28.0">0.28.0</a> (2026-11-05)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>recipe:</strong> NTFS Oficial (<code class="notranslate">com.danielmanske.ntfsoficial.app</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/08cec648687c7cad01ab428674afdc7ab344ccb1">08cec64</a>)</li>
+<li><strong>recipe:</strong> Vorssaint (<code class="notranslate">com.vorssaint.utils</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/8745035010f409538b957cd3f1019119034e6445">8745035</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>recipe:</strong> mpv (<code class="notranslate">io.mpv</code>) - download macOS builds (<a href="https://github.com/chenasraf/OpenUpdater/commit/792a6e23612d3175a4d5108f1a87ee8b1ca602ec">792a6e2</a>)</li>
+<li><strong>updating:</strong> unpack a tarball nested inside a zip download (<a href="https://github.com/chenasraf/OpenUpdater/commit/215ac9de0a7d7899853c03f0b01a48bd8987c297">215ac9d</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.28.0/OpenUpdater-0.28.0.dmg" sparkle:edSignature="biJhmWnv7+8ZaCc1aHDb0KBPyaZDF9IgLU7yszDpZtOQG/wcaI2V8LReyd5fdxgxObr6AVdivIixRMfGlmZPDQ==" length="3422478" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.27.0</title>
     <pubDate>Tue, 20 Oct 2026 13:23:40 +0000</pubDate>
     <sparkle:version>111</sparkle:version>
