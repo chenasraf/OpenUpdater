@@ -1,0 +1,19 @@
+id: com.sb.KokoroTTS
+name: Kokoro TTS
+homepage: https://github.com/kjyv/KokoroTTS
+
+check:
+  type: github_releases
+  repo: kjyv/KokoroTTS
+  prereleases: false
+  asset_pattern: '^KokoroTTS\.dmg$'
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/kjyv/KokoroTTS/releases/download/{tag}/KokoroTTS.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/kjyv/KokoroTTS/releases/tag/{tag}

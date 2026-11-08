@@ -1,5 +1,5 @@
 {
-  "hash": "9a7d4291bbd8e4563f299537922ff8b8984b442b6c45b2199b8955d6983c2ae4",
+  "hash": "02fca683c868236e8aa4f567837f5c6c6d3b86c2f32798035917ff20542d8485",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -310,6 +310,11 @@
       "file": "com.sageframe.m4bmaker.yml",
       "minApp": "0.19.0",
       "sha": "25474821dec26870fd1ca87ce0376c990be3bc83022e814de164995f2763ae7c"
+    },
+    {
+      "file": "com.sb.KokoroTTS.yml",
+      "minApp": "0.19.0",
+      "sha": "29b4cd3427c376bd7c63d1f5d7058a3d807d75a54228189a16c93e9283b4031b"
     },
     {
       "file": "com.tinyspeck.slackmacgap.yml",
