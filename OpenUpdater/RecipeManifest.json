@@ -1,5 +1,5 @@
 {
-  "hash": "cb1911c0e97e38b4fbf6d8d7f43eddffadbb3f493fd599faabf0dfa870de696d",
+  "hash": "7f4f688c36fe7f6b41bd46e1ea732e24c1ce6c9ca23ee256b44d56874e945983",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -195,6 +195,11 @@
       "file": "com.macitbetter.betterzip.yml",
       "minApp": "0.9.0",
       "sha": "39b89fcdf8ea6e4faed5923a91603ba7d303d9ed56c37fb2e595d476f8a2af33"
+    },
+    {
+      "file": "com.microsoft.Excel.yml",
+      "minApp": "0.9.0",
+      "sha": "f2b54f69e84ff514dbfbd55c147a380557ba58a4f17657c395ffd427981e481b"
     },
     {
       "file": "com.microsoft.VSCode.yml",
