@@ -1,0 +1,17 @@
+id: com.bjango.istatmenus
+name: iStat Menus
+homepage: https://bjango.com/mac/istatmenus/
+
+manual_major_upgrades: true
+manual_major_upgrades_reason: paid_license
+
+check:
+  type: redirect
+  url: https://download.bjango.com/istatmenus7/
+  pattern: '/iStatMenus([0-9][0-9.]*)\.zip'
+
+download:
+  format: zip
+
+changelog:
+  url: https://bjango.com/mac/istatmenus7/versionhistory/

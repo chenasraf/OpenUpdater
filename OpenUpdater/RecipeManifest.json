@@ -1,5 +1,5 @@
 {
-  "hash": "a89e67c70067067edc7da85b425a1b9d9ffd1eb72c676f9a85607eb1ceb7c32f",
+  "hash": "66e86c438af9de1a4407ca2cc05efc0879c198fea2733bc8fb7e8dd921db467c",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -50,6 +50,11 @@
       "file": "com.alienator88.Sentinel.yml",
       "minApp": "0.0.0",
       "sha": "89ab7342f060748f43aea1ede5b1961382fd3a3ac9a20692de59dc54b592ae96"
+    },
+    {
+      "file": "com.bjango.istatmenus.yml",
+      "minApp": "0.9.0",
+      "sha": "e9e285c4582ae60b14536a19fbc3d91de72c5420878fc787c3d3d1748f843128"
     },
     {
       "file": "com.bluemaxima.flashpoint-launcher.yml",
