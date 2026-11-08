@@ -1,6 +1,11 @@
 {
-  "hash": "aa9a67f175a6b58c5301ef09cad4c547019ec8548a04e4b78f334593099b10a1",
+  "hash": "9207f535061b20550a6e58526392789cf7dd4b746d7340be3c3e4e227775a55d",
   "recipes": [
+    {
+      "file": "Jellyfin.Server.yml",
+      "minApp": "0.0.0",
+      "sha": "e5bbafa586a477f76bd2a8fe019fa531b7aecd03a6e07374fb64163cc0e47170"
+    },
     {
       "file": "app.dungeonPaper.yml",
       "minApp": "0.9.0",

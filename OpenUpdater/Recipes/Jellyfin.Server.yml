@@ -1,0 +1,20 @@
+id: Jellyfin.Server
+name: Jellyfin Server
+homepage: https://jellyfin.org
+
+arch:
+  arm64: arm64
+  x86_64: amd64
+
+check:
+  type: html
+  url: https://repo.jellyfin.org/files/server/macos/stable/
+  pattern: 'href="v([0-9.]+)/"'
+  select: latest
+
+download:
+  url: https://repo.jellyfin.org/files/server/macos/stable/v{version}/{arch}/jellyfin_{version}-{arch}.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/jellyfin/jellyfin/releases/tag/v{version}
