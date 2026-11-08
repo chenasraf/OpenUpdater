@@ -1,0 +1,14 @@
+id: com.objective-see.oversight
+name: OverSight
+homepage: https://objective-see.org/products/oversight.html
+
+check:
+  type: github_releases
+  repo: objective-see/OverSight
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+changelog:
+  url: https://github.com/objective-see/OverSight/releases/tag/{tag}
