@@ -1,0 +1,14 @@
+id: com.objective-see.blockblock.helper
+name: BlockBlock Helper
+homepage: https://objective-see.org/products/blockblock.html
+
+check:
+  type: github_releases
+  repo: objective-see/BlockBlock
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+changelog:
+  url: https://github.com/objective-see/BlockBlock/releases/tag/{tag}
