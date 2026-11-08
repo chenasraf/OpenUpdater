@@ -1,5 +1,5 @@
 {
-  "hash": "dffc34260b58f84e0fcd8e8d340e4a34a295a614b81ea8a3192e1ec31eae6fa0",
+  "hash": "46a254b27e99e5360645a0e9f60789b71f027ed5770ac89d8b9a20d1d49efcf8",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -100,6 +100,11 @@
       "file": "com.dbx.app.yml",
       "minApp": "0.0.0",
       "sha": "18a8b3fd4e050e4f579d1bfd38ea572b42819ca4d5fdae17c1ece4a606d5f332"
+    },
+    {
+      "file": "com.deepseek.dsh.yml",
+      "minApp": "0.0.0",
+      "sha": "3454ae9e3d02271fc178ad3f3bc70df4c2fa69173df9e84836d7a660b3b613c1"
     },
     {
       "file": "com.docker.docker.yml",

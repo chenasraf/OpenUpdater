@@ -1,0 +1,12 @@
+id: com.deepseek.dsh
+name: DeepSeek Harness
+homepage: https://www.deepseek.com/en/harness
+
+check:
+  type: yaml
+  url: https://download.deepseek.com/dsh-desk/feeds/mac-arm64/nightly-mac.yml
+  path: version
+  download_path: path
+
+download:
+  format: zip
