@@ -1,0 +1,17 @@
+id: com.microsoft.Outlook
+name: Microsoft Outlook
+homepage: https://www.microsoft.com/microsoft-365/outlook
+
+check:
+  type: redirect
+  url: https://go.microsoft.com/fwlink/?linkid=525137
+  pattern: '/Microsoft_Outlook_([0-9.]+)_(?:Installer|Updater)\.pkg'
+
+installed_version:
+  key: CFBundleVersion
+
+download:
+  format: pkg
+
+changelog:
+  url: https://learn.microsoft.com/officeupdates/release-notes-office-for-mac

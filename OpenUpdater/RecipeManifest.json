@@ -1,5 +1,5 @@
 {
-  "hash": "840875379845fb627f4408349d0b154ce09d5c9aa870924ee3fb9d90fb102ecd",
+  "hash": "0d87af7311bc7be20392abbe278b645b6ad8cdd761099f84834e17d739a4fd87",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -200,6 +200,11 @@
       "file": "com.microsoft.Excel.yml",
       "minApp": "0.9.0",
       "sha": "f2b54f69e84ff514dbfbd55c147a380557ba58a4f17657c395ffd427981e481b"
+    },
+    {
+      "file": "com.microsoft.Outlook.yml",
+      "minApp": "0.9.0",
+      "sha": "c91ebc08ef355a0dfd5d46c10db9ccd2f402bef6e409efe7642f08df7f643fc4"
     },
     {
       "file": "com.microsoft.VSCode.yml",
