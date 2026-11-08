@@ -1,0 +1,12 @@
+id: com.PS.PSD
+name: Progressive Downloader
+homepage: https://www.macpsd.net
+
+check:
+  type: html
+  url: https://www.macpsd.net
+  pattern: '/update/([0-9.]+)/PSD_[0-9_]+\.dmg'
+  download_pattern: 'href="(https://www\.macpsd\.net/update/[0-9.]+/PSD_[0-9_]+\.dmg)"'
+
+download:
+  format: dmg
