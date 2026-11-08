@@ -1,5 +1,5 @@
 {
-  "hash": "249c88bd98252c812ddf33adf1ccff61326f0a85de2726601d3e9dcddb8f96fc",
+  "hash": "7323abde0204c21a01895c870d2b128477a0a27cc028399b323032b0345c5326",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -40,6 +40,11 @@
       "file": "com.1password.1password.yml",
       "minApp": "0.0.0",
       "sha": "6127b22e64188b69028a22bfc327322d75fa14edae5c0a573d23972f797ce5cb"
+    },
+    {
+      "file": "com.alienator88.Pearcleaner.yml",
+      "minApp": "0.0.0",
+      "sha": "5725cda84fa355e8e5406c94d803705ebe9f4c2838bf43600aa33dc223f4a415"
     },
     {
       "file": "com.bluemaxima.flashpoint-launcher.yml",
