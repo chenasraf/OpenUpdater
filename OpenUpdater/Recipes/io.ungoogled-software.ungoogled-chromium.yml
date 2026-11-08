@@ -1,0 +1,19 @@
+id: io.ungoogled-software.ungoogled-chromium
+name: Chromium
+homepage: https://github.com/ungoogled-software/ungoogled-chromium-macos
+
+check:
+  type: github_releases
+  repo: ungoogled-software/ungoogled-chromium-macos
+  prereleases: false
+  asset_pattern: '_arm64-macos\.dmg$'
+
+version:
+  pattern: '^(\d+\.\d+\.\d+\.\d+)'
+
+download:
+  url: https://github.com/ungoogled-software/ungoogled-chromium-macos/releases/download/{tag}/ungoogled-chromium_{tag}_{arch}-macos.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/ungoogled-software/ungoogled-chromium-macos/releases/tag/{tag}

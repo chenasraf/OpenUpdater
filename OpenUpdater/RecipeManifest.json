@@ -1,5 +1,5 @@
 {
-  "hash": "6f38941f0f3a50dd1a74ca3fa80135ec70e1e0395e52be2467a5cf23d6be6360",
+  "hash": "aa9a67f175a6b58c5301ef09cad4c547019ec8548a04e4b78f334593099b10a1",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -415,6 +415,11 @@
       "file": "io.tailscale.ipn.macsys.yml",
       "minApp": "0.0.0",
       "sha": "e3859ff0eb44a9aa3b0bbf43d79c16333443a6109221037ea60377a89263d92b"
+    },
+    {
+      "file": "io.ungoogled-software.ungoogled-chromium.yml",
+      "minApp": "0.19.0",
+      "sha": "25a954ba3386ea34310c583b9d0a83601eadd93d6f6972c460e14c526d84e002"
     },
     {
       "file": "md.obsidian.yml",
