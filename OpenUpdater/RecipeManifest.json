@@ -1,5 +1,5 @@
 {
-  "hash": "25d445cb572698161011d515073603855e189934b7c205791be12d80f038f74b",
+  "hash": "5daed928f7d785f1fdb270d4d2d62bea2f309e132bb2b0aabfaef729f7f102e8",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -385,6 +385,11 @@
       "file": "dev.mandre.rquickshare.yml",
       "minApp": "0.0.0",
       "sha": "6be35f10dd2f67c4e3792252933731ff7fa24f46a8863158a647a859ec252c01"
+    },
+    {
+      "file": "dev.warp.Warp-Stable.yml",
+      "minApp": "0.0.0",
+      "sha": "0fed0e7d0cb73e3183ee89d5c3c9c55f785932364dd7d4a3c8b71d8a19383568"
     },
     {
       "file": "io.balena.etcher.yml",

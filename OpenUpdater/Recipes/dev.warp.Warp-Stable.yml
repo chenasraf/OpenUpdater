@@ -1,0 +1,18 @@
+id: dev.warp.Warp-Stable
+name: Warp
+homepage: https://www.warp.dev
+
+check:
+  type: json
+  url: https://releases.warp.dev/channel_versions.json
+  path: stable.version
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://releases.warp.dev/stable/{tag}/Warp.dmg
+  format: dmg
+
+changelog:
+  url: https://docs.warp.dev/getting-started/changelog
