@@ -1,0 +1,14 @@
+id: com.brave.Browser
+name: Brave Browser
+homepage: https://brave.com
+
+arch:
+  arm64: stable-arm64
+  x86_64: stable
+
+check:
+  type: sparkle
+  feed: https://updates.bravesoftware.com/sparkle/Brave-Browser/{arch}/appcast.xml
+
+changelog:
+  url: https://github.com/brave/brave-browser/blob/master/CHANGELOG_DESKTOP.md
