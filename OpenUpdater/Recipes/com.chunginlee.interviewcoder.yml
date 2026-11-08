@@ -1,0 +1,22 @@
+id: com.chunginlee.interviewcoder
+name: Interview Coder
+homepage: https://github.com/ibttf/interview-coder
+
+arch:
+  arm64: arm64
+  x86_64: x64
+
+check:
+  type: github_releases
+  repo: ibttf/interview-coder
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/ibttf/interview-coder/releases/download/{tag}/Interview-Coder-{arch}.zip
+  format: zip
+
+changelog:
+  url: https://github.com/ibttf/interview-coder/releases/tag/{tag}

@@ -1,5 +1,5 @@
 {
-  "hash": "db42522e7f05d68f62eacf79448a834905a939703ff9891337dd1193a7272617",
+  "hash": "dffc34260b58f84e0fcd8e8d340e4a34a295a614b81ea8a3192e1ec31eae6fa0",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -80,6 +80,11 @@
       "file": "com.canva.affinity.yml",
       "minApp": "0.0.0",
       "sha": "dea22fa01d54bc909afcbaa3ca3c7fc791498e105350f780191c1353a239e6e2"
+    },
+    {
+      "file": "com.chunginlee.interviewcoder.yml",
+      "minApp": "0.0.0",
+      "sha": "d944d7d98ff204c044db9132f3022529d17c4f2b278f10e1fae723d62891ed83"
     },
     {
       "file": "com.danielmanske.ntfsoficial.app.yml",
