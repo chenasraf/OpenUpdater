@@ -1,0 +1,17 @@
+id: com.microsoft.Word
+name: Microsoft Word
+homepage: https://www.microsoft.com/microsoft-365/word
+
+check:
+  type: redirect
+  url: https://go.microsoft.com/fwlink/?linkid=525134
+  pattern: '/Microsoft_Word_([0-9.]+)_(?:Installer|Updater)\.pkg'
+
+installed_version:
+  key: CFBundleVersion
+
+download:
+  format: pkg
+
+changelog:
+  url: https://learn.microsoft.com/officeupdates/release-notes-office-for-mac
