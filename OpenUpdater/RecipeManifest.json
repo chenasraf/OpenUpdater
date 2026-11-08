@@ -1,5 +1,5 @@
 {
-  "hash": "c1f131a5e8fd452f37e79a28135127e3d2dcc3e29aa88d2266a47d317459a231",
+  "hash": "249c88bd98252c812ddf33adf1ccff61326f0a85de2726601d3e9dcddb8f96fc",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -30,6 +30,11 @@
       "file": "ch.protonmail.desktop.yml",
       "minApp": "0.0.0",
       "sha": "223464bc34581be5ba4a77f1b1e841ff19fac5ac1985ce91c42fd42a93b60102"
+    },
+    {
+      "file": "co.fluder.FSNotes.yml",
+      "minApp": "0.19.0",
+      "sha": "06066747f8c92fc58f5f3b0ca16e3d4ab2a1576a4757c6696ca7807c54e086af"
     },
     {
       "file": "com.1password.1password.yml",

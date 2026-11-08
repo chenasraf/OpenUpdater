@@ -1,0 +1,20 @@
+id: co.fluder.FSNotes
+name: FSNotes
+homepage: https://fsnot.es
+
+check:
+  type: github_releases
+  repo: glushchenko/fsnotes
+  prereleases: false
+  tag_pattern: '^v\d'
+  asset_pattern: '^FSNotes_v[\d.]+\.zip$'
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/glushchenko/fsnotes/releases/download/{tag}/FSNotes_{tag}.zip
+  format: zip
+
+changelog:
+  url: https://github.com/glushchenko/fsnotes/releases/tag/{tag}
