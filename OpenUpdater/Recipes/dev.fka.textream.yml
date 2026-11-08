@@ -1,0 +1,20 @@
+id: dev.fka.textream
+name: Textream
+homepage: https://github.com/f/textream
+
+check:
+  type: github_releases
+  repo: f/textream
+  prereleases: false
+  tag_pattern: '^v\d'
+  asset_pattern: '^Textream\.dmg$'
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/f/textream/releases/download/{tag}/Textream.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/f/textream/releases/tag/{tag}

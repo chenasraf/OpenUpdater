@@ -1,5 +1,5 @@
 {
-  "hash": "93180e3b5498b4ccb417723d49e2ca839985c263120c240fe836058bb5b953c4",
+  "hash": "25d445cb572698161011d515073603855e189934b7c205791be12d80f038f74b",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -375,6 +375,11 @@
       "file": "de.clipgrab.ClipGrab.yml",
       "minApp": "0.0.0",
       "sha": "9f214865796ffd08d4fb22fca5c3b471f3009c6ef60f18008db71a18af181d49"
+    },
+    {
+      "file": "dev.fka.textream.yml",
+      "minApp": "0.19.0",
+      "sha": "acd5f5e5240dad633c20982bef1b569836d5721f51dc8bec7aebe8452766e8a2"
     },
     {
       "file": "dev.mandre.rquickshare.yml",
