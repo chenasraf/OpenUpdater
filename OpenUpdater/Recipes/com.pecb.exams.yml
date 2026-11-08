@@ -1,0 +1,12 @@
+id: com.pecb.exams
+name: PECB Exams
+homepage: https://pecb.com/en/pecb-exams
+
+check:
+  type: html
+  url: https://pecb.com/en/pecb-exams
+  pattern: 'ExamApp/Mac/PECB\+Exams-([0-9.]+)-universal\.dmg'
+  download_pattern: '"(https://mypecb-public\.s3\.us-east-1\.amazonaws\.com/ExamApp/Mac/[^"]+\.dmg)"'
+
+download:
+  format: dmg
