@@ -1,0 +1,20 @@
+id: com.srikanthnani.pluely
+name: Pluely
+homepage: https://pluely.com
+
+arch:
+  arm64: aarch64
+  x86_64: x64
+
+check:
+  type: html
+  url: https://pluely.com/downloads
+  pattern: 'pluely-assets\.s3\.eu-north-1\.amazonaws\.com/app-v(\d+(?:\.\d+)+)/'
+  select: latest
+
+download:
+  url: https://pluely-assets.s3.eu-north-1.amazonaws.com/app-v{version}/Pluely_{version}_{arch}.dmg
+  format: dmg
+
+changelog:
+  url: https://pluely.com/changelog
