@@ -1,0 +1,10 @@
+id: org.tempel.findanyfile
+name: Find Any File
+homepage: https://findanyfile.app
+
+check:
+  type: sparkle
+  feed: https://findanyfile.app/appcast2.php
+
+changelog:
+  url: https://findanyfile.app/releasenotes/v2.html

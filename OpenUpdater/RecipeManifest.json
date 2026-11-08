@@ -1,5 +1,5 @@
 {
-  "hash": "f9f82095e039e8986934df534424c0fe1e266a0b6c75f6089f551f049e3e3090",
+  "hash": "1432b6309661aeb61651f51c1e9b836f42e40a58a5dbeabbe04bdef96cc1411b",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -520,6 +520,11 @@
       "file": "org.sithlord48.blackchocobo.yml",
       "minApp": "0.0.0",
       "sha": "70f969d339ac914e59e9ae7a6e7c09a15dc1745a6007f2c37f374857b87905b8"
+    },
+    {
+      "file": "org.tempel.findanyfile.yml",
+      "minApp": "0.0.0",
+      "sha": "e2a50e09fc7ddb166e11d97860f57889c2bb61a98045cea6f5d604fab526a147"
     },
     {
       "file": "org.videolan.vlc.yml",
