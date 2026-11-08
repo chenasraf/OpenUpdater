@@ -1,0 +1,17 @@
+id: com.microsoft.Powerpoint
+name: Microsoft PowerPoint
+homepage: https://www.microsoft.com/microsoft-365/powerpoint
+
+check:
+  type: redirect
+  url: https://go.microsoft.com/fwlink/?linkid=525136
+  pattern: '/Microsoft_PowerPoint_([0-9.]+)_(?:Installer|Updater)\.pkg'
+
+installed_version:
+  key: CFBundleVersion
+
+download:
+  format: pkg
+
+changelog:
+  url: https://learn.microsoft.com/officeupdates/release-notes-office-for-mac
