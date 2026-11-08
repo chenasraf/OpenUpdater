@@ -1,5 +1,5 @@
 {
-  "hash": "45119c96a26b565595f43c65cf831a04faaa472fb77fc7673133597f64120fbd",
+  "hash": "3e2fcbdc6fc05247cd4136679005be8b3a076f5a5b477528b740d7bedea8cfdf",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -230,6 +230,11 @@
       "file": "com.mitchellh.ghostty.yml",
       "minApp": "0.0.0",
       "sha": "bbf173dedd3d451986f7da90a9d3ebb03ecb8e628ab7720f8d79efdaba80ce7f"
+    },
+    {
+      "file": "com.naps2.desktop.yml",
+      "minApp": "0.19.0",
+      "sha": "7e2e8cb219647f83b06c761f5e0e9390fe6df9b6f630500b314851709cacde48"
     },
     {
       "file": "com.nextcloud.desktopclient.yml",

@@ -1,0 +1,20 @@
+id: com.naps2.desktop
+name: NAPS2
+homepage: https://www.naps2.com
+
+check:
+  type: github_releases
+  repo: cyanfish/naps2
+  prereleases: false
+  tag_pattern: '^v\d'
+  asset_pattern: '-mac-univ\.pkg$'
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/cyanfish/naps2/releases/download/{tag}/naps2-{version}-mac-univ.pkg
+  format: pkg
+
+changelog:
+  url: https://github.com/cyanfish/naps2/releases/tag/{tag}
