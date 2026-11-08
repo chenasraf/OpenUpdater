@@ -1,5 +1,5 @@
 {
-  "hash": "04c46b6efb4047e13d0db5bbb1a821a99823b76a022a1fc22daa898bbc9c612f",
+  "hash": "f9f82095e039e8986934df534424c0fe1e266a0b6c75f6089f551f049e3e3090",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -510,6 +510,11 @@
       "file": "org.openlogi.openlogi.yml",
       "minApp": "0.0.0",
       "sha": "cf99bfc6824b8d0836673226f02c7ec9f1b066ab1eeca23216048f6ef64e5112"
+    },
+    {
+      "file": "org.qbittorrent.qBittorrent.yml",
+      "minApp": "0.19.0",
+      "sha": "cfb4bec172b853bc20b78682a218ab4faac58c5e35dba64a7701becbc45c8fbe"
     },
     {
       "file": "org.sithlord48.blackchocobo.yml",

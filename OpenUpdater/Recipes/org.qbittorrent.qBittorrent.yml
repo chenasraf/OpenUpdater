@@ -1,0 +1,20 @@
+id: org.qbittorrent.qBittorrent
+name: qBittorrent
+homepage: https://www.qbittorrent.org
+
+check:
+  type: github_releases
+  repo: qbittorrent/qBittorrent
+  prereleases: false
+  tag_pattern: '^release-\d'
+  asset_pattern: '^qbittorrent-[0-9.]+\.dmg$'
+
+version:
+  strip_prefix: release-
+
+download:
+  url: https://github.com/qbittorrent/qBittorrent/releases/download/{tag}/qbittorrent-{version}.dmg
+  format: dmg
+
+changelog:
+  url: https://www.qbittorrent.org/news
