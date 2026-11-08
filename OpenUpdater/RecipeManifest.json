@@ -1,5 +1,5 @@
 {
-  "hash": "f2ca6caabfd38b36a80e18f73868cde1bac7fadd89945101981c5b4dfc10541b",
+  "hash": "715e72534fa7e8632c7ff420239830fbd4f62df833f43c8c35b2731130226ec3",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -320,6 +320,11 @@
       "file": "com.srikanthnani.pluely.yml",
       "minApp": "0.0.0",
       "sha": "6a9a4c7669102fc7d501af41ac25a8369d95c417b89d28f7f831155bc4450130"
+    },
+    {
+      "file": "com.teamviewer.TeamViewer.yml",
+      "minApp": "0.0.0",
+      "sha": "113592412f2367b13073da9304aae443c4fbd5bb73d8fbcccf0aa970cf886d85"
     },
     {
       "file": "com.tinyspeck.slackmacgap.yml",

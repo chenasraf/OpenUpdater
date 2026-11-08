@@ -1,0 +1,15 @@
+id: com.teamviewer.TeamViewer
+name: TeamViewer
+homepage: https://www.teamviewer.com
+
+check:
+  type: xml
+  url: "https://download.teamviewer.com/download/update/macupdates.xml?id=0&lang=en&version=15.0.0&os=macos&osversion=26.0&type=1&channel=1"
+  pattern: '/update/([0-9.]+)/TeamViewer\.pkg'
+
+download:
+  url: https://dl.teamviewer.com/download/version_15x/update/{version}/TeamViewer.pkg
+  format: pkg
+
+changelog:
+  url: https://www.teamviewer.com/en/global/support/knowledge-base/teamviewer-remote/download-and-installation/release-notes-macos/
