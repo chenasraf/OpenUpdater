@@ -1,0 +1,15 @@
+id: com.alienator88.Sentinel
+name: Sentinel
+homepage: https://github.com/alienator88/Sentinel
+
+check:
+  type: github_releases
+  repo: alienator88/Sentinel
+  prereleases: false
+
+download:
+  url: https://github.com/alienator88/Sentinel/releases/download/{tag}/Sentinel.zip
+  format: zip
+
+changelog:
+  url: https://github.com/alienator88/Sentinel/releases/tag/{tag}
