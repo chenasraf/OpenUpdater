@@ -1,0 +1,19 @@
+id: com.tinycast.app
+name: Tinycast
+homepage: https://github.com/abue-ammar/tinycast
+
+check:
+  type: github_releases
+  repo: abue-ammar/tinycast
+  prereleases: false
+  tag_pattern: '^v\d+\.\d+\.\d+$'
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/abue-ammar/tinycast/releases/download/{tag}/Tinycast-Universal-{version}.zip
+  format: zip
+
+changelog:
+  url: https://github.com/abue-ammar/tinycast/releases/tag/{tag}
