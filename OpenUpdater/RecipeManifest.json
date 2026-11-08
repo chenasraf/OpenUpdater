@@ -1,5 +1,5 @@
 {
-  "hash": "9207f535061b20550a6e58526392789cf7dd4b746d7340be3c3e4e227775a55d",
+  "hash": "04c46b6efb4047e13d0db5bbb1a821a99823b76a022a1fc22daa898bbc9c612f",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -430,6 +430,11 @@
       "file": "md.obsidian.yml",
       "minApp": "0.19.0",
       "sha": "a13f785a92e3b8da357d791fafa3666ba57bfe338731fc96765b0e5287c01c5a"
+    },
+    {
+      "file": "mm.skylum.luminarneo.yml",
+      "minApp": "0.0.0",
+      "sha": "c2e03644dc5c1aaa30d74e5ed4463c315be7797c6f71c5601f0cba228bdaf444"
     },
     {
       "file": "net.kovidgoyal.calibre.yml",

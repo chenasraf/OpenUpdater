@@ -1,0 +1,15 @@
+id: mm.skylum.luminarneo
+name: Luminar Neo
+homepage: https://skylum.com/luminar
+
+manual_major_upgrades: true
+manual_major_upgrades_reason: paid_license
+
+check:
+  type: html
+  url: https://fx.macphun.com/whats-new/luminar-neo
+  pattern: '\bLuminar(?: Neo)? ([0-9]+\.[0-9]+(?:\.[0-9]+)?)\b'
+  select: latest
+
+changelog:
+  url: https://fx.macphun.com/whats-new/luminar-neo
