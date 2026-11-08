@@ -1,0 +1,16 @@
+id: io.danqing.Pinch
+name: Pinch
+homepage: https://github.com/danqing/Pinch
+
+check:
+  type: github_releases
+  repo: danqing/Pinch
+  prereleases: false
+  asset_pattern: '^Pinch\.zip$'
+
+download:
+  url: https://github.com/danqing/Pinch/releases/download/{tag}/Pinch.zip
+  format: zip
+
+changelog:
+  url: https://github.com/danqing/Pinch/releases/tag/{tag}
