@@ -1,0 +1,20 @@
+id: com.itsytv.app
+name: Itsytv
+homepage: https://github.com/nickustinov/itsytv-macos
+
+check:
+  type: github_releases
+  repo: nickustinov/itsytv-macos
+  prereleases: false
+  tag_pattern: '^v\d'
+  asset_pattern: '^Itsytv-[\d.]+\.dmg$'
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/nickustinov/itsytv-macos/releases/download/{tag}/Itsytv-{version}.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/nickustinov/itsytv-macos/releases/tag/{tag}

@@ -1,5 +1,5 @@
 {
-  "hash": "14b24f8d5fd639d131468552504599e81ab66d79397feabf32935348e8493465",
+  "hash": "e19ba128aefeb48a2c5b016d27205f905aac371a306a30dd3c6f30d92dc3e484",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -175,6 +175,11 @@
       "file": "com.install4j.0526-4458-1435-8154.837.yml",
       "minApp": "0.0.0",
       "sha": "33395c63c8b0dc76db8482ac4704e770f7d437eb0cef26b1e2ad49706cc23fcf"
+    },
+    {
+      "file": "com.itsytv.app.yml",
+      "minApp": "0.19.0",
+      "sha": "f6df1869996114fb5530c2b1a9551a93a6be9fddc10b4f7b1afde8edc2091c80"
     },
     {
       "file": "com.jgraph.drawio.desktop.yml",
