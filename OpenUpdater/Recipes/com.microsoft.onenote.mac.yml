@@ -1,0 +1,17 @@
+id: com.microsoft.onenote.mac
+name: Microsoft OneNote
+homepage: https://www.microsoft.com/microsoft-365/onenote
+
+check:
+  type: redirect
+  url: https://go.microsoft.com/fwlink/?linkid=820886
+  pattern: '/Microsoft_OneNote_([0-9.]+)_(?:Installer|Updater)\.pkg'
+
+installed_version:
+  key: CFBundleVersion
+
+download:
+  format: pkg
+
+changelog:
+  url: https://learn.microsoft.com/officeupdates/release-notes-office-for-mac
