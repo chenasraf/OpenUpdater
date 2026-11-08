@@ -1,5 +1,5 @@
 {
-  "hash": "e19ba128aefeb48a2c5b016d27205f905aac371a306a30dd3c6f30d92dc3e484",
+  "hash": "cb1911c0e97e38b4fbf6d8d7f43eddffadbb3f493fd599faabf0dfa870de696d",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -185,6 +185,11 @@
       "file": "com.jgraph.drawio.desktop.yml",
       "minApp": "0.0.0",
       "sha": "38373e03d13171077b168af6d730655a75eae650e811372bfb28107d54412d0a"
+    },
+    {
+      "file": "com.kruszoneq.macUSB.yml",
+      "minApp": "0.19.0",
+      "sha": "688b9fd8af0bddb49ffef03c905b97f2ca42cab110e849268fdfd57b037d6af8"
     },
     {
       "file": "com.macitbetter.betterzip.yml",

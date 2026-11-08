@@ -1,0 +1,19 @@
+id: com.kruszoneq.macUSB
+name: macUSB
+homepage: https://github.com/Kruszoneq/macUSB
+
+check:
+  type: github_releases
+  repo: Kruszoneq/macUSB
+  prereleases: false
+  asset_pattern: '^macUSB\.[\d.]+\.dmg$'
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/Kruszoneq/macUSB/releases/download/{tag}/macUSB.{version}.dmg
+  format: dmg
+
+changelog:
+  url: https://github.com/Kruszoneq/macUSB/releases/tag/{tag}
