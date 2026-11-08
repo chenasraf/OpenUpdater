@@ -50,8 +50,12 @@ nonisolated enum SystemIgnoreList {
     "org.python.IDLE": bundledWithPythonReason,
     "org.python.PythonLauncher": bundledWithPythonReason,
     "Qisda.DDPM": noUpdateSourceReason,
+    // Sold only through stores; the store builds carry other bundle ids or are Steam games.
+    "com.dinopoloclub.minimetro": noUpdateSourceReason,
     "com.intel.PowerGadget": discontinuedReason,
     "com.intelliscapesolutions.caffeine": discontinuedReason,
+    // The direct-sale build; the vendor now ships only the App Store app, under another id.
+    "com.stonelightpictures.Webcam-Effects": discontinuedReason,
     // Ships a placeholder version ("1.0"), so any source would report an update forever.
     "com.unified.Unified-Remote": noVersionInfoReason,
   ]
