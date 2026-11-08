@@ -1,5 +1,5 @@
 {
-  "hash": "2dad581d6dfbd068a790ca364abd75111d669fa10c1e8a8ab1451f0ae1a3c14c",
+  "hash": "a4b71e5046d648ee181a0fd1e078f39626cbfd5d89c5b8ed0ea8e137843fd501",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -265,6 +265,11 @@
       "file": "com.objective-see.oversight.yml",
       "minApp": "0.0.0",
       "sha": "d10a1c12cc3a365fa43b21df61fc6f26fa5d8f33f8ca595e8a397e12e97f0130"
+    },
+    {
+      "file": "com.p5sys.jump.connect.yml",
+      "minApp": "0.0.0",
+      "sha": "e0af473b097c562a13c8d8ca18fc0ea4337faa7e6291bbd129a41f9e930d503d"
     },
     {
       "file": "com.pilotmoon.scroll-reverser.yml",

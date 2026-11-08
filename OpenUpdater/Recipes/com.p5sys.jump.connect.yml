@@ -1,0 +1,15 @@
+id: com.p5sys.jump.connect
+name: Jump Desktop Connect
+homepage: https://jumpdesktop.com/connect/
+
+check:
+  type: xml
+  url: https://mirror.jumpdesktop.com/downloads/connect/connect-mac.xml
+  pattern: 'sparkle:shortVersionString="([0-9.]+)"'
+
+download:
+  url: https://mirror.jumpdesktop.com/downloads/connect/JumpDesktopConnect-{version}.pkg
+  format: pkg
+
+changelog:
+  url: https://docs.jumpdesktop.com/whats-new/changelog/
