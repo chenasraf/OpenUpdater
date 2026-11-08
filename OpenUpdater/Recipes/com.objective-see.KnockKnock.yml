@@ -1,0 +1,18 @@
+id: com.objective-see.KnockKnock
+name: KnockKnock
+homepage: https://objective-see.org/products/knockknock.html
+
+check:
+  type: github_releases
+  repo: objective-see/KnockKnock
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/objective-see/KnockKnock/releases/download/{tag}/KnockKnock_{version}.zip
+  format: zip
+
+changelog:
+  url: https://github.com/objective-see/KnockKnock/releases/tag/{tag}
