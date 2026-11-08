@@ -1,0 +1,15 @@
+id: org.torproject.torbrowser
+name: Tor Browser
+homepage: https://www.torproject.org
+
+check:
+  type: json
+  url: https://aus1.torproject.org/torbrowser/update_3/release/downloads.json
+  path: version
+  download_path: downloads.macos.ALL.binary
+
+download:
+  format: dmg
+
+changelog:
+  url: https://blog.torproject.org/category/releases/

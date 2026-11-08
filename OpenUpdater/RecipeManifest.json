@@ -1,5 +1,5 @@
 {
-  "hash": "1432b6309661aeb61651f51c1e9b836f42e40a58a5dbeabbe04bdef96cc1411b",
+  "hash": "92549f5229af037d13d2703fddfb726ce2e64885d0abca03454cd39c13747865",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -525,6 +525,11 @@
       "file": "org.tempel.findanyfile.yml",
       "minApp": "0.0.0",
       "sha": "e2a50e09fc7ddb166e11d97860f57889c2bb61a98045cea6f5d604fab526a147"
+    },
+    {
+      "file": "org.torproject.torbrowser.yml",
+      "minApp": "0.0.0",
+      "sha": "fc21c0024c0076390e241966314c495f40480c20ddf4ec00a90c6828ecf556c6"
     },
     {
       "file": "org.videolan.vlc.yml",
