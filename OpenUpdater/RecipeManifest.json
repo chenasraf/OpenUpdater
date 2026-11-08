@@ -1,5 +1,5 @@
 {
-  "hash": "46a254b27e99e5360645a0e9f60789b71f027ed5770ac89d8b9a20d1d49efcf8",
+  "hash": "14b24f8d5fd639d131468552504599e81ab66d79397feabf32935348e8493465",
   "recipes": [
     {
       "file": "app.dungeonPaper.yml",
@@ -165,6 +165,11 @@
       "file": "com.hnc.Discord.yml",
       "minApp": "0.0.0",
       "sha": "dcb7deb7cedf46eff1b82daa581c48e3b6a4e44cf7a230b62a74bc813064d73e"
+    },
+    {
+      "file": "com.hughhowey.neo.yml",
+      "minApp": "0.0.0",
+      "sha": "bd09c547cb53346eda70602ca943446c3c7b5e647efe0c320e890c912c434c6f"
     },
     {
       "file": "com.install4j.0526-4458-1435-8154.837.yml",

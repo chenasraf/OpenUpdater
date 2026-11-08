@@ -1,0 +1,23 @@
+id: com.hughhowey.neo
+name: NEO
+homepage: https://github.com/hughhowey/neo
+
+arch:
+  arm64: arm64-mac.zip
+  x86_64: mac.zip
+
+check:
+  type: github_releases
+  repo: hughhowey/neo
+  prereleases: false
+  tag_pattern: '^v\d'
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/hughhowey/neo/releases/download/{tag}/NEO-{version}-{arch}
+  format: zip
+
+changelog:
+  url: https://github.com/hughhowey/neo/releases/tag/{tag}
