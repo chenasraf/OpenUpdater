@@ -1,0 +1,18 @@
+id: com.objective-see.DHS
+name: DHS
+homepage: https://objective-see.org/products/dhs.html
+
+check:
+  type: github_releases
+  repo: objective-see/DylibHijackScanner
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/objective-see/DylibHijackScanner/releases/download/{tag}/DHS_{version}.zip
+  format: zip
+
+changelog:
+  url: https://github.com/objective-see/DylibHijackScanner/releases/tag/{tag}
