@@ -460,6 +460,9 @@ struct InstalledView: View {
     if app.ignored {
       return "Ignored by user. Scope: Entire app"
     }
+    if let until = app.snoozedUntil, app.isSnoozed {
+      return "Snoozed by user until \(until.formatted(date: .abbreviated, time: .shortened))"
+    }
     if let version = app.ignoredVersion {
       return "Ignored by user. Scope: Version \(version)"
     }
@@ -555,6 +558,23 @@ struct AppContextMenuItems: View {
 
     if app.builtInIgnoreReason == nil {
       Divider()
+      if let until = app.snoozedUntil, app.isSnoozed {
+        Button {
+          updateManager.unsnooze(app)
+        } label: {
+          Label(
+            "Unsnooze (until \(until.formatted(date: .abbreviated, time: .omitted)))",
+            systemImage: "zzz")
+        }
+      } else if !app.ignored {
+        Menu {
+          ForEach(SnoozeDuration.allCases) { duration in
+            Button(duration.label) { updateManager.snooze(app, for: duration) }
+          }
+        } label: {
+          Label("Snooze Updates", systemImage: "zzz")
+        }
+      }
       Menu {
         Button {
           updateManager.ignoreApp(app)
@@ -588,6 +608,13 @@ struct AppContextMenuItems: View {
         updateManager.ignoreApps(ignorable)
       } label: {
         Label("Ignore These Apps", systemImage: "eye.slash")
+      }
+      Menu {
+        ForEach(SnoozeDuration.allCases) { duration in
+          Button(duration.label) { updateManager.snoozeApps(ignorable, for: duration) }
+        }
+      } label: {
+        Label("Snooze These Apps", systemImage: "zzz")
       }
       let withUpdates = ignorable.filter(\.updateAvailable)
       if !withUpdates.isEmpty {

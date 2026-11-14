@@ -157,6 +157,7 @@ struct AppInfo: Identifiable, Hashable {
   /// Ignore prefs mirrored from `AppPreferences` (loaded in scan, updated on change).
   var ignored = false
   var ignoredVersion: String?
+  var snoozedUntil: Date?
   /// Set when OpenUpdater ignores this app by default (preset list or a Steam game).
   /// Not user-removable; carries the reason shown in the ignore list.
   var builtInIgnoreReason: String?
@@ -170,12 +171,18 @@ struct AppInfo: Identifiable, Hashable {
   /// `AppPreferences`. `nil` → the default (see `majorUpgradesAllowed`).
   var allowMajorUpgrades: Bool?
 
+  /// True while the user has snoozed this app's updates.
+  var isSnoozed: Bool {
+    guard let snoozedUntil else { return false }
+    return snoozedUntil > Date()
+  }
+
   /// True when this app's update is hidden — either OpenUpdater ignores it by
-  /// default, or the user hid the whole app or just the currently-latest version
-  /// (which reappears once a newer one ships).
+  /// default, or the user hid the whole app, snoozed it, or hid just the
+  /// currently-latest version (which reappears once a newer one ships).
   var isIgnored: Bool {
     if builtInIgnoreReason != nil { return true }
-    if ignored { return true }
+    if ignored || isSnoozed { return true }
     if let ignoredVersion { return ignoredVersion == latestVersion }
     return false
   }
@@ -258,11 +265,13 @@ final class UpdateManager: ObservableObject {
   /// freshly re-checked (see `resolveLatest`), so it never flickers back mid-scan.
   @Published private var updatedThisSession: Set<String> = []
 
-  /// Apps that are ignored — by the user (whole app or a specific version) or by
-  /// OpenUpdater's own built-in ignore list (preset apps, Steam games).
+  /// Apps that are ignored — by the user (whole app, a specific version, or snoozed) or
+  /// by OpenUpdater's own built-in ignore list (preset apps, Steam games).
   var ignoredApps: [AppInfo] {
-    apps.filter { $0.ignored || $0.ignoredVersion != nil || $0.builtInIgnoreReason != nil }
-      .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+    apps.filter {
+      $0.ignored || $0.ignoredVersion != nil || $0.isSnoozed || $0.builtInIgnoreReason != nil
+    }
+    .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
   }
 
   /// Apps we have no way to check — no recipe, no Sparkle feed, and not an App Store
@@ -524,9 +533,14 @@ final class UpdateManager: ObservableObject {
 
   /// Mirror the stored per-app prefs onto the in-memory `AppInfo`.
   private func applyIgnore(toAppAt index: Int) {
-    let prefs = AppPreferences.load(for: apps[index].id)
+    var prefs = AppPreferences.load(for: apps[index].id)
+    if let until = prefs.snoozedUntil, until <= Date() {
+      prefs.snoozedUntil = nil
+      prefs.save(for: apps[index].id)
+    }
     apps[index].ignored = prefs.ignored ?? false
     apps[index].ignoredVersion = prefs.ignoredVersion
+    apps[index].snoozedUntil = prefs.snoozedUntil
     apps[index].allowMajorUpgrades = prefs.allowMajorUpgrades
   }
 
@@ -795,12 +809,30 @@ final class UpdateManager: ObservableObject {
     changeIgnore(app.id) { $0.ignoredVersion = version }
   }
 
-  /// Stop ignoring this app entirely (clears both app- and version-level ignores).
+  /// Hide this app's updates for a while; they reappear once the snooze ends.
+  func snooze(_ app: AppInfo, for duration: SnoozeDuration) {
+    let until = duration.end(from: Date())
+    changeIgnore(app.id) { $0.snoozedUntil = until }
+  }
+
+  /// End this app's snooze early.
+  func unsnooze(_ app: AppInfo) {
+    changeIgnore(app.id) { $0.snoozedUntil = nil }
+  }
+
+  /// Stop ignoring this app entirely (clears app- and version-level ignores and any
+  /// snooze).
   func clearIgnore(for app: AppInfo) {
     changeIgnore(app.id) {
       $0.ignored = nil
       $0.ignoredVersion = nil
+      $0.snoozedUntil = nil
     }
+  }
+
+  /// Snooze several apps at once.
+  func snoozeApps(_ apps: [AppInfo], for duration: SnoozeDuration) {
+    apps.forEach { snooze($0, for: duration) }
   }
 
   /// Ignore several apps at once (e.g. a multi-selection).

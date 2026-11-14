@@ -181,7 +181,7 @@ struct IgnoreListView: View {
       VStack(spacing: 8) {
         Image(systemName: "nosign").font(.system(size: 40)).foregroundStyle(.secondary)
         Text("No ignored apps").font(.title3)
-        Text("Right-click an app and choose Ignore to add it here.")
+        Text("Right-click an app and choose Ignore or Snooze Updates to add it here.")
           .font(.caption).foregroundStyle(.secondary)
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -223,6 +223,9 @@ struct IgnoreListView: View {
   private func ignoreDescription(_ app: AppInfo) -> String {
     if let reason = app.builtInIgnoreReason { return reason }
     if app.ignored { return "Entire app" }
+    if let until = app.snoozedUntil, app.isSnoozed {
+      return "Snoozed until \(until.formatted(date: .abbreviated, time: .shortened))"
+    }
     if let version = app.ignoredVersion { return "Version \(version)" }
     return ""
   }
