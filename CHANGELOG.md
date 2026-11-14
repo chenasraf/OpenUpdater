@@ -1,5 +1,51 @@
 # Changelog
 
+## [0.29.0](https://github.com/chenasraf/OpenUpdater/compare/v0.28.0...v0.29.0) (2026-11-14)
+
+
+### Features
+
+* **recipe:** BlockBlock Helper (`com.objective-see.blockblock.helper`) ([4aa956b](https://github.com/chenasraf/OpenUpdater/commit/4aa956b581f193cd5f318e5860ff9c8911d6d350))
+* **recipe:** Brave Browser (`com.brave.Browser`) ([1cf1d52](https://github.com/chenasraf/OpenUpdater/commit/1cf1d52ead1be430dd17c055c3b525efbb7e0388))
+* **recipe:** Chromium (`io.ungoogled-software.ungoogled-chromium`) ([118d3da](https://github.com/chenasraf/OpenUpdater/commit/118d3dae62f6606c022b2d06c8e4970f59fbcb69))
+* **recipe:** DeepSeek Harness (`com.deepseek.dsh`) ([737820c](https://github.com/chenasraf/OpenUpdater/commit/737820c67764be5750714502b391f07a8c4eccae))
+* **recipe:** DHS (`com.objective-see.DHS`) ([a936c35](https://github.com/chenasraf/OpenUpdater/commit/a936c3568ea89036d51cefe6b82159bd3f4283d6))
+* **recipe:** Find Any File (`org.tempel.findanyfile`) ([148af0f](https://github.com/chenasraf/OpenUpdater/commit/148af0f63b1249c2cf389eddc75507f1c93a97d1))
+* **recipe:** FSNotes (`co.fluder.FSNotes`) ([168c101](https://github.com/chenasraf/OpenUpdater/commit/168c101528831acb0ce237df65662c8235ecf0c5))
+* **recipe:** Interview Coder (`com.chunginlee.interviewcoder`) ([525e367](https://github.com/chenasraf/OpenUpdater/commit/525e367d8146fe498c36f49f87e53b717e9b81fd))
+* **recipe:** iStat Menus (`com.bjango.istatmenus`) ([f35ad05](https://github.com/chenasraf/OpenUpdater/commit/f35ad0545d47a0a16c68ef93b2ace785ff9d7566))
+* **recipe:** Itsytv (`com.itsytv.app`) ([a30a14d](https://github.com/chenasraf/OpenUpdater/commit/a30a14d87b6785b1d1c0824d183c001358091f48))
+* **recipe:** Jellyfin Server (`Jellyfin.Server`) ([28343df](https://github.com/chenasraf/OpenUpdater/commit/28343dfba6c0ad52760785ecce3be5c28b52ac0a))
+* **recipe:** Jump Desktop Connect (`com.p5sys.jump.connect`) ([b51d742](https://github.com/chenasraf/OpenUpdater/commit/b51d742a64bd91df702c19ad44418092060fc80a))
+* **recipe:** KnockKnock (`com.objective-see.KnockKnock`) ([cd5e046](https://github.com/chenasraf/OpenUpdater/commit/cd5e0464a9d57308b772d6d4bf783883bc224d25))
+* **recipe:** Kokoro TTS (`com.sb.KokoroTTS`) ([1c55797](https://github.com/chenasraf/OpenUpdater/commit/1c55797beebf61976e076fc7124edd5a76eb0d3c))
+* **recipe:** Luminar Neo (`mm.skylum.luminarneo`) ([3439344](https://github.com/chenasraf/OpenUpdater/commit/343934423f3cc235992a12907a194abd4225304c))
+* **recipe:** macUSB (`com.kruszoneq.macUSB`) ([5537a93](https://github.com/chenasraf/OpenUpdater/commit/5537a9331e44fde659ec4fe678bc0dcb869989d9))
+* **recipe:** Microsoft Excel (`com.microsoft.Excel`) ([652abbb](https://github.com/chenasraf/OpenUpdater/commit/652abbbf7ddd2b1503d49387d92df948acd6a1c8))
+* **recipe:** Microsoft OneNote (`com.microsoft.onenote.mac`) ([f66269d](https://github.com/chenasraf/OpenUpdater/commit/f66269d4e5051e450934a556e652b3647243e47a))
+* **recipe:** Microsoft Outlook (`com.microsoft.Outlook`) ([4e3e13d](https://github.com/chenasraf/OpenUpdater/commit/4e3e13dffb599d1806d36c318444923422e98f64))
+* **recipe:** Microsoft PowerPoint (`com.microsoft.Powerpoint`) ([34e2bc0](https://github.com/chenasraf/OpenUpdater/commit/34e2bc06eccc0e94499e882ca2d37d70729ef210))
+* **recipe:** Microsoft Word (`com.microsoft.Word`) ([119c9e9](https://github.com/chenasraf/OpenUpdater/commit/119c9e950b3345ee2dbe7984cdd19fb8418f0833))
+* **recipe:** NAPS2 (`com.naps2.desktop`) ([76577ad](https://github.com/chenasraf/OpenUpdater/commit/76577add3fc84bd9ea9c4ca580b34444f9933c6a))
+* **recipe:** NEO (`com.hughhowey.neo`) ([de6b6c9](https://github.com/chenasraf/OpenUpdater/commit/de6b6c99277991e97280d58b7b7ce670efc84ae4))
+* **recipe:** OnyX (`com.titanium.OnyX`) ([ba8c8e0](https://github.com/chenasraf/OpenUpdater/commit/ba8c8e036d426f9f810e4fbd1b84d8f06b14b6b7))
+* **recipe:** OverSight (`com.objective-see.oversight`) ([c1530a3](https://github.com/chenasraf/OpenUpdater/commit/c1530a3d06da77b1c6f89f6a5034b2b897807763))
+* **recipe:** PDF Expert (`com.readdle.PDFExpert-Mac`) ([33dd870](https://github.com/chenasraf/OpenUpdater/commit/33dd8702b59b217f83c0613f2ca30ff8f82449ca))
+* **recipe:** Pearcleaner (`com.alienator88.Pearcleaner`) ([3c034b5](https://github.com/chenasraf/OpenUpdater/commit/3c034b571d6f3df015df2a5d261c644f3df6ee46))
+* **recipe:** PECB Exams (`com.pecb.exams`) ([53705da](https://github.com/chenasraf/OpenUpdater/commit/53705dae9d9e730d1b052f68bde20ef1b4a0b2b5))
+* **recipe:** Pinch (`io.danqing.Pinch`) ([f9933de](https://github.com/chenasraf/OpenUpdater/commit/f9933de5d265a1e29ac20308fcd649397cf7e406))
+* **recipe:** Pluely (`com.srikanthnani.pluely`) ([6d15b99](https://github.com/chenasraf/OpenUpdater/commit/6d15b99567fa1bd7b749971511a0e65871b2ef2a))
+* **recipe:** Progressive Downloader (`com.PS.PSD`) ([4212767](https://github.com/chenasraf/OpenUpdater/commit/4212767b32f1564ae8c5de5e71a5ee4cbc80e210))
+* **recipe:** qBittorrent (`org.qbittorrent.qBittorrent`) ([331745a](https://github.com/chenasraf/OpenUpdater/commit/331745a6ee4618d24ac567290b712a8d536e4235))
+* **recipes:** {os_major} placeholder for per-macOS builds ([942f802](https://github.com/chenasraf/OpenUpdater/commit/942f80208d375915133575646cb4916215f6bf94))
+* **recipe:** Sentinel (`com.alienator88.Sentinel`) ([3691e63](https://github.com/chenasraf/OpenUpdater/commit/3691e63474d3761d2194a1b1e15744cf474d49ab))
+* **recipe:** TeamViewer (`com.teamviewer.TeamViewer`) ([19e3e41](https://github.com/chenasraf/OpenUpdater/commit/19e3e4118acbd33f040f890950d1a8978be00bde))
+* **recipe:** Textream (`dev.fka.textream`) ([618d58c](https://github.com/chenasraf/OpenUpdater/commit/618d58ce0d6c81090f72c8c9be64b625e19a61cd))
+* **recipe:** Tinycast (`com.tinycast.app`) ([40ebfc6](https://github.com/chenasraf/OpenUpdater/commit/40ebfc642dfa3f510dfee815a95102f25e1c875a))
+* **recipe:** Tor Browser (`org.torproject.torbrowser`) ([ab71501](https://github.com/chenasraf/OpenUpdater/commit/ab715012924e49c74c61d040ca3741d1126f68de))
+* **recipe:** Warp (`dev.warp.Warp-Stable`) ([d0bc5ab](https://github.com/chenasraf/OpenUpdater/commit/d0bc5abfb131f846b3de0424a618a522cecb9cc4))
+* **updating:** ignore Mini Metro and Webcam Effects Live ([35ffec9](https://github.com/chenasraf/OpenUpdater/commit/35ffec91e9bb882f4f9527d91a7d63fbe4b96192))
+
 ## [0.28.0](https://github.com/chenasraf/OpenUpdater/compare/v0.27.0...v0.28.0) (2026-11-05)
 
 
