@@ -26,7 +26,7 @@ enum HTTPVersionSource {
     let resolved = try await resolvePlaceholders(recipe.check.resolve)
 
     guard let rawURL = recipe.check.url,
-      let url = URL(string: applyPlaceholders(recipe.resolveArch(rawURL), resolved))
+      let url = URL(string: applyPlaceholders(recipe.resolveHost(rawURL), resolved))
     else {
       throw UpdateCheckError.missingURL
     }
@@ -54,7 +54,7 @@ enum HTTPVersionSource {
 
     switch kind {
     case .json, .yaml:
-      guard let path = recipe.check.path.map(recipe.resolveArch) else {
+      guard let path = recipe.check.path.map(recipe.resolveHost) else {
         throw failed("the recipe has no `check.path` to read the version from", selector: nil)
       }
       let root: Any
@@ -75,11 +75,11 @@ enum HTTPVersionSource {
       }
       rawVersion = value
       extractedDownload = recipe.check.downloadPath.flatMap {
-        Self.keyPathValue(at: recipe.resolveArch($0), in: root)
+        Self.keyPathValue(at: recipe.resolveHost($0), in: root)
       }
 
     case .html, .xml:
-      guard let pattern = recipe.check.pattern else {
+      guard let pattern = recipe.check.pattern.map(recipe.resolveHost) else {
         throw failed("the recipe has no `check.pattern` to match the version", selector: nil)
       }
       let body = String(data: data, encoding: .utf8) ?? ""
@@ -88,7 +88,7 @@ enum HTTPVersionSource {
       }
       rawVersion = value
       extractedDownload = recipe.check.downloadPattern.flatMap {
-        Self.firstCapture(recipe.resolveArch($0), in: body)
+        Self.firstCapture(recipe.resolveHost($0), in: body)
       }
 
     default:
@@ -135,7 +135,7 @@ enum HTTPVersionSource {
     for recipe: UpdateRecipe, checkURL url: URL, resolved: [String: String]
   ) async throws -> ReleaseResult {
     let finalURL = try await finalRedirectURL(url)
-    guard let pattern = recipe.check.pattern.map(recipe.resolveArch) else {
+    guard let pattern = recipe.check.pattern.map(recipe.resolveHost) else {
       throw UpdateCheckError.extractionFailed(
         "version",
         CheckContext(

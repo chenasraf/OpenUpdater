@@ -105,7 +105,7 @@ func resolve(_ recipe: UpdateRecipe, prereleases: Bool) async throws -> ReleaseR
     return try await GitHubReleaseSource.latest(
       for: recipe, includePrereleases: prereleases || recipe.check.prereleases)
   case .sparkle:
-    guard let feed = recipe.check.feed, let feedURL = URL(string: recipe.resolveArch(feed)) else {
+    guard let feed = recipe.check.feed, let feedURL = URL(string: recipe.resolveHost(feed)) else {
       throw UpdateCheckError.missingFeed
     }
     return try await SparkleSource.latest(feedURL: feedURL)

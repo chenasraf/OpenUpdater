@@ -26,6 +26,7 @@ let package = Package(
         "OpenUpdater/Updating/AppStoreSource.swift",
         "OpenUpdater/Updating/UpdateRecipe.swift",
         "OpenUpdater/Updating/SystemArch.swift",
+        "OpenUpdater/Updating/SystemOS.swift",
         "OpenUpdater/Updating/Installer.swift",
         // The CLI driver + Foundation-only shims for the two UI/Keychain symbols
         // the sources reference (AppBranding, GitHubToken).

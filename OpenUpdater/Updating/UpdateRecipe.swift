@@ -288,17 +288,19 @@ struct UpdateRecipe: Decodable {
     arch?[SystemArch.current] ?? SystemArch.current
   }
 
-  /// Replace the `{arch}` placeholder — usable on feed URLs, regex patterns, and
-  /// JSON key paths that don't carry `{tag}`/`{version}`.
-  func resolveArch(_ template: String) -> String {
-    template.replacingOccurrences(of: "{arch}", with: archString)
+  /// Replace the running Mac's `{arch}` and `{os_major}` placeholders — usable on
+  /// feed URLs, regex patterns, and JSON key paths that don't carry `{tag}`/`{version}`.
+  func resolveHost(_ template: String) -> String {
+    template
+      .replacingOccurrences(of: "{arch}", with: archString)
+      .replacingOccurrences(of: "{os_major}", with: SystemOS.major)
   }
 
-  /// Expand `{tag}`, `{version}`, `{major}`/`{minor}`/`{patch}`, and `{arch}`
-  /// placeholders. (For a major.minor folder, write `{major}.{minor}`.)
+  /// Expand `{tag}`, `{version}`, `{major}`/`{minor}`/`{patch}`, `{arch}`, and
+  /// `{os_major}` placeholders. (For a major.minor folder, write `{major}.{minor}`.)
   func expand(_ template: String, tag: String, version: String) -> String {
     let parts = version.split(separator: ".").map(String.init)
-    return resolveArch(template)
+    return resolveHost(template)
       .replacingOccurrences(of: "{tag}", with: tag)
       .replacingOccurrences(of: "{version}", with: version)
       .replacingOccurrences(of: "{major}", with: parts.first ?? "")

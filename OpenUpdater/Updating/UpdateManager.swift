@@ -637,7 +637,7 @@ final class UpdateManager: ObservableObject {
             for: recipe, includePrereleases: includePrereleases(for: app))
           source = .githubRelease
         case .sparkle:
-          guard let feed = recipe.check.feed, let feedURL = URL(string: recipe.resolveArch(feed))
+          guard let feed = recipe.check.feed, let feedURL = URL(string: recipe.resolveHost(feed))
           else { throw UpdateCheckError.missingFeed }
           result = try await SparkleSource.latest(feedURL: feedURL)
           source = .sparkle

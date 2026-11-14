@@ -32,6 +32,7 @@ FEATURES = [
     (re.compile(r"\[[^\]]*~[^\]]*\]"), "0.9.0"),  # [field~value] json path predicate
     (re.compile(r"(?m)^\s*asset_pattern:\s*\S"), "0.19.0"),  # github_releases asset filter
     (re.compile(r"(?m)^\s*bundle_ids:"), "0.20.0"),  # bundle id aliases
+    (re.compile(r"\{os_major\}"), "0.29.0"),  # host macOS major version placeholder
 ]
 BASELINE = "0.0.0"
 
