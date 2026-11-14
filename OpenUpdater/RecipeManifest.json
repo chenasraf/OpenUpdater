@@ -1,5 +1,5 @@
 {
-  "hash": "6bb1127307d1aa5c997b665ddb2d7e88ff5fd201d1630dcd2c1f24ef7006cf19",
+  "hash": "44f95d2be3f91f022c005209a4041f756bb537f28b1cc6220427e3ce951f68b3",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -300,6 +300,11 @@
       "file": "com.raspberrypi.rpi-imager.yml",
       "minApp": "0.0.0",
       "sha": "b65928a77f4aefd0ec5c259285f7e7c223cb681eae8cf5069ebd3bffad4679be"
+    },
+    {
+      "file": "com.readdle.PDFExpert-Mac.yml",
+      "minApp": "0.0.0",
+      "sha": "31182d68d7c424a799aaa0a70edf9f66cfffd4a5b2f112856e8712005af9dd03"
     },
     {
       "file": "com.rogueamoeba.soundsource.yml",

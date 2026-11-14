@@ -1,0 +1,19 @@
+id: com.readdle.PDFExpert-Mac
+name: PDF Expert
+homepage: https://pdfexpert.com
+
+check:
+  type: sparkle
+  feed: https://downloads.pdfexpert.com/pem3/release/appcast.xml
+
+changelog:
+  url: https://pdfexpert.com/pem3/changelog.html
+
+channels:
+  - id: stable
+    name: Stable
+  - id: beta
+    name: Beta
+    check:
+      type: sparkle
+      feed: https://downloads.pdfexpert.com/pem3/beta/appcast.xml
