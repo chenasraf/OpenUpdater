@@ -6,6 +6,59 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.29.0</title>
+    <pubDate>Sat, 14 Nov 2026 22:58:17 +0000</pubDate>
+    <sparkle:version>120</sparkle:version>
+    <sparkle:shortVersionString>0.29.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.28.0...v0.29.0">0.29.0</a> (2026-11-14)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>recipe:</strong> BlockBlock Helper (<code class="notranslate">com.objective-see.blockblock.helper</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/4aa956b581f193cd5f318e5860ff9c8911d6d350">4aa956b</a>)</li>
+<li><strong>recipe:</strong> Brave Browser (<code class="notranslate">com.brave.Browser</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/1cf1d52ead1be430dd17c055c3b525efbb7e0388">1cf1d52</a>)</li>
+<li><strong>recipe:</strong> Chromium (<code class="notranslate">io.ungoogled-software.ungoogled-chromium</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/118d3dae62f6606c022b2d06c8e4970f59fbcb69">118d3da</a>)</li>
+<li><strong>recipe:</strong> DeepSeek Harness (<code class="notranslate">com.deepseek.dsh</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/737820c67764be5750714502b391f07a8c4eccae">737820c</a>)</li>
+<li><strong>recipe:</strong> DHS (<code class="notranslate">com.objective-see.DHS</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/a936c3568ea89036d51cefe6b82159bd3f4283d6">a936c35</a>)</li>
+<li><strong>recipe:</strong> Find Any File (<code class="notranslate">org.tempel.findanyfile</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/148af0f63b1249c2cf389eddc75507f1c93a97d1">148af0f</a>)</li>
+<li><strong>recipe:</strong> FSNotes (<code class="notranslate">co.fluder.FSNotes</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/168c101528831acb0ce237df65662c8235ecf0c5">168c101</a>)</li>
+<li><strong>recipe:</strong> Interview Coder (<code class="notranslate">com.chunginlee.interviewcoder</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/525e367d8146fe498c36f49f87e53b717e9b81fd">525e367</a>)</li>
+<li><strong>recipe:</strong> iStat Menus (<code class="notranslate">com.bjango.istatmenus</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/f35ad0545d47a0a16c68ef93b2ace785ff9d7566">f35ad05</a>)</li>
+<li><strong>recipe:</strong> Itsytv (<code class="notranslate">com.itsytv.app</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/a30a14d87b6785b1d1c0824d183c001358091f48">a30a14d</a>)</li>
+<li><strong>recipe:</strong> Jellyfin Server (<code class="notranslate">Jellyfin.Server</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/28343dfba6c0ad52760785ecce3be5c28b52ac0a">28343df</a>)</li>
+<li><strong>recipe:</strong> Jump Desktop Connect (<code class="notranslate">com.p5sys.jump.connect</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/b51d742a64bd91df702c19ad44418092060fc80a">b51d742</a>)</li>
+<li><strong>recipe:</strong> KnockKnock (<code class="notranslate">com.objective-see.KnockKnock</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/cd5e0464a9d57308b772d6d4bf783883bc224d25">cd5e046</a>)</li>
+<li><strong>recipe:</strong> Kokoro TTS (<code class="notranslate">com.sb.KokoroTTS</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/1c55797beebf61976e076fc7124edd5a76eb0d3c">1c55797</a>)</li>
+<li><strong>recipe:</strong> Luminar Neo (<code class="notranslate">mm.skylum.luminarneo</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/343934423f3cc235992a12907a194abd4225304c">3439344</a>)</li>
+<li><strong>recipe:</strong> macUSB (<code class="notranslate">com.kruszoneq.macUSB</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/5537a9331e44fde659ec4fe678bc0dcb869989d9">5537a93</a>)</li>
+<li><strong>recipe:</strong> Microsoft Excel (<code class="notranslate">com.microsoft.Excel</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/652abbbf7ddd2b1503d49387d92df948acd6a1c8">652abbb</a>)</li>
+<li><strong>recipe:</strong> Microsoft OneNote (<code class="notranslate">com.microsoft.onenote.mac</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/f66269d4e5051e450934a556e652b3647243e47a">f66269d</a>)</li>
+<li><strong>recipe:</strong> Microsoft Outlook (<code class="notranslate">com.microsoft.Outlook</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/4e3e13dffb599d1806d36c318444923422e98f64">4e3e13d</a>)</li>
+<li><strong>recipe:</strong> Microsoft PowerPoint (<code class="notranslate">com.microsoft.Powerpoint</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/34e2bc06eccc0e94499e882ca2d37d70729ef210">34e2bc0</a>)</li>
+<li><strong>recipe:</strong> Microsoft Word (<code class="notranslate">com.microsoft.Word</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/119c9e950b3345ee2dbe7984cdd19fb8418f0833">119c9e9</a>)</li>
+<li><strong>recipe:</strong> NAPS2 (<code class="notranslate">com.naps2.desktop</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/76577add3fc84bd9ea9c4ca580b34444f9933c6a">76577ad</a>)</li>
+<li><strong>recipe:</strong> NEO (<code class="notranslate">com.hughhowey.neo</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/de6b6c99277991e97280d58b7b7ce670efc84ae4">de6b6c9</a>)</li>
+<li><strong>recipe:</strong> OnyX (<code class="notranslate">com.titanium.OnyX</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/ba8c8e036d426f9f810e4fbd1b84d8f06b14b6b7">ba8c8e0</a>)</li>
+<li><strong>recipe:</strong> OverSight (<code class="notranslate">com.objective-see.oversight</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/c1530a3d06da77b1c6f89f6a5034b2b897807763">c1530a3</a>)</li>
+<li><strong>recipe:</strong> PDF Expert (<code class="notranslate">com.readdle.PDFExpert-Mac</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/33dd8702b59b217f83c0613f2ca30ff8f82449ca">33dd870</a>)</li>
+<li><strong>recipe:</strong> Pearcleaner (<code class="notranslate">com.alienator88.Pearcleaner</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/3c034b571d6f3df015df2a5d261c644f3df6ee46">3c034b5</a>)</li>
+<li><strong>recipe:</strong> PECB Exams (<code class="notranslate">com.pecb.exams</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/53705dae9d9e730d1b052f68bde20ef1b4a0b2b5">53705da</a>)</li>
+<li><strong>recipe:</strong> Pinch (<code class="notranslate">io.danqing.Pinch</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/f9933de5d265a1e29ac20308fcd649397cf7e406">f9933de</a>)</li>
+<li><strong>recipe:</strong> Pluely (<code class="notranslate">com.srikanthnani.pluely</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/6d15b99567fa1bd7b749971511a0e65871b2ef2a">6d15b99</a>)</li>
+<li><strong>recipe:</strong> Progressive Downloader (<code class="notranslate">com.PS.PSD</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/4212767b32f1564ae8c5de5e71a5ee4cbc80e210">4212767</a>)</li>
+<li><strong>recipe:</strong> qBittorrent (<code class="notranslate">org.qbittorrent.qBittorrent</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/331745a6ee4618d24ac567290b712a8d536e4235">331745a</a>)</li>
+<li><strong>recipes:</strong> {os_major} placeholder for per-macOS builds (<a href="https://github.com/chenasraf/OpenUpdater/commit/942f80208d375915133575646cb4916215f6bf94">942f802</a>)</li>
+<li><strong>recipe:</strong> Sentinel (<code class="notranslate">com.alienator88.Sentinel</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/3691e63474d3761d2194a1b1e15744cf474d49ab">3691e63</a>)</li>
+<li><strong>recipe:</strong> TeamViewer (<code class="notranslate">com.teamviewer.TeamViewer</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/19e3e4118acbd33f040f890950d1a8978be00bde">19e3e41</a>)</li>
+<li><strong>recipe:</strong> Textream (<code class="notranslate">dev.fka.textream</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/618d58ce0d6c81090f72c8c9be64b625e19a61cd">618d58c</a>)</li>
+<li><strong>recipe:</strong> Tinycast (<code class="notranslate">com.tinycast.app</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/40ebfc642dfa3f510dfee815a95102f25e1c875a">40ebfc6</a>)</li>
+<li><strong>recipe:</strong> Tor Browser (<code class="notranslate">org.torproject.torbrowser</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/ab715012924e49c74c61d040ca3741d1126f68de">ab71501</a>)</li>
+<li><strong>recipe:</strong> Warp (<code class="notranslate">dev.warp.Warp-Stable</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/d0bc5abfb131f846b3de0424a618a522cecb9cc4">d0bc5ab</a>)</li>
+<li><strong>updating:</strong> ignore Mini Metro and Webcam Effects Live (<a href="https://github.com/chenasraf/OpenUpdater/commit/35ffec91e9bb882f4f9527d91a7d63fbe4b96192">35ffec9</a>)</li>
+<li><strong>updating:</strong> snooze an app's updates for a set time (<a href="https://github.com/chenasraf/OpenUpdater/commit/c958703164d5c9c75ff2c11658dcef236de6aa32">c958703</a>), closes <a href="https://github.com/chenasraf/OpenUpdater/issues/39" data-hovercard-type="issue" data-hovercard-url="/chenasraf/OpenUpdater/issues/39/hovercard">#39</a></li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.29.0/OpenUpdater-0.29.0.dmg" sparkle:edSignature="/M4DO8DD+l1d8V1uhzPpgk+LLtwuZeKFgyexCfaah3UqlAQmRKm5cncFk7fVLBDgTnm4f25FORFe4mcRkEypDw==" length="3453970" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.28.0</title>
     <pubDate>Thu, 05 Nov 2026 22:38:39 +0000</pubDate>
     <sparkle:version>115</sparkle:version>
