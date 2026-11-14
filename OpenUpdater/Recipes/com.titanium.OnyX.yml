@@ -1,0 +1,15 @@
+id: com.titanium.OnyX
+name: OnyX
+homepage: https://www.titanium-software.fr/en/onyx.html
+
+check:
+  type: html
+  url: https://www.titanium-software.fr/en/onyx.html
+  pattern: 'OnyX ([0-9.]+) for macOS [^<]*? {os_major}\b'
+
+download:
+  url: https://www.titanium-software.fr/download/{os_major}/OnyX.dmg
+  format: dmg
+
+changelog:
+  url: https://www.titanium-software.fr/en/release_onyx.html

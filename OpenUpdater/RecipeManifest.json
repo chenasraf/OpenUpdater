@@ -1,5 +1,5 @@
 {
-  "hash": "92549f5229af037d13d2703fddfb726ce2e64885d0abca03454cd39c13747865",
+  "hash": "6bb1127307d1aa5c997b665ddb2d7e88ff5fd201d1630dcd2c1f24ef7006cf19",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -340,6 +340,11 @@
       "file": "com.tinyspeck.slackmacgap.yml",
       "minApp": "0.9.0",
       "sha": "9d8617a2b2fd519c8b6bfb96bc4b930d0dc13a931a18f59de953bce5639c26f6"
+    },
+    {
+      "file": "com.titanium.OnyX.yml",
+      "minApp": "0.29.0",
+      "sha": "4d23fb854abd4a10ea3e484bb1608158e296d97fbd0235a1f0edf10d9c9ba6a9"
     },
     {
       "file": "com.tmog.taskmanager.yml",
