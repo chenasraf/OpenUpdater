@@ -7,14 +7,17 @@ arch:
   x86_64: x64
 
 check:
-  type: html
-  url: https://pluely.com/downloads
-  pattern: 'pluely-assets\.s3\.eu-north-1\.amazonaws\.com/app-v(\d+(?:\.\d+)+)/'
-  select: latest
+  type: github_releases
+  repo: iamsrikanthnani/pluely
+  prereleases: false
+  tag_pattern: '^app-v'
+
+version:
+  strip_prefix: app-v
 
 download:
-  url: https://pluely-assets.s3.eu-north-1.amazonaws.com/app-v{version}/Pluely_{version}_{arch}.dmg
+  url: https://github.com/iamsrikanthnani/pluely/releases/download/{tag}/Pluely_{version}_{arch}.dmg
   format: dmg
 
 changelog:
-  url: https://pluely.com/changelog
+  url: https://github.com/iamsrikanthnani/pluely/releases/tag/{tag}
