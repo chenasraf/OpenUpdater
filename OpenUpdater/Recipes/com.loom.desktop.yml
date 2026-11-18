@@ -1,0 +1,16 @@
+id: com.loom.desktop
+name: Loom
+homepage: https://www.loom.com
+
+arch:
+  arm64: "-arm64"
+  x86_64: ""
+
+check:
+  type: yaml
+  url: https://packages.loom.com/desktop-packages/latest-mac.yml
+  path: version
+
+download:
+  url: https://packages.loom.com/desktop-packages/Loom-{version}{arch}.dmg
+  format: dmg

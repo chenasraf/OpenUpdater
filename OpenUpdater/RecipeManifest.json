@@ -1,5 +1,5 @@
 {
-  "hash": "204a41babfb920ed20514380f08df9baf196275052a87c5dd5e6f9580653cb61",
+  "hash": "ec165b8e0b585da4ddbc9b1fd4eb8c3c588b0b182a4f59521ca2c3cce5c094ce",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -200,6 +200,11 @@
       "file": "com.kruszoneq.macUSB.yml",
       "minApp": "0.19.0",
       "sha": "688b9fd8af0bddb49ffef03c905b97f2ca42cab110e849268fdfd57b037d6af8"
+    },
+    {
+      "file": "com.loom.desktop.yml",
+      "minApp": "0.0.0",
+      "sha": "fdb1a1851f63f61d0f30804e20b36eff012d17de32c6ef92d951ccf30be16fbf"
     },
     {
       "file": "com.macitbetter.betterzip.yml",
