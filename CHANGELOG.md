@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.30.0](https://github.com/chenasraf/OpenUpdater/compare/v0.29.0...v0.30.0) (2026-11-18)
+
+
+### Features
+
+* **recipe:** CameraController (`com.itaysoft.CameraController`) ([9b8ff41](https://github.com/chenasraf/OpenUpdater/commit/9b8ff41a5b810377ab3586e2e9712413210896ea))
+* **recipe:** Google Earth Pro (`com.Google.GoogleEarthPro`) ([3d3e65e](https://github.com/chenasraf/OpenUpdater/commit/3d3e65ebb03160305145236bf8f63be2c4ff4d61))
+* **recipe:** Inkscape (`org.inkscape.Inkscape`) ([7274ac8](https://github.com/chenasraf/OpenUpdater/commit/7274ac85631e18901b722266bc9f14b2847d450c))
+* **recipe:** Loom (`com.loom.desktop`) ([d02219c](https://github.com/chenasraf/OpenUpdater/commit/d02219c16e8f69894ff7c9fd51f4a8327fe995bd))
+* **recipe:** QGIS (`org.qgis.qgis3`) ([f839125](https://github.com/chenasraf/OpenUpdater/commit/f839125b88db5ff19f6fdf4b7b81ade13cf3aa85))
+* **recipe:** R (`org.R-project.R`) ([a77813f](https://github.com/chenasraf/OpenUpdater/commit/a77813fdf130716c8ec1f8658a4914753f4b9936))
+* **recipe:** Solstice (`com.mersive.solstice.client`) ([ede2921](https://github.com/chenasraf/OpenUpdater/commit/ede2921856ceb32c9e29563050c3f96070cab054))
+* **recipe:** Sublime Text (`com.sublimetext.4`) ([733a1f1](https://github.com/chenasraf/OpenUpdater/commit/733a1f1c0a1ab538ec104fe1a0a26b794c459057))
+* **recipe:** WhatCable (`uk.whatcable.whatcable`) ([598c73c](https://github.com/chenasraf/OpenUpdater/commit/598c73cad4a36b54c1c6e1319baa5a5a6538405b))
+
+
+### Bug Fixes
+
+* **recipe:** Pluely (`com.srikanthnani.pluely`) - read GitHub releases ([8ec240f](https://github.com/chenasraf/OpenUpdater/commit/8ec240f5f7e6c3eed31c1100f7f6b814383b4b75))
+* **updating:** upgrade http Sparkle feeds to https ([d35ea3d](https://github.com/chenasraf/OpenUpdater/commit/d35ea3dadbab8a975b00fbc3ecaa0f0cb2e04d03))
+
 ## [0.29.0](https://github.com/chenasraf/OpenUpdater/compare/v0.28.0...v0.29.0) (2026-11-14)
 
 
