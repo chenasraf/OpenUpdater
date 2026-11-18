@@ -1,0 +1,26 @@
+id: org.qgis.qgis3
+name: QGIS
+homepage: https://qgis.org
+
+check:
+  type: html
+  url: https://qgis.org/download/
+  pattern: 'QGIS-OSGeo4W-([0-9.]+)-[0-9]+\.msi[^>]*>Latest'
+  download_pattern: '(https://download\.qgis\.org/downloads/macos/pr/qgis_pr_final-[0-9_]+\.dmg)'
+
+download:
+  format: dmg
+
+changelog:
+  url: https://qgis.org/project/visual-changelogs/
+
+channels:
+  - id: latest
+    name: Latest
+  - id: ltr
+    name: Long Term Release
+    check:
+      type: html
+      url: https://qgis.org/download/
+      pattern: 'QGIS-OSGeo4W-([0-9.]+)-[0-9]+\.msi[^>]*>Long Term'
+      download_pattern: '(https://download\.qgis\.org/downloads/macos/ltr/qgis_ltr_final-[0-9_]+\.dmg)'
