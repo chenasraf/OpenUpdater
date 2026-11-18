@@ -6,6 +6,32 @@
     <description>Updates for OpenUpdater.</description>
     <language>en</language>
   <item>
+    <title>0.30.0</title>
+    <pubDate>Wed, 18 Nov 2026 09:47:38 +0000</pubDate>
+    <sparkle:version>123</sparkle:version>
+    <sparkle:shortVersionString>0.30.0</sparkle:shortVersionString>
+    <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+    <description><![CDATA[<h2><a href="https://github.com/chenasraf/OpenUpdater/compare/v0.29.0...v0.30.0">0.30.0</a> (2026-11-18)</h2>
+<h3>Features</h3>
+<ul>
+<li><strong>recipe:</strong> CameraController (<code class="notranslate">com.itaysoft.CameraController</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/9b8ff41a5b810377ab3586e2e9712413210896ea">9b8ff41</a>)</li>
+<li><strong>recipe:</strong> Google Earth Pro (<code class="notranslate">com.Google.GoogleEarthPro</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/3d3e65ebb03160305145236bf8f63be2c4ff4d61">3d3e65e</a>)</li>
+<li><strong>recipe:</strong> Inkscape (<code class="notranslate">org.inkscape.Inkscape</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/7274ac85631e18901b722266bc9f14b2847d450c">7274ac8</a>)</li>
+<li><strong>recipe:</strong> Loom (<code class="notranslate">com.loom.desktop</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/d02219c16e8f69894ff7c9fd51f4a8327fe995bd">d02219c</a>)</li>
+<li><strong>recipe:</strong> QGIS (<code class="notranslate">org.qgis.qgis3</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/f839125b88db5ff19f6fdf4b7b81ade13cf3aa85">f839125</a>)</li>
+<li><strong>recipe:</strong> R (<code class="notranslate">org.R-project.R</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/a77813fdf130716c8ec1f8658a4914753f4b9936">a77813f</a>)</li>
+<li><strong>recipe:</strong> Solstice (<code class="notranslate">com.mersive.solstice.client</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/ede2921856ceb32c9e29563050c3f96070cab054">ede2921</a>)</li>
+<li><strong>recipe:</strong> Sublime Text (<code class="notranslate">com.sublimetext.4</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/733a1f1c0a1ab538ec104fe1a0a26b794c459057">733a1f1</a>)</li>
+<li><strong>recipe:</strong> WhatCable (<code class="notranslate">uk.whatcable.whatcable</code>) (<a href="https://github.com/chenasraf/OpenUpdater/commit/598c73cad4a36b54c1c6e1319baa5a5a6538405b">598c73c</a>)</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><strong>recipe:</strong> Pluely (<code class="notranslate">com.srikanthnani.pluely</code>) - read GitHub releases (<a href="https://github.com/chenasraf/OpenUpdater/commit/8ec240f5f7e6c3eed31c1100f7f6b814383b4b75">8ec240f</a>)</li>
+<li><strong>updating:</strong> upgrade http Sparkle feeds to https (<a href="https://github.com/chenasraf/OpenUpdater/commit/d35ea3dadbab8a975b00fbc3ecaa0f0cb2e04d03">d35ea3d</a>)</li>
+</ul>]]></description>
+    <enclosure url="https://github.com/chenasraf/OpenUpdater/releases/download/v0.30.0/OpenUpdater-0.30.0.dmg" sparkle:edSignature="DPJbRJS+jhO7WGs0USuGICTLfm6lIBf92XvWhrj1AQSV89tJph5SA4Qp78E2Ig//ojPXWpGRVz5hdhhMm8RqCA==" length="3458444" type="application/octet-stream"/>
+  </item>
+  <item>
     <title>0.29.0</title>
     <pubDate>Sat, 14 Nov 2026 22:58:17 +0000</pubDate>
     <sparkle:version>120</sparkle:version>
