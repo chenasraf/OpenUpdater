@@ -1,5 +1,5 @@
 {
-  "hash": "bc0987b2dde868992a82818ca9ba381b033ce609d80d6c236c84fd1649e5d652",
+  "hash": "af2c2fcd5c33d8a65c46f07a7d9c85af8961340f242d45957f80edc9e200d918",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -215,6 +215,11 @@
       "file": "com.macitbetter.betterzip.yml",
       "minApp": "0.9.0",
       "sha": "39b89fcdf8ea6e4faed5923a91603ba7d303d9ed56c37fb2e595d476f8a2af33"
+    },
+    {
+      "file": "com.mersive.solstice.client.yml",
+      "minApp": "0.0.0",
+      "sha": "affdd6c309724832b960151e6091ef73e19572de727c1389bf68cfbde19cdbfd"
     },
     {
       "file": "com.microsoft.Excel.yml",

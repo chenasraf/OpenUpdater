@@ -1,0 +1,23 @@
+id: com.mersive.solstice.client
+name: Solstice
+homepage: https://www.mersive.com
+
+check:
+  type: html
+  url: https://www.mersive.com/downloads
+  pattern: 'SolsticeClient-([0-9.]+)\.dmg'
+  select: latest
+
+version:
+  pattern: '^([0-9]+\.[0-9]+)'
+
+installed_version:
+  key: CFBundleShortVersionString
+  pattern: '^([0-9]+\.[0-9]+)'
+
+download:
+  url: https://mersive.com/downloads/SolsticeClient-{tag}.dmg
+  format: dmg
+
+changelog:
+  url: https://documentation.mersive.com/en/solstice/solstice-release-notes.html
