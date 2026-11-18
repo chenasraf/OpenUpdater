@@ -1,5 +1,5 @@
 {
-  "hash": "2eb21f8ca5b9e4c59179d4079c5db2d14b8077f8dde1940f75d59f6327ac552f",
+  "hash": "204a41babfb920ed20514380f08df9baf196275052a87c5dd5e6f9580653cb61",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -330,6 +330,11 @@
       "file": "com.srikanthnani.pluely.yml",
       "minApp": "0.0.0",
       "sha": "91535d859201d7a11e5f1bb20e623ca40c43cdfd19340afd41706a163b9cd4f3"
+    },
+    {
+      "file": "com.sublimetext.4.yml",
+      "minApp": "0.0.0",
+      "sha": "0f50fb5cd2f6330e81307678e4d838ac425e268d24a860dddc2afd104b124472"
     },
     {
       "file": "com.teamviewer.TeamViewer.yml",

@@ -1,0 +1,18 @@
+id: com.sublimetext.4
+name: Sublime Text
+homepage: https://www.sublimetext.com
+
+check:
+  type: json
+  url: https://www.sublimetext.com/updates/4/stable_update_check
+  path: latest_version
+
+installed_version:
+  key: CFBundleVersion
+
+download:
+  url: https://download.sublimetext.com/sublime_text_build_{version}_mac.zip
+  format: zip
+
+changelog:
+  url: https://www.sublimetext.com/download
