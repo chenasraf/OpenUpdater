@@ -1,5 +1,5 @@
 {
-  "hash": "437ba88f459c368ca44113d4ac5729e71cad9d2cff9592fbf976b157ef1e0a43",
+  "hash": "bc0987b2dde868992a82818ca9ba381b033ce609d80d6c236c84fd1649e5d652",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -185,6 +185,11 @@
       "file": "com.install4j.0526-4458-1435-8154.837.yml",
       "minApp": "0.0.0",
       "sha": "33395c63c8b0dc76db8482ac4704e770f7d437eb0cef26b1e2ad49706cc23fcf"
+    },
+    {
+      "file": "com.itaysoft.CameraController.yml",
+      "minApp": "0.0.0",
+      "sha": "99062ac2fdccd7ca461e968fbdcf2e9951124b75cc2fdf84d94d0aa1756dcbb4"
     },
     {
       "file": "com.itsytv.app.yml",

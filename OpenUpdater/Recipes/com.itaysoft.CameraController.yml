@@ -1,0 +1,18 @@
+id: com.itaysoft.CameraController
+name: CameraController
+homepage: https://github.com/itaybre/CameraController
+
+check:
+  type: github_releases
+  repo: itaybre/CameraController
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/itaybre/CameraController/releases/download/{tag}/CameraController.zip
+  format: zip
+
+changelog:
+  url: https://github.com/itaybre/CameraController/releases/tag/{tag}
