@@ -1,0 +1,19 @@
+id: org.R-project.R
+name: R
+homepage: https://www.r-project.org
+
+check:
+  type: html
+  url: https://cran.r-project.org/bin/macosx/
+  pattern: 'R-([0-9.]+)-{arch}\.pkg'
+  download_pattern: 'href="([^"]+/R-[0-9.]+-{arch}\.pkg)"'
+
+installed_version:
+  key: CFBundleShortVersionString
+  pattern: '^R ([0-9.]+)'
+
+download:
+  format: pkg
+
+changelog:
+  url: https://cran.r-project.org/doc/manuals/r-release/NEWS.html

@@ -1,5 +1,5 @@
 {
-  "hash": "978d3f38cba61679396cdec7af127500e5631f7377b01f759bce75a4fc950154",
+  "hash": "d477070f3110aff5e71812412e71afd612fb388901b15a26bd340be966a78675",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -475,6 +475,11 @@
       "file": "nl.ultimaker.cura_UltiMaker_Cura.yml",
       "minApp": "0.0.0",
       "sha": "48b177813a3e96b156b9da3c746f3d149ebe6d9d96c69eab4a3db74ac3966c2c"
+    },
+    {
+      "file": "org.R-project.R.yml",
+      "minApp": "0.0.0",
+      "sha": "9c2ee1053c2e5a5b8bdb297016bb03338d59747e7060d46036439a48a8458902"
     },
     {
       "file": "org.aseprite.Aseprite.yml",
