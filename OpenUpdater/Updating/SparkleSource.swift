@@ -104,6 +104,9 @@ private final class AppcastParser: NSObject, XMLParserDelegate {
 /// Resolves the latest version of an app from its Sparkle appcast feed.
 enum SparkleSource {
   static func latest(feedURL: URL) async throws -> ReleaseResult {
+    // Some apps ship a plain-http SUFeedURL (Luminar Neo), which App Transport
+    // Security refuses to load. Feeds serve the same appcast over https.
+    let feedURL = secured(feedURL)
     var request = URLRequest(url: feedURL)
     request.setValue(AppBranding.title, forHTTPHeaderField: "User-Agent")
 
@@ -150,5 +153,13 @@ enum SparkleSource {
       downloadURL: downloadURL,
       format: downloadURL.flatMap { ArchiveFormat(inferringFrom: $0)?.rawValue }
     )
+  }
+
+  private static func secured(_ url: URL) -> URL {
+    guard url.scheme?.lowercased() == "http",
+      var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+    else { return url }
+    components.scheme = "https"
+    return components.url ?? url
   }
 }
