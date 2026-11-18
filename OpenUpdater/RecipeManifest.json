@@ -1,5 +1,5 @@
 {
-  "hash": "af2c2fcd5c33d8a65c46f07a7d9c85af8961340f242d45957f80edc9e200d918",
+  "hash": "9e9456dac26aac0d10a0d20287a044693d1ec80c78b3ee7bc495cd13f66b11ef",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -45,6 +45,11 @@
       "file": "com.1password.1password.yml",
       "minApp": "0.0.0",
       "sha": "6127b22e64188b69028a22bfc327322d75fa14edae5c0a573d23972f797ce5cb"
+    },
+    {
+      "file": "com.Google.GoogleEarthPro.yml",
+      "minApp": "0.0.0",
+      "sha": "63e8e33d575ba6eccd549b2882e87cb9e2bd6d3b132a4a9be821e4574c80e5ca"
     },
     {
       "file": "com.PS.PSD.yml",

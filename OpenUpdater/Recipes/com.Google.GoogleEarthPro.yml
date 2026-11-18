@@ -1,0 +1,12 @@
+id: com.Google.GoogleEarthPro
+name: Google Earth Pro
+homepage: https://www.google.com/earth/about/versions/
+
+check:
+  type: html
+  url: https://support.google.com/earth/answer/40901?hl=en
+  pattern: '[Vv]ersion ([0-9]+(?:\.[0-9]+)+)'
+  select: latest
+
+changelog:
+  url: https://support.google.com/earth/answer/40901?hl=en
