@@ -1,0 +1,15 @@
+id: org.inkscape.Inkscape
+name: Inkscape
+homepage: https://inkscape.org
+
+check:
+  type: redirect
+  url: https://inkscape.org/release/
+  pattern: '/release/inkscape-([0-9.]+)/'
+
+download:
+  url: https://media.inkscape.org/dl/resources/file/Inkscape-{version}_{arch}.dmg
+  format: dmg
+
+changelog:
+  url: https://inkscape.org/release/inkscape-{version}/

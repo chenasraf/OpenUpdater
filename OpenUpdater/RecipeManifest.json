@@ -1,5 +1,5 @@
 {
-  "hash": "ec165b8e0b585da4ddbc9b1fd4eb8c3c588b0b182a4f59521ca2c3cce5c094ce",
+  "hash": "75848d02cc0fe76fe49308e2e5882665686cf7a8495da20cfc1304833dde8b7d",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -505,6 +505,11 @@
       "file": "org.godotengine.godot.yml",
       "minApp": "0.0.0",
       "sha": "5f0c291d0a8ab91f151aa4e377031d56229bed2f64ee554e629f0cd6b231f9e3"
+    },
+    {
+      "file": "org.inkscape.Inkscape.yml",
+      "minApp": "0.9.0",
+      "sha": "b77dd96156b39ae3a9c6bc952b7b0a566c2ae43c4245cb17b56a9df4e7d6f136"
     },
     {
       "file": "org.keepassxc.keepassxc.yml",
