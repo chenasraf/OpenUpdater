@@ -1,0 +1,18 @@
+id: uk.whatcable.whatcable
+name: WhatCable
+homepage: https://whatcable.uk
+
+check:
+  type: github_releases
+  repo: darrylmorley/whatcable
+  prereleases: false
+
+version:
+  strip_prefix: v
+
+download:
+  url: https://github.com/darrylmorley/whatcable/releases/download/{tag}/WhatCable.zip
+  format: zip
+
+changelog:
+  url: https://github.com/darrylmorley/whatcable/releases/tag/{tag}

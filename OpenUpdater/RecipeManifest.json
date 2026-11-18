@@ -1,5 +1,5 @@
 {
-  "hash": "d477070f3110aff5e71812412e71afd612fb388901b15a26bd340be966a78675",
+  "hash": "437ba88f459c368ca44113d4ac5729e71cad9d2cff9592fbf976b157ef1e0a43",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -575,6 +575,11 @@
       "file": "org.wireshark.Wireshark.yml",
       "minApp": "0.0.0",
       "sha": "d2bab80b9bd2e3a0c88835d26b73ff0944cb2ae83e0b7357b31b0c27f276a431"
+    },
+    {
+      "file": "uk.whatcable.whatcable.yml",
+      "minApp": "0.0.0",
+      "sha": "adc31c261f373cf2036074a8c895e2857e850041331412fc2d2a5292a06cdf45"
     },
     {
       "file": "us.zoom.xos.yml",
