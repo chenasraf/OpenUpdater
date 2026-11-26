@@ -151,12 +151,12 @@ check:
   # release series) instead of pinning it in the recipe. Each step fetches its `url`
   # as text and extracts capture group 1 of `pattern`; `select` (first|latest) picks
   # the match. Example — track Blender's newest LTS series without hardcoding it:
-  # url: https://www.blender.org/download/lts/{series}/
+  # url: https://download.blender.org/release/Blender{series}/
   # select: latest
   # resolve:
   #   series:
-  #     url: https://www.blender.org/download/lts/
-  #     pattern: '/download/lts/([0-9-]+)/'
+  #     url: https://developer.blender.org/docs/release_notes/
+  #     pattern: '>Blender (\d+\.\d+) LTS</a>(?:</strong>)? <em>\((?!alpha|beta)'
   #     select: latest
 
   # html / xml / json / yaml ONLY, OPTIONAL. Pull the download URL straight from
