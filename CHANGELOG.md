@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.30.1](https://github.com/chenasraf/OpenUpdater/compare/v0.30.0...v0.30.1) (2026-11-26)
+
+
+### Bug Fixes
+
+* **recipe:** Blender (`org.blenderfoundation.blender`) - read download.blender.org, blender.org blocks bots ([c3b31f0](https://github.com/chenasraf/OpenUpdater/commit/c3b31f0402d8c47cd1a380194e985a865110ed38))
+* **recipe:** SQLPro for MySQL (`com.hankinsoft.osx.mysql`) - match dmg downloads ([7f5b51b](https://github.com/chenasraf/OpenUpdater/commit/7f5b51b9633c472163ec9f2257f6c8c856fc34ce))
+* **recipe:** SQLPro for Postgres (`com.hankinsoft.osx.SQLProPostgres`) - match dmg downloads ([6cc9d94](https://github.com/chenasraf/OpenUpdater/commit/6cc9d94f5d2ae60dad0a9e62135d0d8ba7e7763b))
+* **recipe:** SQLPro for SQLite (`com.hankinsoft.osx.sqliteprofessional`) - match dmg downloads ([dfa2110](https://github.com/chenasraf/OpenUpdater/commit/dfa211074a20a2662afdfb214a6495032c77d356))
+
 ## [0.30.0](https://github.com/chenasraf/OpenUpdater/compare/v0.29.0...v0.30.0) (2026-11-18)
 
 
