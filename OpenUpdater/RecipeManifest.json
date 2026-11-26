@@ -1,5 +1,5 @@
 {
-  "hash": "9e9456dac26aac0d10a0d20287a044693d1ec80c78b3ee7bc495cd13f66b11ef",
+  "hash": "4b458f1b48907571550a071a905defc76949af35c535bbc15fc405c334417bac",
   "recipes": [
     {
       "file": "Jellyfin.Server.yml",
@@ -164,17 +164,17 @@
     {
       "file": "com.hankinsoft.osx.SQLProPostgres.yml",
       "minApp": "0.9.0",
-      "sha": "c596f34e83f6e868656f374b8ab651c31ce8f788eb9440b85a8e977752b25d1a"
+      "sha": "4a6bd771ace4d6dd3de73940c3384faf195bf87255a0aa13ac847815a791768f"
     },
     {
       "file": "com.hankinsoft.osx.mysql.yml",
       "minApp": "0.9.0",
-      "sha": "048d50c450a25b3f313bee019556108db8ca74f4fcf96ae196badf520dea06d0"
+      "sha": "698c80cf8b5c21b540b52b0387e779988694aeb9dea94d78d0d5a5a1350213ec"
     },
     {
       "file": "com.hankinsoft.osx.sqliteprofessional.yml",
       "minApp": "0.9.0",
-      "sha": "7f2e653b49b7ad6728994cad3c64d458ca645f7b680f883f39c914e231539951"
+      "sha": "5148254501df55a09517dfa1966d74f6e0f7b0f33f566ae87f4757d04fa92e81"
     },
     {
       "file": "com.hnc.Discord.yml",
@@ -514,7 +514,7 @@
     {
       "file": "org.blenderfoundation.blender.yml",
       "minApp": "0.0.0",
-      "sha": "b16f8044f6b11cd9cbf4f85ee2c6b95ba21628fc73ddbd9f1429746b4d07a86a"
+      "sha": "310c778d75acb6a550570eae0b5f078f556374fce4091c625f90734f8511d4ce"
     },
     {
       "file": "org.freecad.FreeCAD.yml",

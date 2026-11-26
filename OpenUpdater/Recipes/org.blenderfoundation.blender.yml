@@ -8,9 +8,14 @@ arch:
 
 check:
   type: html
-  url: https://www.blender.org/download/
+  url: https://download.blender.org/release/Blender{series}/
   pattern: 'blender-(\d+\.\d+\.\d+)-macos'
   select: latest
+  resolve:
+    series:
+      url: https://download.blender.org/release/
+      pattern: 'href="Blender(\d+\.\d+)/"'
+      select: latest
 
 download:
   url: https://download.blender.org/release/Blender{major}.{minor}/blender-{version}-macos-{arch}.dmg
@@ -23,11 +28,11 @@ channels:
     name: LTS
     check:
       type: html
-      url: https://www.blender.org/download/lts/{series}/
+      url: https://download.blender.org/release/Blender{series}/
       pattern: 'blender-(\d+\.\d+\.\d+)-macos'
       select: latest
       resolve:
         series:
-          url: https://www.blender.org/download/lts/
-          pattern: '/download/lts/([0-9-]+)/'
+          url: https://developer.blender.org/docs/release_notes/
+          pattern: '>Blender (\d+\.\d+) LTS</a>(?:</strong>)? <em>\((?!alpha|beta)'
           select: latest
