@@ -5,7 +5,7 @@ homepage: https://www.macpostgresclient.com
 check:
   type: redirect
   url: https://www.macpostgresclient.com/download.php
-  pattern: 'SQLProPostgres\.([0-9.]+)\.app\.zip'
+  pattern: 'SQLProPostgres\.(\d+(?:\.\d+)+)\.'
 
 changelog:
   url: https://www.sqlprostudio.com/releasenotes/
