@@ -5,6 +5,10 @@
     ".": {
       "release-type": "simple",
       "package-name": "OpenUpdater",
+      "exclude-paths": [
+        "OpenUpdater/Recipes",
+        "OpenUpdater/RecipeManifest.json"
+      ],
       "extra-files": [
         "OpenUpdater.xcodeproj/project.pbxproj"
       ]
