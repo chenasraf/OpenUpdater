@@ -1,0 +1,44 @@
+name: Recipe manifest
+
+# Regenerates OpenUpdater/RecipeManifest.json after recipe pushes and commits it as a
+# `chore:` commit. Recipe commits then touch only OpenUpdater/Recipes/, which
+# release-please excludes, so recipe changes never cut an app release. The manifest
+# stays at its fixed path because installed apps fetch it from there.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "OpenUpdater/Recipes/**"
+      - "scripts/gen_recipe_manifest.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: recipe-manifest
+  cancel-in-progress: false
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - run: python3 scripts/gen_recipe_manifest.py
+      - name: Commit manifest
+        run: |
+          git diff --quiet -- OpenUpdater/RecipeManifest.json && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add OpenUpdater/RecipeManifest.json
+          git commit -m "chore: update recipe manifest"
+          # A push can land while this job runs; rebase onto it. The manifest is the
+          # only file this job writes, so the rebase can't conflict with recipe pushes.
+          for attempt in 1 2 3; do
+            git pull --rebase origin master && git push origin HEAD:master && exit 0
+            sleep 5
+          done
+          exit 1

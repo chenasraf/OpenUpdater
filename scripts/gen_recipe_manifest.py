@@ -15,6 +15,11 @@ The manifest lets the app sync recipes from GitHub at runtime without an app upd
 `minApp` is derived from FEATURES below. Add an entry whenever a new *gated* engine
 feature lands (a recipe field/behavior older apps can't honor), mapped to the version
 that introduced it.
+
+CI (`.github/workflows/recipe-manifest.yml`) writes and commits the manifest, not the
+recipe author: a recipe commit that touched it would fall outside release-please's
+directory-only `exclude-paths` and cut an app release. `--check` runs the lint without
+writing, for the pre-commit hook.
 """
 
 import hashlib
@@ -127,6 +132,9 @@ def main():
         for violation in violations:
             print(f"  {violation}", file=sys.stderr)
         return 1
+
+    if "--check" in sys.argv[1:]:
+        return 0
 
     manifest = {
         "schema": 1,

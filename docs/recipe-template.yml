@@ -12,7 +12,7 @@
 # Sparkle feed for an app that sets it dynamically, or override an app's own feed.
 #
 # Recipes sync to users at runtime from this repo (a generated RecipeManifest.json
-# indexes them via `make manifest` / a pre-commit hook), so a new or fixed recipe
+# indexes them; CI regenerates it on every recipe push), so a new or fixed recipe
 # reaches users without an app update. The manifest auto-stamps each recipe's minimum
 # app version from the features it uses — you don't set that yourself.
 #

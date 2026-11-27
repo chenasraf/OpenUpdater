@@ -139,9 +139,8 @@ confirm "Verification done. Looks correct?" || die "aborted — recipe left at $
 echo
 MSG="feat(recipe): ${NAME:-$ID} (\`$ID\`)"
 echo "Commit message: $MSG"
-if confirm "Regenerate manifest and commit?"; then
-  make manifest >/dev/null
-  git add "$DEST" OpenUpdater/RecipeManifest.json
+if confirm "Commit?"; then
+  git add "$DEST"
   git commit -m "$MSG"
   bold "Committed."
 else

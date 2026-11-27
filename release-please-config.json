@@ -6,8 +6,7 @@
       "release-type": "simple",
       "package-name": "OpenUpdater",
       "exclude-paths": [
-        "OpenUpdater/Recipes",
-        "OpenUpdater/RecipeManifest.json"
+        "OpenUpdater/Recipes"
       ],
       "extra-files": [
         "OpenUpdater.xcodeproj/project.pbxproj"
