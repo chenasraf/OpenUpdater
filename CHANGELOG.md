@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.30.1](https://github.com/chenasraf/OpenUpdater/compare/v0.30.0...v0.30.1) (2026-11-27)
+
+
+### Bug Fixes
+
+* **recipe:** Blender (`org.blenderfoundation.blender`) - read download.blender.org, blender.org blocks bots ([c3b31f0](https://github.com/chenasraf/OpenUpdater/commit/c3b31f0402d8c47cd1a380194e985a865110ed38))
+
 ## [0.30.0](https://github.com/chenasraf/OpenUpdater/compare/v0.29.0...v0.30.0) (2026-11-18)
 
 
